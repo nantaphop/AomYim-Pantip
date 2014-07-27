@@ -38,6 +38,7 @@ public class ForumHolderFragment extends Fragment {
         forumPagerItems = ForumPagerItem.getAll();
         viewPager.setAdapter(new ForumSlidePagerAdapter(getFragmentManager()));
         tabs.setViewPager(viewPager);
+        tabs.setIndicatorColorResource(R.color.base_color_bright);
         app.getEventBus().register(this);
     }
 

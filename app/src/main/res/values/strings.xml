@@ -3,5 +3,7 @@
 
     <string name="app_name">PantipFanApp</string>
     <string name="date_format">MM/dd/yyyy HH:mm:ss</string>
+    <string name="comment">ความเห็น</string>
+    <string name="vote">โหวต</string>
 
 </resources>

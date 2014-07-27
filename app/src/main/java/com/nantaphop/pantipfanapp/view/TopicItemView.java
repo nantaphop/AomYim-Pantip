@@ -1,6 +1,7 @@
 package com.nantaphop.pantipfanapp.view;
 
 import android.content.Context;
+import android.text.Html;
 import android.text.format.DateUtils;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -31,19 +32,19 @@ public class TopicItemView extends RelativeLayout{
     @ViewById
     TextView votes;
 
-    @ViewById
-    TextView date;
+//    @ViewById
+//    TextView date;
 
     public TopicItemView(Context context) {
         super(context);
     }
 
     public void bind(Topic topic){
-        title.setText(topic.getTitle());
-        author.setText(topic.getAuthor());
-        comments.setText(""+topic.getComments());
-        votes.setText(""+topic.getVotes());
-        date.setText(DateUtils.getRelativeTimeSpanString(topic.getDate().getTime(), new Date().getTime(), DateUtils.MINUTE_IN_MILLIS));
+        title.setText(Html.fromHtml(topic.getTitle()));
+        author.setText(Html.fromHtml(topic.getAuthor())+" - "+DateUtils.getRelativeTimeSpanString(topic.getDate().getTime(), new Date().getTime(), DateUtils.MINUTE_IN_MILLIS));
+        comments.setText(topic.getComments()+" "+ getContext().getString(R.string.comment));
+        votes.setText(topic.getVotes() + " " + getContext().getString(R.string.vote));
+//        date.setText(DateUtils.getRelativeTimeSpanString(topic.getDate().getTime(), new Date().getTime(), DateUtils.MINUTE_IN_MILLIS));
 //        date.setText(topic.getDate().hr);
     }
 }
