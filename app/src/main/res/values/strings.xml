@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">PantipFanApp</string>
+    <string name="date_format">MM/dd/yyyy HH:mm:ss</string>
+
+</resources>

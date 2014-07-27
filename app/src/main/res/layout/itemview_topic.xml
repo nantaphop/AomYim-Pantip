@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="@dimen/padding_default">
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:textAppearanceListItemSmall"
+            android:text="จะรู้ได้ไงว่าโทรศัพท์เรารับคลื่น3Gของค่ายไหนได้จะรู้ได้ไงว่าโทรศัพท์เรารับคลื่น3Gของค่ายไหนได้จะรู้ได้ไงว่าโทรศัพท์เรารับคลื่น3Gของค่ายไหนได้จะรู้ได้ไงว่าโทรศัพท์เรารับคลื่น3Gของค่ายไหนได้จะรู้ได้ไงว่าโทรศัพท์เรารับคลื่น3Gของค่ายไหนได้จะรู้ได้ไงว่าโทรศัพท์เรารับคลื่น3Gของค่ายไหนได้"
+            android:lineSpacingExtra="4dp"
+            android:textColor="?android:textColorPrimary"
+            android:id="@+id/title"
+            android:layout_marginBottom="@dimen/padding_default"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            />
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="สมาชิกหมายเลข 909277"
+            android:id="@+id/author"
+            android:textColor="?android:textColorSecondaryInverse"
+
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/title"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="5"
+            android:id="@+id/comments"
+            android:textColor="?android:textColorSecondaryInverse"
+
+            android:drawablePadding="@dimen/padding_default"
+
+            android:gravity="center_vertical"
+            android:drawableLeft="@drawable/ic_action_chat"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/title"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2"
+            android:gravity="center_vertical"
+            android:id="@+id/votes"
+            android:drawableLeft="@drawable/ic_action_good"
+            android:textColor="?android:textColorSecondaryInverse"
+
+            android:drawablePadding="@dimen/padding_default"
+            android:layout_marginLeft="@dimen/padding_default"
+            android:layout_toRightOf="@+id/comments"
+            android:layout_below="@+id/title"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="3 ชั่วโมงก่อน"
+            android:textColor="?android:textColorSecondaryInverse"
+
+            android:id="@+id/date"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/author"/>
+
+
+</RelativeLayout>
