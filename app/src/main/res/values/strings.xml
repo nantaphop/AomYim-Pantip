@@ -5,5 +5,10 @@
     <string name="date_format">MM/dd/yyyy HH:mm:ss</string>
     <string name="comment">ความเห็น</string>
     <string name="vote">โหวต</string>
+    <string name="drawer_open">Menu</string>
+    <string name="drawer_close">Pantip Fan App</string>
+    <string name="recomend_topic">กระทู้แนะนำ</string>
+    <string name="view_all">ดูทั้งหมด</string>
+
 
 </resources>

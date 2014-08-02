@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<it.gmariotti.cardslib.library.view.CardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:card="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/list_cardId"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/list_card.thumbnail"
+        card:card_layout_resourceID="@layout/card_topic_layout"
+        />

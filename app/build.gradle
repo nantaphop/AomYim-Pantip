@@ -17,7 +17,7 @@ repositories {
 
 android {
     compileSdkVersion 19
-    buildToolsVersion "19.1.0"
+    buildToolsVersion '19.1.0'
 
     defaultConfig {
         minSdkVersion 14
@@ -44,20 +44,18 @@ def AAVersion = '3.0.1'
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    // You must install or update the Support Repository through the SDK manager to use this dependency.
     compile 'com.android.support:support-v4:19.1.0'
-//    compile 'com.android.support:support-v13:19.1.0'
     compile 'com.android.support:appcompat-v7:19.0.0'
-
-    compile project(':libProjects:DynamicBox')
     compile 'com.github.amlcurran.showcaseview:library:5.0.0'
     compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
     compile 'com.google.android.gms:play-services:5.0.77'
-
-//    compile 'asia.ivity.android:drag-sort-listview-apklib:1.0'
+    compile 'com.github.gabrielemariotti.cards:library:1.8.0'
+    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.2'
+    compile 'com.github.chrisbanes.actionbarpulltorefresh:library:+'
 
     apt "org.androidannotations:androidannotations:$AAVersion"
     compile "org.androidannotations:androidannotations-api:$AAVersion"
+
 }
 
 apt {

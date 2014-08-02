@@ -1,6 +1,8 @@
 package com.nantaphop.pantipfanapp.response;
 
+import android.content.Context;
 import com.google.gson.annotations.SerializedName;
+import it.gmariotti.cardslib.library.internal.Card;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -26,6 +28,7 @@ public class Forum implements Serializable{
 
 //    ArrayList<String> tagIn;
 //    ArrayList<String> tagOut;
+
 
 
     public void addTopics(ArrayList<Topic> newTopics){
@@ -54,5 +57,13 @@ public class Forum implements Serializable{
 
     public void setTopics(ArrayList<Topic> topics) {
         this.topics = topics;
+    }
+
+    public ArrayList<Card> toCardList(Context context, int start){
+        ArrayList<Card> cards = new ArrayList<Card>(topics.size());
+        for(int i = start; i<topics.size();i++){
+            cards.add(topics.get(i).toCard(context));
+        }
+        return cards;
     }
 }

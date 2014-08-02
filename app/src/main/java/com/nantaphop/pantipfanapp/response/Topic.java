@@ -1,6 +1,9 @@
 package com.nantaphop.pantipfanapp.response;
 
+import android.content.Context;
 import com.google.gson.annotations.SerializedName;
+import com.nantaphop.pantipfanapp.view.TopicCard;
+import it.gmariotti.cardslib.library.internal.Card;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -139,4 +142,10 @@ public class Topic implements Serializable{
     public String toString() {
         return title+" - "+author;
     }
+
+    public Card toCard(Context context){
+        return new TopicCard(context, this);
+    }
+
+
 }

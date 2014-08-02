@@ -1,12 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:card="http://schemas.android.com/apk/res-auto"
               android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="match_parent">
-    <ListView
-            android:id="@+id/list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"></ListView>
+              android:layout_height="match_parent"
+              android:background="@color/background">
+    <!--<ListView-->
+    <!--android:id="@+id/list"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"></ListView>-->
+    <uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout
+            android:id="@+id/pullToRefreshLayout"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+        <it.gmariotti.cardslib.library.view.CardListView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                card:list_card_layout_resourceID="@layout/list_card_topic_layout"
+                android:id="@+id/cardList"/>
+    </uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout>
 
 </LinearLayout>

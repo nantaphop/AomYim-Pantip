@@ -1,5 +1,7 @@
 package com.nantaphop.pantipfanapp.response;
 
+import java.io.Serializable;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Nantaphop
@@ -7,7 +9,7 @@ package com.nantaphop.pantipfanapp.response;
  * Time: 5:14 PM
  * To change this template use File | Settings | File Templates.
  */
-public class Tag {
+public class Tag implements Serializable {
     String tag;
     String url;
     boolean allow;

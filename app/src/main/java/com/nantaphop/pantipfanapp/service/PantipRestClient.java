@@ -4,7 +4,16 @@ import android.content.Context;
 import android.util.Log;
 import com.activeandroid.app.Application;
 import com.loopj.android.http.*;
+import com.nantaphop.pantipfanapp.response.ForumPart;
 import org.androidannotations.annotations.*;
+import org.apache.http.Header;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * Created by nantaphop on 26-Jul-14.
@@ -106,10 +115,14 @@ public class PantipRestClient {
 
     private void get(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         client.get(getAbsoluteUrl(url), params, responseHandler);
+        Log.d(TAG, "get - "+getAbsoluteUrl(url));
+
     }
 
     private void post(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         client.post(getAbsoluteUrl(url), params, responseHandler);
+        Log.d(TAG, "post - "+getAbsoluteUrl(url));
+
     }
 
     private String getAbsoluteUrl(String relativeUrl) {
@@ -173,6 +186,12 @@ public class PantipRestClient {
         client.addHeader("Accept", "application/json, text/javascript, */*; q=0.01");
         post(url, params, cb);
         Log.d(TAG, "get forum - "+params.toString());
+
+    }
+
+    public void getForumPart(String url, AsyncHttpResponseHandler cb) {
+        get("forum/"+url,null, cb);
+        Log.d(TAG, "get forum part - "+url);
 
     }
 }

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:padding="@dimen/padding_default"
+                android:layout_height="60dp"
+                android:layout_gravity="center_vertical">
+
+
+    <TextView
+            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:id="@+id/title"
+            android:gravity="center_vertical"
+            android:text="กระทู้แนะนำ"
+            android:textSize="20sp"
+            android:textStyle="italic"
+            android:layout_alignParentLeft="true"
+            android:layout_gravity="center"/>
+
+    <TextView
+            android:padding="@dimen/padding_default"
+            android:background="@android:color/holo_green_light"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:textSize="12sp"
+            android:textColor="@android:color/white"
+
+            android:gravity="center_vertical|center_horizontal"
+            android:id="@+id/button"
+            android:text="ดูทั้งหมด"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"/>
+
+</RelativeLayout>
