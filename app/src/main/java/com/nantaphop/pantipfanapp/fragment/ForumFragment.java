@@ -1,31 +1,30 @@
 package com.nantaphop.pantipfanapp.fragment;
 
-import android.app.AlertDialog;
+import android.animation.Animator;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.*;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.BaseJsonHttpResponseHandler;
+import com.melnykov.fab.FloatingActionButton;
 import com.nantaphop.pantipfanapp.BaseApplication;
 import com.nantaphop.pantipfanapp.R;
+import com.nantaphop.pantipfanapp.event.ForumScrollDownEvent;
+import com.nantaphop.pantipfanapp.event.ForumScrollUpEvent;
+import com.nantaphop.pantipfanapp.event.ShowRecommendEvent;
 import com.nantaphop.pantipfanapp.model.ForumPagerItem;
 import com.nantaphop.pantipfanapp.response.Forum;
 import com.nantaphop.pantipfanapp.response.ForumPart;
-import com.nantaphop.pantipfanapp.response.Topic;
 import com.nantaphop.pantipfanapp.service.PantipRestClient;
 import com.nantaphop.pantipfanapp.utils.RESTUtils;
-import com.nantaphop.pantipfanapp.view.RecommendCard;
-import com.nantaphop.pantipfanapp.view.TopicItemView;
-import com.nantaphop.pantipfanapp.view.TopicItemView_;
+import com.nantaphop.pantipfanapp.utils.ScrollDirectionListener;
 import com.nantaphop.pantipfanapp.view.TopicSectionCard;
 import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.internal.CardArrayAdapter;
-import it.gmariotti.cardslib.library.internal.CardHeader;
-import it.gmariotti.cardslib.library.prototypes.CardSection;
 import it.gmariotti.cardslib.library.prototypes.SectionedCardAdapter;
 import it.gmariotti.cardslib.library.view.CardListView;
 import org.androidannotations.annotations.*;
@@ -56,6 +55,8 @@ public class ForumFragment extends Fragment implements OnRefreshListener {
     ListView list;
     @ViewById
     CardListView cardList;
+    @ViewById
+    FloatingActionButton fab;
 
 
     @FragmentArg
@@ -70,19 +71,19 @@ public class ForumFragment extends Fragment implements OnRefreshListener {
 
     @InstanceState
     Forum forum;
-
-//    ForumAdapter adapter;
+    @InstanceState
+    ForumPart forumPart;
 
     private CardArrayAdapter cardArrayAdapter;
-    private ForumPart forumPart;
+
     private SectionedCardAdapter sectionedCardAdapter;
 
-
-    private boolean mIsScrollingUp;
-    private int mLastFirstVisibleItem;
+    @InstanceState
+    int lastFirstVisibleItem = 0;
 
     @ViewById
     PullToRefreshLayout pullToRefreshLayout;
+
 
     BaseJsonHttpResponseHandler forumCallback = new BaseJsonHttpResponseHandler() {
         @Override
@@ -98,12 +99,12 @@ public class ForumFragment extends Fragment implements OnRefreshListener {
             }
             currentPage++;
 
-            joinForum();
+            prepareTopic();
         }
 
         @Override
         public void onFailure(int i, Header[] headers, Throwable throwable, String s, Object o) {
-            Log.d("forum", "failed");
+            Log.d("forum", "failed load forum");
 
         }
 
@@ -112,79 +113,168 @@ public class ForumFragment extends Fragment implements OnRefreshListener {
             return RESTUtils.parseForum(s);
         }
     };
+    private byte[] tmpForumPartBytes;
     AsyncHttpResponseHandler forumPartCallback = new AsyncHttpResponseHandler() {
         @Override
         public void onSuccess(int x, Header[] headers, byte[] bytes) {
-            forumPart = RESTUtils.parseForumPart(new String(bytes));
-            joinForum();
+            tmpForumPartBytes = bytes;
+            prepareForumPart();
         }
 
         @Override
         public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
-
+            Log.d("forum", "failed load forum part");
         }
     };
+    private ArrayList<Card> tmpRecommendCard;
+    private ArrayList<Card> tmpTopicCard;
+    private ScrollDirectionListener mOnScrollListener;
+    private boolean fabAnimating;
+    private Animator.AnimatorListener fabAnimListener;
+    private boolean reInitFragment;
+    private boolean prepareTopicDone;
+    private boolean prepareRecommendDone;
+    private ArrayList<TopicSectionCard> sections;
+    private float fabDefaultY;
+    private boolean fabIsHiding;
+
+    @Trace
+    @Background
+    void prepareForumPart() {
+        forumPart = RESTUtils.parseForumPart(new String(tmpForumPartBytes));
+
+        prepareRecommendCard();
 
 
+    }
+
+    @Background
+    public void prepareRecommendCard() {
+        int numPreview = forumPart.getRecommendTopic().size() > 3 ? 3 : forumPart.getRecommendTopic().size();
+        tmpRecommendCard = new ArrayList<Card>(numPreview);
+        if (currentPage == 2) { // Do just first load
+            // Add Recommend Topic
+            for (int i = 0; i < numPreview; i++) {
+                Card card = new Card(getActivity());
+                card.setTitle(forumPart.getRecommendTopic().get(i));
+                card.setClickable(true);
+                card.setShadow(false);
+                card.setBackgroundResourceId(R.drawable.card_background);
+                tmpRecommendCard.add(card);
+            }
+        }
+        tmpForumPartBytes = null;
+        prepareRecommendDone = true;
+        joinForum();
+    }
+
+    @Trace
+    @Background
+    void prepareTopic() {
+        tmpTopicCard = forum.toCardList(getActivity(), cardRenderCount);
+        prepareTopicDone = true;
+        joinForum();
+    }
+
+    @Background
+    void prepareTopicFromInstanceState() {
+        tmpTopicCard = forum.toCardList(getActivity(), 0);
+        prepareTopicDone = true;
+        joinForum();
+    }
+
+    @Trace(tag = "joinForum")
+    @UiThread
     void joinForum() {
         // Join Thread
-        if (forumPart != null && forum != null) {
+        if (prepareRecommendDone && prepareTopicDone) {
             int numPreview = forumPart.getRecommendTopic().size() > 3 ? 3 : forumPart.getRecommendTopic().size();
 
-            if (currentPage == 2) { // Do just first load
-                cardArrayAdapter.clear();
-                // Add Recommend Topic
-                for (int i = 0; i < numPreview; i++) {
-                    Card card = new Card(getActivity());
-                    card.setTitle(forumPart.getRecommendTopic().get(i));
-                    card.setClickable(true);
-                    card.setShadow(false);
-                    card.setBackgroundResourceId(R.drawable.card_background);
-                    cardArrayAdapter.add(card);
-                }
-
-
+            // Add Recommend Topic
+            if (tmpRecommendCard != null) {
+                cardArrayAdapter.addAll(tmpRecommendCard);
+                tmpRecommendCard = null;
             }
+
 
             // Add Topics
-            cardArrayAdapter.addAll(forum.toCardList(getActivity(), cardRenderCount));
+            if (tmpTopicCard != null) {
+                cardArrayAdapter.addAll(tmpTopicCard);
+                tmpTopicCard = null;
+            }
             cardRenderCount = forum.getTopics().size();
 
-            if (currentPage == 2) { // Do just first load
-                // Split Section
-                ArrayList<TopicSectionCard> sections = new ArrayList<TopicSectionCard>();
-                sections.add(new TopicSectionCard(0, app.getString(R.string.recomend_topic), app.getString(R.string.view_all), new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        new AlertDialog.Builder(getActivity())
-                                .setAdapter(new ArrayAdapter<String>(getActivity(), R.layout.recommend_list_item, forumPart.getRecommendTopic()), new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                        Toast.makeText(getActivity(), forumPart.getRecommendUrl().get(i), Toast.LENGTH_SHORT).show();
-                                    }
-                                })
-                                .setTitle(app.getString(R.string.recomend_topic))
-                                .show();
-                    }
-                }));
-                sections.add(new TopicSectionCard(numPreview, "กระทู้ในห้อง", "", null));
-                TopicSectionCard[] dummy = new TopicSectionCard[sections.size()];
-                sectionedCardAdapter.setCardSections(sections.toArray(dummy));
-            }
 
-            // Update List
-            cardArrayAdapter.notifyDataSetChanged();
-            sectionedCardAdapter.notifyDataSetChanged();
+
+
+            // Split Section
+            sections.clear();
+            sections.add(new TopicSectionCard(0, app.getString(R.string.recomend_topic), app.getString(R.string.view_all), new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    app.getEventBus().post(new ShowRecommendEvent(forumPart.getRecommendTopic(), forumPart.getRecommendUrl()));
+                }
+            }));
+            sections.add(new TopicSectionCard(numPreview, "กระทู้ในห้อง", "", null));
+            TopicSectionCard[] dummy = new TopicSectionCard[sections.size()];
+            sectionedCardAdapter.setCardSections(sections.toArray(dummy));
         }
+
+        // Update List
+        cardArrayAdapter.notifyDataSetChanged();
+        sectionedCardAdapter.notifyDataSetChanged();
+        setRefreshComplete();
+        cardList.setSelection(lastFirstVisibleItem);
+
+        cardList.setOnScrollListener(new ScrollDirectionListener(lastFirstVisibleItem, new ScrollDirectionListener.OnScrollUp() {
+            @Override
+            public void onScrollUp() {
+                app.getEventBus().post(new ForumScrollUpEvent());
+                showFab();
+            }
+        }, new ScrollDirectionListener.OnScrollDown() {
+            @Override
+            public void onScrollDown() {
+                app.getEventBus().post(new ForumScrollDownEvent());
+                hideFab();
+            }
+        }));
+
+    }
+
+    private void hideFab() {
+        if(!fabIsHiding){
+            fab.animate().translationY(fab.getHeight() * 3).setInterpolator(new AccelerateDecelerateInterpolator()).start();
+            fabIsHiding = true;
+        }
+    }
+
+    private void showFab() {
+        if (fabIsHiding) {
+            fab.animate().translationY(fabDefaultY).setInterpolator(new AccelerateDecelerateInterpolator()).start();
+            fabIsHiding = false;
+        }
+    }
+
+
+    @UiThread
+    void setRefreshComplete() {
         pullToRefreshLayout.setRefreshComplete();
     }
 
 
     @AfterViews
-    void init() {
+    void
+    init() {
+        fabDefaultY = fab.getY();
+        prepareRecommendDone = false;
+        prepareTopicDone = false;
+
+        Log.d("forum", "init forum fragment " + forumPagerItem.title);
         // Prepare Adapter
         cardArrayAdapter = new TopicCardAdapter(getActivity(), new ArrayList<Card>());
         cardArrayAdapter.setInnerViewTypeCount(2);
+        sections = new ArrayList<TopicSectionCard>();
         sectionedCardAdapter = new TopicSectionedAdapter(getActivity(), cardArrayAdapter);
         cardList.setExternalAdapter(sectionedCardAdapter, cardArrayAdapter);
 
@@ -197,9 +287,39 @@ public class ForumFragment extends Fragment implements OnRefreshListener {
                         // Finally commit the setup to our PullToRefreshLayout
                 .setup(pullToRefreshLayout);
 
-        // Load Initial Data
-        loadMore();
-        loadForumPart();
+        // Add Blank Margin on top height = Tab's height
+        View blankHeader = new View(getActivity());
+        blankHeader.setMinimumHeight(getResources().getDimensionPixelOffset(R.dimen.tabs_height));
+        cardList.addHeaderView(blankHeader);
+
+
+        // If from saved
+        if (forum != null && forumPart != null) {
+            reInitFragment = true;
+            prepareRecommendCard();
+            prepareTopicFromInstanceState();
+            return;
+        } else {
+            // Load Initial Data
+            loadMore();
+            loadForumPart();
+        }
+    }
+
+
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        lastFirstVisibleItem = cardList.getFirstVisiblePosition();
+    }
+
+    public ScrollDirectionListener getOnScrollListener() {
+        return mOnScrollListener;
+    }
+
+    public CardListView getCardList() {
+        return cardList;
     }
 
     private void loadForumPart() {
@@ -210,6 +330,8 @@ public class ForumFragment extends Fragment implements OnRefreshListener {
 
     @Override
     public void onRefreshStarted(View view) {
+        prepareRecommendDone = false;
+        prepareTopicDone = false;
         currentPage = 1;
         lastIdCurrentPage = "0";
         cardRenderCount = 0;
@@ -218,6 +340,21 @@ public class ForumFragment extends Fragment implements OnRefreshListener {
         // Load Initial Data
         loadMore();
         loadForumPart();
+    }
+
+    private void loadMore() {
+        if (!pullToRefreshLayout.isRefreshing())
+            pullToRefreshLayout.setRefreshing(true);
+        client.getForum(forumPagerItem.url, ForumType.Room, TopicType.All_Except_Sell, currentPage, lastIdCurrentPage, false, forumCallback);
+    }
+
+    private int getFabMarginBottom() {
+        int marginBottom = 0;
+        final ViewGroup.LayoutParams layoutParams = fab.getLayoutParams();
+        if (layoutParams instanceof ViewGroup.MarginLayoutParams) {
+            marginBottom = ((ViewGroup.MarginLayoutParams) layoutParams).bottomMargin;
+        }
+        return marginBottom;
     }
 
     public class TopicSectionedAdapter extends SectionedCardAdapter {
@@ -282,10 +419,5 @@ public class ForumFragment extends Fragment implements OnRefreshListener {
         }
     }
 
-    private void loadMore() {
-        if (!pullToRefreshLayout.isRefreshing())
-            pullToRefreshLayout.setRefreshing(true);
-        client.getForum(forumPagerItem.url, ForumType.Room, TopicType.All_Except_Sell, currentPage, lastIdCurrentPage, false, forumCallback);
-    }
 
 }

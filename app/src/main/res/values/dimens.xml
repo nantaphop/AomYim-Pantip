@@ -6,8 +6,13 @@
     <!-- Per the design guidelines, navigation drawers should be between 240dp and 320dp:
          https://developer.android.com/design/patterns/navigation-drawer.html -->
     <dimen name="navigation_drawer_width">240dp</dimen>
+
+    <!--Padding-->
     <dimen name="padding_default">8dp</dimen>
     <dimen name="padding_extra">16dp</dimen>
+
+    <!--PagerSlidingTabStrip-->
+    <dimen name="tabs_indicator_height">4dp</dimen>
 
     <!-- GPlay sectioned list-->
     <dimen name="carddemo_section_textmore_text">13sp</dimen>
@@ -16,5 +21,6 @@
     <dimen name="carddemo_section_textmore_padding_top">5dp</dimen>
     <dimen name="carddemo_section_textmore_padding_bottom">5dp</dimen>
     <dimen name="carddemo_section_textmore_margin_left">10dp</dimen>
+    <dimen name="tabs_height">48dip</dimen>
 
 </resources>

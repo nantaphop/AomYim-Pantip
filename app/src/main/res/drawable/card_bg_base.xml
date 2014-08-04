@@ -4,8 +4,14 @@
     <!-- Drop Shadow Stack -->
     <item>
         <shape>
-            <padding android:top="1dp" android:right="1dp" android:bottom="1dp" android:left="1dp" />
-            <solid android:color="@color/card_shadow" />
+            <padding
+                    android:top="1dp"
+                    android:right="1dp"
+                    android:bottom="1dp"
+                    android:left="1dp"/>
+            <corners android:radius="1dp"></corners>
+
+            <solid android:color="@color/card_shadow"/>
         </shape>
     </item>
     <item

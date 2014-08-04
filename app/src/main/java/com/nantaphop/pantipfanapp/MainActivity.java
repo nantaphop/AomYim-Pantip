@@ -1,23 +1,28 @@
 package com.nantaphop.pantipfanapp;
 
-import android.app.Activity;
-import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.FrameLayout;
+import com.nantaphop.pantipfanapp.event.DialogDismissEvent;
+import com.nantaphop.pantipfanapp.event.DialogShowEvent;
+import com.nantaphop.pantipfanapp.event.ShowRecommendEvent;
 import com.nantaphop.pantipfanapp.fragment.ForumHolderFragment_;
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.OptionsItem;
-import org.androidannotations.annotations.ViewById;
+import com.nantaphop.pantipfanapp.fragment.dialog.RecommendDialog;
+import com.nantaphop.pantipfanapp.fragment.dialog.RecommendDialog_;
+import com.squareup.otto.Subscribe;
+import org.androidannotations.annotations.*;
 import org.androidannotations.annotations.res.StringRes;
 
 @EActivity(R.layout.activity_main)
 public class MainActivity extends FragmentActivity {
+
+    @App
+    BaseApplication app;
 
     @ViewById
     FrameLayout content_frame;
@@ -35,10 +40,12 @@ public class MainActivity extends FragmentActivity {
 
 
     @AfterViews
-    void init(){
+    void init() {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content_frame, new ForumHolderFragment_());
         fragmentTransaction.commit();
+
+        app.getEventBus().register(this);
 
         mTitle = drawer_close;
         mDrawerTitle = drawer_open;
@@ -72,8 +79,24 @@ public class MainActivity extends FragmentActivity {
     }
 
     @OptionsItem(android.R.id.home)
-    void home(MenuItem item){
+    void home(MenuItem item) {
         mDrawerToggle.onOptionsItemSelected(item);
     }
 
+    @Subscribe
+    public void showRecommend(final ShowRecommendEvent e) {
+        RecommendDialog recommendDialog = RecommendDialog_.builder().topics(e.getRecommendTopics()).urls(e.getRecommendUrls()).build();
+        recommendDialog.show(getFragmentManager(), "recommend");
+
+    }
+
+    @Subscribe
+    public void animateDialogShow(DialogShowEvent e){
+//        this.getWindow().getDecorView().animate().alpha(0.1f).setInterpolator(new AccelerateDecelerateInterpolator()).start();
+    }
+
+    @Subscribe
+    public void animateDialogDismiss(DialogDismissEvent e){
+//        this.getWindow().getDecorView().animate().alpha(1f).setInterpolator(new AccelerateDecelerateInterpolator()).start();
+    }
 }

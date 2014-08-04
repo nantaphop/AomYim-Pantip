@@ -5,4 +5,9 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="RecommendDialogAnimation">
+        <item name="android:windowEnterAnimation">@anim/enter_slide_from_right</item>
+        <item name="android:windowExitAnimation">@anim/exit_slide_to_right</item>
+    </style>
+
 </resources>

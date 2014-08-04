@@ -24,12 +24,13 @@
         <item name="android:popupMenuStyle">@style/PopupMenu.Pantip</item>
         <item name="android:dropDownListViewStyle">@style/DropDownListView.Pantip</item>
         <item name="android:actionBarTabStyle">@style/ActionBarTabStyle.Pantip</item>
+        <item name="android:windowContentOverlay">@null</item>
         <item name="android:actionDropDownStyle">@style/DropDownNav.Pantip</item>
         <item name="android:actionBarStyle">@style/ActionBar.Solid.Pantip</item>
         <item name="android:actionModeBackground">@drawable/cab_background_top_pantip</item>
         <item name="android:actionModeSplitBackground">@drawable/cab_background_bottom_pantip</item>
         <item name="android:actionModeCloseButtonStyle">@style/ActionButton.CloseMode.Pantip</item>
-        
+
                 <!-- Light.DarkActionBar specific -->
         <item name="android:actionBarWidgetTheme">@style/Theme.Pantip.Widget</item>
 

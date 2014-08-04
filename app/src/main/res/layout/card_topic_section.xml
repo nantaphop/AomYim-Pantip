@@ -20,7 +20,7 @@
 
     <TextView
             android:padding="@dimen/padding_default"
-            android:background="@android:color/holo_green_light"
+            android:background="@color/base_color"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:textSize="12sp"

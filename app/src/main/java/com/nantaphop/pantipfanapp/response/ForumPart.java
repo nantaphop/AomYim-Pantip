@@ -1,5 +1,6 @@
 package com.nantaphop.pantipfanapp.response;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -9,7 +10,7 @@ import java.util.ArrayList;
  * Time: 6:53 PM
  * To change this template use File | Settings | File Templates.
  */
-public class ForumPart {
+public class ForumPart implements Serializable{
 
     ArrayList<String> recommendTopic;
     ArrayList<String> recommendUrl;
