@@ -25,16 +25,9 @@ import java.util.List;
  * Created by nantaphop on 27-Jul-14.
  */
 @EFragment(R.layout.fragment_forumholder)
-public class ForumHolderFragment extends Fragment {
-
-    @App
-    BaseApplication app;
-
+public class ForumHolderFragment extends BaseFragment {
     @ViewById
     ViewPager viewPager;
-
-
-
     @ViewById
     PagerSlidingTabStrip tabs;
     private List<ForumPagerItem> forumPagerItems;

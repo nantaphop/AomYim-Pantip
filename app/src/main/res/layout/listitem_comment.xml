@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:padding="@dimen/padding_default"
+                android:layout_height="match_parent">
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="New Text"
+            android:gravity="right|center_vertical"
+            android:id="@+id/author"
+            android:layout_marginLeft="72dp"
+
+            android:layout_alignParentTop="true"
+            android:textStyle="bold"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="3 มกราคม เวลา 21:40 น."
+            android:textSize="@dimen/text_caption"
+            android:id="@+id/date"
+            android:layout_alignBaseline="@+id/author"
+            android:layout_toRightOf="@+id/author"
+            android:layout_marginLeft="16dp"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="เดี๋ยวเร็วๆ นี้ จะทำให้ดู Tag และ Club ของห้องต่างๆ ได้นะครับ คาดว่าจะเป็น วันพรุ่งนี้มืดๆ หรือไม่ก็วันเสาร์ ครับผม ขอบคุณที่ใช้งานนะครั"
+            android:id="@+id/body"
+            android:textSize="@dimen/text_body"
+            android:layout_below="@+id/author"
+            android:layout_alignLeft="@+id/author"
+            android:layout_alignStart="@+id/author"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"/>
+
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1"
+            android:drawablePadding="@dimen/padding_default"
+            android:drawableLeft="@drawable/ic_action_thumbs_up"
+            android:gravity="center_vertical"
+            android:id="@+id/votes"
+            style="?android:borderlessButtonStyle"
+            android:layout_below="@+id/body"
+            android:layout_toLeftOf="@+id/emo"/>
+
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2"
+            android:drawableLeft="@drawable/ic_action_mood"
+            android:id="@+id/emo"
+            android:gravity="center_vertical"
+            android:drawablePadding="@dimen/padding_default"
+            style="?android:borderlessButtonStyle"
+            android:layout_alignTop="@+id/votes"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"/>
+
+
+
+    <ImageView
+            android:layout_width="48dp"
+            android:src="@drawable/ic_launcher"
+            android:layout_height="48dp"
+            android:scaleType="fitCenter"
+            android:id="@+id/authorPic"
+            android:layout_marginLeft="8dp"
+            android:layout_alignTop="@+id/date"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="#100"
+            android:gravity="center_horizontal"
+            android:id="@+id/commentNo"
+            android:layout_below="@+id/authorPic"
+            android:layout_alignRight="@+id/authorPic"
+            android:layout_alignEnd="@+id/authorPic"
+            android:layout_alignLeft="@+id/authorPic"
+            android:layout_alignStart="@+id/authorPic"/>
+</RelativeLayout>

@@ -37,18 +37,30 @@ public class User implements Serializable{
 
     public class Avatar implements Serializable{
         public String getOriginal() {
+            if(original.startsWith("/images")){
+                return "http://pantip.com/"+original;
+            }
             return original;
         }
 
         public String getLarge() {
+            if(large.startsWith("/images")){
+                return "http://pantip.com/"+large;
+            }
             return large;
         }
 
         public String getMedium() {
+            if(medium.startsWith("/images")){
+                return "http://pantip.com/"+medium;
+            }
             return medium;
         }
 
         public String getSmall() {
+            if(small.startsWith("/images")){
+                return "http://pantip.com/"+small;
+            }
             return small;
         }
 

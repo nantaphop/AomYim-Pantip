@@ -4,14 +4,18 @@ import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.FrameLayout;
 import com.nantaphop.pantipfanapp.event.DialogDismissEvent;
 import com.nantaphop.pantipfanapp.event.DialogShowEvent;
+import com.nantaphop.pantipfanapp.event.OpenTopicEvent;
 import com.nantaphop.pantipfanapp.event.ShowRecommendEvent;
 import com.nantaphop.pantipfanapp.fragment.ForumHolderFragment_;
+import com.nantaphop.pantipfanapp.fragment.TopicFragment;
+import com.nantaphop.pantipfanapp.fragment.TopicFragment_;
 import com.nantaphop.pantipfanapp.fragment.dialog.RecommendDialog;
 import com.nantaphop.pantipfanapp.fragment.dialog.RecommendDialog_;
 import com.squareup.otto.Subscribe;
@@ -43,6 +47,7 @@ public class MainActivity extends FragmentActivity {
     void init() {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content_frame, new ForumHolderFragment_());
+        fragmentTransaction.setCustomAnimations(R.anim.enter_slide_from_bottom, 0, 0, R.anim.exit_slide_to_bottom );
         fragmentTransaction.commit();
 
         app.getEventBus().register(this);
@@ -98,5 +103,16 @@ public class MainActivity extends FragmentActivity {
     @Subscribe
     public void animateDialogDismiss(DialogDismissEvent e){
 //        this.getWindow().getDecorView().animate().alpha(1f).setInterpolator(new AccelerateDecelerateInterpolator()).start();
+    }
+
+    @Subscribe
+    public void openTopic(OpenTopicEvent e){
+        TopicFragment topicFragment = TopicFragment_.builder().topic(e.getTopic()).build();
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.setCustomAnimations(R.anim.fragment_enter_slide_from_bottom, 0, 0, R.anim.fragment_exit_slide_to_bottom );
+        fragmentTransaction.add(R.id.content_frame, topicFragment);
+        fragmentTransaction.addToBackStack(null);
+        Log.d("fragment", "open topic");
+        fragmentTransaction.commit();
     }
 }

@@ -210,7 +210,7 @@ public class ForumPagerItem extends Model implements Serializable{
         f = new ForumPagerItem();
         f.title = "ห้องสมุด";
         f.desc = "หนังสือ หนังสือนิยาย ภาษาไทย ภาษาจีน ภาษาอังกฤษ ปรัชญา ประวัติศาสตร์";
-        f.url = "library ";
+        f.url = "library";
         f.position = 27;
         f.save();
         f = new ForumPagerItem();

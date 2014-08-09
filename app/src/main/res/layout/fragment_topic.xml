@@ -9,7 +9,7 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/background">
+            android:background="@android:color/white">
         <!--<ListView-->
         <!--android:id="@+id/list"-->
         <!--android:layout_width="match_parent"-->
@@ -19,12 +19,11 @@
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent">
 
-            <it.gmariotti.cardslib.library.view.CardListView
+            <ListView
                     android:animateLayoutChanges="true"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    card:list_card_layout_resourceID="@layout/card_topic"
-                    android:id="@+id/cardList"/>
+                    android:id="@+id/list"/>
         </uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout>
 
 

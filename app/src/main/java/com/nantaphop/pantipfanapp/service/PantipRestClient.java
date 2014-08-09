@@ -7,6 +7,7 @@ import com.loopj.android.http.*;
 import com.nantaphop.pantipfanapp.response.ForumPart;
 import org.androidannotations.annotations.*;
 import org.apache.http.Header;
+import org.apache.http.client.methods.HttpGet;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -14,6 +15,7 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by nantaphop on 26-Jul-14.
@@ -115,13 +117,13 @@ public class PantipRestClient {
 
     private void get(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         client.get(getAbsoluteUrl(url), params, responseHandler);
-        Log.d(TAG, "get - "+getAbsoluteUrl(url));
+        Log.d(TAG, "get - " + getAbsoluteUrl(url));
 
     }
 
     private void post(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         client.post(getAbsoluteUrl(url), params, responseHandler);
-        Log.d(TAG, "post - "+getAbsoluteUrl(url));
+        Log.d(TAG, "post - " + getAbsoluteUrl(url));
 
     }
 
@@ -185,13 +187,53 @@ public class PantipRestClient {
         client.addHeader("X-Requested-With", "XMLHttpRequest");
         client.addHeader("Accept", "application/json, text/javascript, */*; q=0.01");
         post(url, params, cb);
-        Log.d(TAG, "get forum - "+params.toString());
+        Log.d(TAG, "get forum - " + params.toString());
 
     }
 
-    public void getForumPart(String url, AsyncHttpResponseHandler cb) {
-        get("forum/"+url,null, cb);
-        Log.d(TAG, "get forum part - "+url);
+    @Trace
+    @Background
+    public void getForumPart(String forumName, AsyncHttpResponseHandler cb) {
+        get("forum/" + forumName, null, cb);
+        Log.d(TAG, "get forum part - " + forumName);
 
     }
+
+    @Trace
+    @Background
+    public void getTopicPost(String topicId, AsyncHttpResponseHandler cb) {
+        get("topic/" + topicId, null, cb);
+        Log.d(TAG, "get topic post " + topicId);
+
+    }
+
+    @Trace
+    @Background
+    public void getComments(String topicId, int page, boolean justOwner, AsyncHttpResponseHandler cb) {
+        String url;
+//        RequestParams params = new RequestParams();
+
+        if (justOwner) {
+//            params.add("param", "story");
+
+            url = "forum/topic_mode/render_comments?tid="+topicId+"&type=1&page="+page+"&param=story"+page+"&_="+new Date().getTime();
+        } else {
+//            params.add("param", "page");
+            url = "forum/topic/render_comments?tid="+topicId+"&type=1&page="+page+"&param=page"+page+"&_="+new Date().getTime();
+//                url = "forum/topic/render_comments?tid="+topicId+"&param=&type=1&time=0.23428448126651347&_="+new Date().getTime();
+        }
+
+//        params.add("tid", topicId);
+//        params.add("type", "1");
+//        params.add("page", page+"");
+//        params.add("_", new Date().getTime()+"");
+
+//        get(url, params, cb);
+        get(url, null, cb);
+//        Log.d(TAG, "get comments - " + params.toString());
+        Log.d(TAG, "get comments - " + url);
+
+    }
+
+
 }

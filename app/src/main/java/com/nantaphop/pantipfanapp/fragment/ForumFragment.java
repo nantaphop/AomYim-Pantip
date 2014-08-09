@@ -2,24 +2,24 @@ package com.nantaphop.pantipfanapp.fragment;
 
 import android.animation.Animator;
 import android.content.Context;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.widget.*;
+import android.widget.ListView;
+import android.widget.TextView;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.BaseJsonHttpResponseHandler;
 import com.melnykov.fab.FloatingActionButton;
-import com.nantaphop.pantipfanapp.BaseApplication;
 import com.nantaphop.pantipfanapp.R;
 import com.nantaphop.pantipfanapp.event.ForumScrollDownEvent;
 import com.nantaphop.pantipfanapp.event.ForumScrollUpEvent;
+import com.nantaphop.pantipfanapp.event.OpenTopicEvent;
 import com.nantaphop.pantipfanapp.event.ShowRecommendEvent;
 import com.nantaphop.pantipfanapp.model.ForumPagerItem;
 import com.nantaphop.pantipfanapp.response.Forum;
 import com.nantaphop.pantipfanapp.response.ForumPart;
-import com.nantaphop.pantipfanapp.service.PantipRestClient;
+import com.nantaphop.pantipfanapp.response.Topic;
 import com.nantaphop.pantipfanapp.utils.RESTUtils;
 import com.nantaphop.pantipfanapp.utils.ScrollDirectionListener;
 import com.nantaphop.pantipfanapp.view.TopicSectionCard;
@@ -43,13 +43,7 @@ import static com.nantaphop.pantipfanapp.service.PantipRestClient.TopicType;
  * Created by nantaphop on 27-Jul-14.
  */
 @EFragment(R.layout.fragment_forum)
-public class ForumFragment extends Fragment implements OnRefreshListener {
-
-    @App
-    BaseApplication app;
-
-    @Bean
-    PantipRestClient client;
+public class ForumFragment extends BaseFragment implements OnRefreshListener {
 
     @ViewById
     ListView list;
@@ -105,7 +99,7 @@ public class ForumFragment extends Fragment implements OnRefreshListener {
         @Override
         public void onFailure(int i, Header[] headers, Throwable throwable, String s, Object o) {
             Log.d("forum", "failed load forum");
-
+            loadMore();
         }
 
         @Override
@@ -124,6 +118,7 @@ public class ForumFragment extends Fragment implements OnRefreshListener {
         @Override
         public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
             Log.d("forum", "failed load forum part");
+            loadForumPart();
         }
     };
     private ArrayList<Card> tmpRecommendCard;
@@ -160,6 +155,16 @@ public class ForumFragment extends Fragment implements OnRefreshListener {
                 card.setClickable(true);
                 card.setShadow(false);
                 card.setBackgroundResourceId(R.drawable.card_background);
+                final Topic topic = new Topic();
+                topic.setTitle(forumPart.getRecommendTopic().get(i));
+                topic.setId(Integer.parseInt(forumPart.getRecommendUrl().get(i).split("/")[4]));
+                card.setOnClickListener(new Card.OnCardClickListener() {
+                    @Override
+                    public void onClick(Card card, View view) {
+
+                        app.getEventBus().post(new OpenTopicEvent(topic));
+                    }
+                });
                 tmpRecommendCard.add(card);
             }
         }
@@ -224,21 +229,10 @@ public class ForumFragment extends Fragment implements OnRefreshListener {
         cardArrayAdapter.notifyDataSetChanged();
         sectionedCardAdapter.notifyDataSetChanged();
         setRefreshComplete();
-        cardList.setSelection(lastFirstVisibleItem);
+        if (lastFirstVisibleItem != 0) {
+            cardList.setSelection(lastFirstVisibleItem);
+        }
 
-        cardList.setOnScrollListener(new ScrollDirectionListener(lastFirstVisibleItem, new ScrollDirectionListener.OnScrollUp() {
-            @Override
-            public void onScrollUp() {
-                app.getEventBus().post(new ForumScrollUpEvent());
-                showFab();
-            }
-        }, new ScrollDirectionListener.OnScrollDown() {
-            @Override
-            public void onScrollDown() {
-                app.getEventBus().post(new ForumScrollDownEvent());
-                hideFab();
-            }
-        }));
 
     }
 
@@ -267,9 +261,6 @@ public class ForumFragment extends Fragment implements OnRefreshListener {
     void
     init() {
         fabDefaultY = fab.getY();
-        prepareRecommendDone = false;
-        prepareTopicDone = false;
-
         Log.d("forum", "init forum fragment " + forumPagerItem.title);
         // Prepare Adapter
         cardArrayAdapter = new TopicCardAdapter(getActivity(), new ArrayList<Card>());
@@ -277,6 +268,7 @@ public class ForumFragment extends Fragment implements OnRefreshListener {
         sections = new ArrayList<TopicSectionCard>();
         sectionedCardAdapter = new TopicSectionedAdapter(getActivity(), cardArrayAdapter);
         cardList.setExternalAdapter(sectionedCardAdapter, cardArrayAdapter);
+
 
         // Now setup the PullToRefreshLayout
         ActionBarPullToRefresh.from(this.getActivity())
@@ -304,6 +296,20 @@ public class ForumFragment extends Fragment implements OnRefreshListener {
             loadMore();
             loadForumPart();
         }
+
+        cardList.setOnScrollListener(new ScrollDirectionListener(lastFirstVisibleItem, new ScrollDirectionListener.OnScrollUp() {
+            @Override
+            public void onScrollUp() {
+                app.getEventBus().post(new ForumScrollUpEvent());
+                showFab();
+            }
+        }, new ScrollDirectionListener.OnScrollDown() {
+            @Override
+            public void onScrollDown() {
+                app.getEventBus().post(new ForumScrollDownEvent());
+                hideFab();
+            }
+        }));
     }
 
 
@@ -325,6 +331,7 @@ public class ForumFragment extends Fragment implements OnRefreshListener {
     private void loadForumPart() {
         if (!pullToRefreshLayout.isRefreshing())
             pullToRefreshLayout.setRefreshing(true);
+        prepareRecommendDone = false;
         client.getForumPart(forumPagerItem.url, forumPartCallback);
     }
 
@@ -345,6 +352,7 @@ public class ForumFragment extends Fragment implements OnRefreshListener {
     private void loadMore() {
         if (!pullToRefreshLayout.isRefreshing())
             pullToRefreshLayout.setRefreshing(true);
+        prepareTopicDone = false;
         client.getForum(forumPagerItem.url, ForumType.Room, TopicType.All_Except_Sell, currentPage, lastIdCurrentPage, false, forumCallback);
     }
 

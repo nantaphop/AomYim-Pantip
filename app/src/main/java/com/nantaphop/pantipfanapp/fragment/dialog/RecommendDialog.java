@@ -4,12 +4,15 @@ import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.graphics.drawable.ColorDrawable;
 import android.view.Gravity;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import com.nantaphop.pantipfanapp.BaseApplication;
 import com.nantaphop.pantipfanapp.R;
 import com.nantaphop.pantipfanapp.event.DialogDismissEvent;
 import com.nantaphop.pantipfanapp.event.DialogShowEvent;
+import com.nantaphop.pantipfanapp.event.OpenTopicEvent;
+import com.nantaphop.pantipfanapp.response.Topic;
 import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.internal.CardArrayAdapter;
 import it.gmariotti.cardslib.library.view.CardListView;
@@ -49,6 +52,18 @@ public class RecommendDialog extends DialogFragment {
             card.setClickable(true);
             card.setShadow(false);
             card.setBackgroundResourceId(R.drawable.card_background);
+            final Topic topic = new Topic();
+            topic.setTitle(topics.get(i));
+            topic.setId(Integer.parseInt(urls.get(i).split("/")[4]));
+            card.setOnClickListener(new Card.OnCardClickListener() {
+                @Override
+                public void onClick(Card card, View view) {
+
+                    app.getEventBus().post(new OpenTopicEvent(topic));
+                    RecommendDialog.this.dismiss();
+
+                }
+            });
             cards.add(card);
         }
         cardList.setAdapter(new CardArrayAdapter(getActivity(), cards));

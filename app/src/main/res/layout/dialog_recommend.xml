@@ -10,7 +10,7 @@
     <it.gmariotti.cardslib.library.view.CardListView
             android:layout_width="match_parent"
             android:layout_height="350dp"
-            card:list_card_layout_resourceID="@layout/list_card_topic_layout"
+            card:list_card_layout_resourceID="@layout/card_topic"
             android:id="@+id/cardList"/>
 
 </LinearLayout>

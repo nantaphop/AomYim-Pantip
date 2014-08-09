@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.nantaphop.pantipfanapp.BaseApplication;
 import com.nantaphop.pantipfanapp.R;
+import com.nantaphop.pantipfanapp.event.OpenTopicEvent;
 import com.nantaphop.pantipfanapp.response.Tag;
 import com.nantaphop.pantipfanapp.response.Topic;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -42,7 +43,7 @@ public class TopicCard extends Card {
     private final Topic topic;
     private final Context context;
 
-    public TopicCard(Context context, Topic topic) {
+    public TopicCard(Context context, final Topic topic) {
         super(context, R.layout.card_topic_content);
         app = (BaseApplication) context.getApplicationContext();
         this.topic = topic;
@@ -63,6 +64,12 @@ public class TopicCard extends Card {
         }
 
         setClickable(true);
+        mOnClickListener = new OnCardClickListener() {
+            @Override
+            public void onClick(Card card, View view) {
+                app.getEventBus().post(new OpenTopicEvent(TopicCard.this.topic));
+            }
+        };
     }
 
     @Override
@@ -83,7 +90,10 @@ public class TopicCard extends Card {
         for (Tag tag: topic.getTags()){
             sb.append(tag.getTag()+", ");
         }
-        tags.setText(sb.substring(0, sb.length()-2));
+        try {
+            tags.setText(sb.substring(0, sb.length()-2));
+        } catch (Exception e) {
+        }
     }
 
     class UniversalCardThumbnail extends CardThumbnail {
