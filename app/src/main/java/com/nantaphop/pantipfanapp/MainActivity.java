@@ -7,20 +7,26 @@ import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.AdapterView;
 import android.widget.FrameLayout;
-import com.nantaphop.pantipfanapp.event.DialogDismissEvent;
-import com.nantaphop.pantipfanapp.event.DialogShowEvent;
-import com.nantaphop.pantipfanapp.event.OpenTopicEvent;
-import com.nantaphop.pantipfanapp.event.ShowRecommendEvent;
+import com.nantaphop.pantipfanapp.event.*;
 import com.nantaphop.pantipfanapp.fragment.ForumHolderFragment_;
 import com.nantaphop.pantipfanapp.fragment.TopicFragment;
 import com.nantaphop.pantipfanapp.fragment.TopicFragment_;
+import com.nantaphop.pantipfanapp.fragment.dialog.ListDialog;
+import com.nantaphop.pantipfanapp.fragment.dialog.ListDialog_;
 import com.nantaphop.pantipfanapp.fragment.dialog.RecommendDialog;
 import com.nantaphop.pantipfanapp.fragment.dialog.RecommendDialog_;
+import com.nantaphop.pantipfanapp.response.Topic;
+import com.nantaphop.pantipfanapp.utils.TopicCardComparator;
+import com.nantaphop.pantipfanapp.utils.TopicComparator;
 import com.squareup.otto.Subscribe;
 import org.androidannotations.annotations.*;
+import org.androidannotations.annotations.res.StringArrayRes;
 import org.androidannotations.annotations.res.StringRes;
+
+import java.util.ArrayList;
+import java.util.Collections;
 
 @EActivity(R.layout.activity_main)
 public class MainActivity extends FragmentActivity {
@@ -41,6 +47,11 @@ public class MainActivity extends FragmentActivity {
     String drawer_open;
     @StringRes
     String drawer_close;
+    @StringRes
+    String topic_sort_type_title;
+    @StringArrayRes
+    String[] topic_sort_type;
+
 
 
     @AfterViews
@@ -114,5 +125,45 @@ public class MainActivity extends FragmentActivity {
         fragmentTransaction.addToBackStack(null);
         Log.d("fragment", "open topic");
         fragmentTransaction.commit();
+    }
+
+    @Subscribe
+    public void sortForum(final SortForumEvent e){
+
+        final ArrayList<Topic> topics = e.getForum().getTopics();
+        final ListDialog listDialog = ListDialog_.builder().choices(topic_sort_type).title(topic_sort_type_title).listItemLayoutRes(android.R.layout.simple_list_item_1).build();
+        listDialog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                TopicCardComparator topicCardComparator;
+                TopicComparator topicComparator;
+                switch(i){
+                    case 0:
+                        topicCardComparator = new TopicCardComparator(TopicCardComparator.SortType.Comment);
+                        topicComparator = new TopicComparator(TopicComparator.SortType.Comment);
+                        break;
+                    case 1:
+                        topicCardComparator = new TopicCardComparator(TopicCardComparator.SortType.Vote);
+                        topicComparator = new TopicComparator(TopicComparator.SortType.Vote);
+                        break;
+                    case 2:
+                        topicCardComparator = new TopicCardComparator(TopicCardComparator.SortType.Time);
+                        topicComparator = new TopicComparator(TopicComparator.SortType.Time);
+                        break;
+                    default:
+                        topicCardComparator = new TopicCardComparator(TopicCardComparator.SortType.Time);
+                        topicComparator = new TopicComparator(TopicComparator.SortType.Time);
+                        break;
+                }
+                Collections.sort(e.getCardList(), topicCardComparator);
+                Collections.sort(e.getForum().getTopics(), topicComparator);
+                e.getAdapter().notifyDataSetChanged();
+                listDialog.dismiss();
+            }
+        });
+        listDialog.show(getFragmentManager(), "sort_topic");
+
+
+
     }
 }

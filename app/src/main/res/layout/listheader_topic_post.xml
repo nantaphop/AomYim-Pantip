@@ -50,7 +50,7 @@
             android:layout_height="wrap_content"
             android:text="1"
             android:drawablePadding="@dimen/padding_default"
-            android:drawableLeft="@drawable/ic_action_thumbs_up"
+            android:drawableLeft="@drawable/ic_action_thumbs_up_small"
             android:gravity="center_vertical"
             android:id="@+id/votes"
             style="?android:borderlessButtonStyle"
@@ -61,7 +61,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="2"
-            android:drawableLeft="@drawable/ic_action_mood"
+            android:drawableLeft="@drawable/ic_action_mood_small"
             android:id="@+id/emo"
             android:gravity="center_vertical"
             android:drawablePadding="@dimen/padding_default"
@@ -70,22 +70,22 @@
             android:layout_alignTop="@+id/votes"/>
 
     <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:text="New Text"
+            android:paddingTop="@dimen/padding_default"
             android:gravity="right|center_vertical"
             android:id="@+id/author"
-            android:paddingTop="@dimen/padding_default"
-            android:paddingBottom="@dimen/padding_default"
-            android:layout_alignTop="@+id/emo"
+            android:layout_marginRight="@dimen/padding_default"
             android:layout_toLeftOf="@+id/authorPic"
             android:layout_toRightOf="@+id/emo"
-            android:layout_alignBottom="@+id/emo"/>
+            android:layout_alignBottom="@id/emo"
+            android:layout_alignTop="@+id/emo"/>
 
     <ImageView
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/author_pic_comment"
             android:src="@drawable/ic_launcher"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/author_pic_comment"
             android:id="@+id/authorPic"
             android:layout_alignRight="@+id/separator"
             android:layout_alignEnd="@+id/separator"

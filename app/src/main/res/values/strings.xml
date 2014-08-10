@@ -10,5 +10,10 @@
     <string name="recomend_topic">กระทู้แนะนำ</string>
     <string name="view_all">ดูทั้งหมด</string>
 
-
+    <string name="topic_sort_type_title">เรียงกระทู้ตาม</string>
+    <array name="topic_sort_type">
+        <item>จำนวนความเห็น</item>
+        <item>จำนวนโหวจ</item>
+        <item>เวลา</item>
+    </array>
 </resources>

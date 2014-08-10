@@ -10,6 +10,7 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.BaseJsonHttpResponseHandler;
 import com.melnykov.fab.FloatingActionButton;
 import com.nantaphop.pantipfanapp.R;
+import com.nantaphop.pantipfanapp.response.Comment;
 import com.nantaphop.pantipfanapp.response.Comments;
 import com.nantaphop.pantipfanapp.response.Topic;
 import com.nantaphop.pantipfanapp.response.TopicPost;
@@ -23,6 +24,9 @@ import org.apache.http.Header;
 import uk.co.senab.actionbarpulltorefresh.library.ActionBarPullToRefresh;
 import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout;
 import uk.co.senab.actionbarpulltorefresh.library.listeners.OnRefreshListener;
+
+import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Created by nantaphop on 08-Aug-14.
@@ -42,7 +46,7 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
     private byte[] tmpTopicPageHtml;
     private TopicPost topicPost;
     private float fabDefaultY;
-    int currentCommentPage;
+    int currentCommentPage = 1;
     Comments comments;
     private CommentAdapter commentAdapter;
 
@@ -62,6 +66,7 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
         }
     };
 
+    private ArrayList<Comment> tmpCommentsList;
     private BaseJsonHttpResponseHandler commentsCallback = new BaseJsonHttpResponseHandler() {
         @Override
         public void onSuccess(int i, Header[] headers, String s, Object o) {
@@ -69,8 +74,10 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
             Comments newComments = (Comments) o;
             if (comments == null) {
                 comments = newComments;
+                tmpCommentsList = (ArrayList<Comment>) newComments.getComments().clone();
+                comments.getComments().clear();
             } else {
-                comments.addComments(newComments.getComments());
+                tmpCommentsList.addAll(newComments.getComments());
             }
             currentCommentPage++;
 
@@ -121,7 +128,25 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
     @Background
     public void prepareComments() {
         prepareCommentsDone = false;
+        // Flatten Comment and Replies
+        ArrayList<Comment> flattenComments = new ArrayList<Comment>();
+        for(Comment c : tmpCommentsList){
+            RESTUtils.processComment(c);
+            ArrayList<Comment> replies = c.getReplies();
+            flattenComments.add(c);
+            Iterator<Comment> it = replies.iterator();
+            while (it.hasNext()) {
+                Comment r = it.next();
+                r.setReply(true);
+                RESTUtils.processComment(r);
+                flattenComments.add(r);
+                it.remove();
 
+            }
+
+        }
+        comments.addComments(flattenComments);
+        tmpCommentsList.clear();
         prepareCommentsDone = true;
         joinTopic();
     }
@@ -189,10 +214,12 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             CommentView commentView;
-//            if (position == getCount() - 5) {
-//                Log.d("", "Do Loadmore");
-//                loadNextComments();
-//            }
+            if (position == getCount() - 5) {
+                if (comments.getCount() > comments.getComments().size()) {
+                    Log.d("", "Do Loadmore");
+                    loadNextComments();
+                }
+            }
 
             if(convertView != null){
                 commentView = (CommentView) convertView;

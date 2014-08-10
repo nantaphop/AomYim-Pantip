@@ -96,6 +96,10 @@ public class TopicCard extends Card {
         }
     }
 
+    public Topic getTopic() {
+        return topic;
+    }
+
     class UniversalCardThumbnail extends CardThumbnail {
 
         public UniversalCardThumbnail(Context context) {

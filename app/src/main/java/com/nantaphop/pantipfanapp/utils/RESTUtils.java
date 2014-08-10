@@ -1,10 +1,7 @@
 package com.nantaphop.pantipfanapp.utils;
 
 import com.nantaphop.pantipfanapp.BaseApplication;
-import com.nantaphop.pantipfanapp.response.Comments;
-import com.nantaphop.pantipfanapp.response.Forum;
-import com.nantaphop.pantipfanapp.response.ForumPart;
-import com.nantaphop.pantipfanapp.response.TopicPost;
+import com.nantaphop.pantipfanapp.response.*;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
@@ -143,6 +140,25 @@ public class RESTUtils {
 
     public static Comments parseComments(String resp){
         return BaseApplication.getGson().fromJson(resp, Comments.class);
+    }
+
+    public static void processComment(Comment c) {
+        Document doc = Jsoup.parse(c.getMessage());
+
+        Elements imgs = doc.select("img.img-in-post");
+        for(Element img: imgs){
+            img.before("<br/>");
+            img.after("<br/><a href=\""+ img.attr("src") +"\">ดูภาพใหญ่</a>");
+        }
+
+        // Add Youtube Link
+        imgs = doc.select("a.play_btn");
+        for(Element a: imgs){
+            a.before("<br/>");
+            a.after("<br/><a href=\""+ a.attr("href") +"\">ดู Video</a>");
+        }
+
+        c.setMessage(doc.html());
     }
 
 }

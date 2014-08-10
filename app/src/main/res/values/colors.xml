@@ -2,7 +2,7 @@
 <resources>
     <color name="base_color">#5e5a9a</color>
     <color name="base_color_highlight">#E5C700</color>
-    <color name="base_color_bright">#8c88c3</color>
+    <color name="base_color_bright">#ffa09cde</color>
     <color name="background">#ffebebeb</color>
     <color name="card_shadow">#ffe1e1e1</color>
 

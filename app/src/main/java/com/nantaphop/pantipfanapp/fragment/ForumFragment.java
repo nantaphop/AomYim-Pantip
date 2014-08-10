@@ -12,10 +12,7 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.BaseJsonHttpResponseHandler;
 import com.melnykov.fab.FloatingActionButton;
 import com.nantaphop.pantipfanapp.R;
-import com.nantaphop.pantipfanapp.event.ForumScrollDownEvent;
-import com.nantaphop.pantipfanapp.event.ForumScrollUpEvent;
-import com.nantaphop.pantipfanapp.event.OpenTopicEvent;
-import com.nantaphop.pantipfanapp.event.ShowRecommendEvent;
+import com.nantaphop.pantipfanapp.event.*;
 import com.nantaphop.pantipfanapp.model.ForumPagerItem;
 import com.nantaphop.pantipfanapp.response.Forum;
 import com.nantaphop.pantipfanapp.response.ForumPart;
@@ -42,6 +39,7 @@ import static com.nantaphop.pantipfanapp.service.PantipRestClient.TopicType;
 /**
  * Created by nantaphop on 27-Jul-14.
  */
+@OptionsMenu(R.menu.menu_forum)
 @EFragment(R.layout.fragment_forum)
 public class ForumFragment extends BaseFragment implements OnRefreshListener {
 
@@ -132,6 +130,7 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
     private ArrayList<TopicSectionCard> sections;
     private float fabDefaultY;
     private boolean fabIsHiding;
+    private ArrayList<Card> cards;
 
     @Trace
     @Background
@@ -250,6 +249,12 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
         }
     }
 
+    @OptionsItem
+    void action_sort_topic(){
+        Log.d("menu", "sort - " + forumPagerItem.title);
+        app.getEventBus().post(new SortForumEvent(forum, cardArrayAdapter, cards));
+    }
+
 
     @UiThread
     void setRefreshComplete() {
@@ -263,12 +268,12 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
         fabDefaultY = fab.getY();
         Log.d("forum", "init forum fragment " + forumPagerItem.title);
         // Prepare Adapter
-        cardArrayAdapter = new TopicCardAdapter(getActivity(), new ArrayList<Card>());
+        cards = new ArrayList<Card>();
+        cardArrayAdapter = new TopicCardAdapter(getActivity(), cards);
         cardArrayAdapter.setInnerViewTypeCount(2);
         sections = new ArrayList<TopicSectionCard>();
         sectionedCardAdapter = new TopicSectionedAdapter(getActivity(), cardArrayAdapter);
         cardList.setExternalAdapter(sectionedCardAdapter, cardArrayAdapter);
-
 
         // Now setup the PullToRefreshLayout
         ActionBarPullToRefresh.from(this.getActivity())
@@ -419,6 +424,7 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
+
             if (position == getCount() - 5) {
                 Log.d("", "Do Loadmore");
                 loadMore();

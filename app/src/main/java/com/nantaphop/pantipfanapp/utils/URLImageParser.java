@@ -2,6 +2,7 @@ package com.nantaphop.pantipfanapp.utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -10,12 +11,15 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.text.Html;
+import android.text.Layout;
+import android.text.method.LinkMovementMethod;
+import android.text.style.URLSpan;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
-import com.nantaphop.pantipfanapp.BaseApplication;
-import com.nantaphop.pantipfanapp.R;
+import com.nantaphop.pantipfanapp.*;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -295,4 +299,6 @@ public class URLImageParser implements Html.ImageGetter {
             Log.d(TAG, "click "+src);
         }
     }
+
+
 }

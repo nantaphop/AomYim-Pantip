@@ -3,6 +3,7 @@ package com.nantaphop.pantipfanapp.view;
 import android.content.Context;
 import android.text.Html;
 import android.text.format.DateUtils;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -17,7 +18,6 @@ import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 import org.androidannotations.annotations.App;
 import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;
-import org.jsoup.Connection;
 
 import java.util.Date;
 
@@ -31,9 +31,13 @@ public class CommentView extends RelativeLayout{
     @ViewById
     TextView author;
     @ViewById
+    View replyIndicator;
+    @ViewById
     TextView date;
     @ViewById
     TextView body;
+    @ViewById
+    Button repiles;
     @ViewById
     Button votes;
     @ViewById
@@ -42,11 +46,14 @@ public class CommentView extends RelativeLayout{
     ImageView authorPic;
     @ViewById
     TextView commentNo;
+
     private Context context;
+
+
 
     private static DisplayImageOptions displayImageOptions =  new DisplayImageOptions.Builder()
             .resetViewBeforeLoading(true)
-            .displayer(new RoundedBitmapDisplayer((int) 60f))
+            .displayer(new RoundedBitmapDisplayer((int) 90f))
             .cacheInMemory(true)
             .cacheOnDisk(true)
             .imageScaleType(ImageScaleType.EXACTLY_STRETCHED)
@@ -64,7 +71,16 @@ public class CommentView extends RelativeLayout{
         body.setText(Html.fromHtml(comment.getMessage(), new URLImageParser(body, context), null));
         votes.setText(comment.getPoint()+"");
         emo.setText(comment.getEmo_score()+"");
-        commentNo.setText("#"+comment.getComment_no());
+        repiles.setText(comment.getReply_count()+"");
+        if(comment.isReply()){
+            replyIndicator.setVisibility(VISIBLE);
+            commentNo.setText("#"+comment.getComment_no()+"-"+comment.getReply_no());
+
+        }else{
+            replyIndicator.setVisibility(GONE);
+            commentNo.setText("#"+comment.getComment_no());
+
+        }
         app.getImageLoader().displayImage(comment.getUser().getAvatar().getLarge(), authorPic, displayImageOptions);
 
     }
