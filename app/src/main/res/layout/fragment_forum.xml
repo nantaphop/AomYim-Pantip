@@ -20,7 +20,6 @@
                 android:layout_height="fill_parent">
 
             <it.gmariotti.cardslib.library.view.CardListView
-                    android:animateLayoutChanges="true"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     card:list_card_layout_resourceID="@layout/card_topic"

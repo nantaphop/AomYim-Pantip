@@ -25,7 +25,6 @@ public class ScrollDirectionListener implements AbsListView.OnScrollListener {
     }
 
     public ScrollDirectionListener(int startItem, OnScrollUp onScrollUp, OnScrollDown onScrollDown) {
-        Log.d("scroll", "init ScrollDirectionListener at "+ startItem);
         this.startItem = startItem;
         this.onScrollUp = onScrollUp;
         this.onScrollDown = onScrollDown;
@@ -64,13 +63,11 @@ public class ScrollDirectionListener implements AbsListView.OnScrollListener {
         if (Math.abs(currentFVI - firstVisibleItem) >= 1) {
             if (currentFVI > firstVisibleItem) {
                 if (isStop || isDown) {
-                    Log.d("scroll", "scrollUp : " +currentFVI+" -> "+firstVisibleItem );
                     onScrollUp.onScrollUp();
                     isDown = false;
                 }
             } else {
                 if (isStop || !isDown) {
-                    Log.d("scroll", "scrollDown : " +currentFVI+" -> "+firstVisibleItem );
                     onScrollDown.onScrollDown();
                     isDown = true;
                 }

@@ -3,10 +3,12 @@ package com.nantaphop.pantipfanapp.fragment;
 import android.animation.Animator;
 import android.app.Activity;
 import android.content.Context;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.TextView;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -72,7 +74,7 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
     private SectionedCardAdapter sectionedCardAdapter;
 
     @InstanceState
-    int lastFirstVisibleItem = 0;
+    int lastFirstVisibleItem;
 
     @ViewById
     PullToRefreshLayout pullToRefreshLayout;
@@ -210,8 +212,6 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
             cardRenderCount = forum.getTopics().size();
 
 
-
-
             // Split Section
             sections.clear();
             sections.add(new TopicSectionCard(0, app.getString(R.string.recomend_topic), app.getString(R.string.view_all), new View.OnClickListener() {
@@ -237,7 +237,7 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
     }
 
     private void hideFab() {
-        if(!fabIsHiding){
+        if (!fabIsHiding) {
             fab.animate().translationY(fab.getHeight() * 3).setInterpolator(new AccelerateDecelerateInterpolator()).start();
             fabIsHiding = true;
         }
@@ -251,7 +251,7 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
     }
 
     @OptionsItem
-    void action_sort_topic(){
+    void action_sort_topic() {
         Log.d("menu", "sort - " + forumPagerItem.title);
         app.getEventBus().post(new SortForumEvent(forum, cardArrayAdapter, cards));
     }
@@ -290,17 +290,8 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
         blankHeader.setMinimumHeight(getResources().getDimensionPixelOffset(R.dimen.tabs_height));
         cardList.addHeaderView(blankHeader);
 
-        // If from saved
-        if (forum != null && forumPart != null) {
-            reInitFragment = true;
-            prepareRecommendCard();
-            prepareTopicFromInstanceState();
-            return;
-        } else {
-            // Load Initial Data
-            loadMore();
-            loadForumPart();
-        }
+        // Attach scroll listener
+        Log.d("forum", "init : lastFirstVisibleItem -> " + lastFirstVisibleItem);
 
         cardList.setOnScrollListener(new ScrollDirectionListener(lastFirstVisibleItem, new ScrollDirectionListener.OnScrollUp() {
             @Override
@@ -315,15 +306,28 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
                 hideFab();
             }
         }));
+
+        // If from saved
+        if (forum != null && forumPart != null) {
+            prepareRecommendCard();
+            prepareTopicFromInstanceState();
+            return;
+        } else {
+            // Load Initial Data
+            loadMore();
+            loadForumPart();
+        }
     }
-
-
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onSaveInstanceState(Bundle outState) {
         lastFirstVisibleItem = cardList.getFirstVisiblePosition();
+
+        super.onSaveInstanceState(outState);
+
+
     }
+
 
     public ScrollDirectionListener getOnScrollListener() {
         return mOnScrollListener;

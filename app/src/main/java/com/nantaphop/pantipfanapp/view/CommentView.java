@@ -60,7 +60,7 @@ public class CommentView extends RelativeLayout{
             .cacheInMemory(true)
             .cacheOnDisk(true)
             .imageScaleType(ImageScaleType.EXACTLY_STRETCHED)
-            .showImageOnLoading(R.drawable.ic_launcher)
+            .showImageOnLoading(R.drawable.ic_image)
             .build();
     private OnClickListener onLoadMoreClick;
     private Comment comment;

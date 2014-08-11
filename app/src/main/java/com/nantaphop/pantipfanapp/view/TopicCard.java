@@ -37,7 +37,7 @@ public class TopicCard extends Card {
             .cacheInMemory(true)
             .cacheOnDisk(true)
             .imageScaleType(ImageScaleType.EXACTLY_STRETCHED)
-            .showImageOnLoading(android.R.drawable.gallery_thumb)
+            .showImageOnLoading(R.drawable.ic_image)
             .build();
 
     private final Topic topic;

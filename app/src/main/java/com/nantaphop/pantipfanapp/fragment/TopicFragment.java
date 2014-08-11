@@ -1,20 +1,26 @@
 package com.nantaphop.pantipfanapp.fragment;
 
+import android.app.Activity;
 import android.content.Context;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.BaseJsonHttpResponseHandler;
 import com.melnykov.fab.FloatingActionButton;
 import com.nantaphop.pantipfanapp.R;
+import com.nantaphop.pantipfanapp.event.ForumScrollDownEvent;
+import com.nantaphop.pantipfanapp.event.ForumScrollUpEvent;
 import com.nantaphop.pantipfanapp.event.SortCommentEvent;
 import com.nantaphop.pantipfanapp.response.*;
 import com.nantaphop.pantipfanapp.utils.RESTUtils;
+import com.nantaphop.pantipfanapp.utils.ScrollDirectionListener;
 import com.nantaphop.pantipfanapp.view.CommentView;
 import com.nantaphop.pantipfanapp.view.CommentView_;
 import com.nantaphop.pantipfanapp.view.TopicPostView;
@@ -44,13 +50,17 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
     @ViewById
     FloatingActionButton fab;
 
+    @InstanceState
+    int lastFirstVisibleItem;
+    @InstanceState
+    TopicPost topicPost;
+    @InstanceState
+    Comments comments;
+
     private byte[] tmpTopicPageHtml;
-    private TopicPost topicPost;
     private float fabDefaultY;
     int currentCommentPage = 1;
-    Comments comments;
     private CommentAdapter commentAdapter;
-
     boolean prepareCommentsDone = false, prepareTopicPostDone = false;
     private ArrayList<Comment> tmpCommentsList;
 
@@ -75,10 +85,11 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
             Comments newComments = (Comments) o;
             if (comments == null) {
                 comments = newComments;
-                if(newComments.getComments() != null) {
+                if (newComments.getComments() != null) {
                     tmpCommentsList = (ArrayList<Comment>) newComments.getComments().clone();
                 }
-                comments.getComments().clear();
+                if (comments.getComments() != null)
+                    comments.getComments().clear();
             } else {
                 tmpCommentsList.addAll(newComments.getComments());
             }
@@ -120,7 +131,13 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
     private CommentView waitUpdateCommentView;
     private int newRepliesPosition;
     private Reply tmpReplies;
+    private boolean fabIsHiding;
 
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        Log.d("topic", " on attached");
+    }
 
     @AfterViews
     void init() {
@@ -139,8 +156,28 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
                         // Finally commit the setup to our PullToRefreshLayout
                 .setup(pullToRefreshLayout);
         pullToRefreshLayout.setRefreshing(true);
-        loadTopicPost();
-        loadNextComments();
+
+        // Attach scroll listener
+        Log.d("forum", "init : lastFirstVisibleItem -> " + lastFirstVisibleItem);
+
+        list.setOnScrollListener(new ScrollDirectionListener(lastFirstVisibleItem, new ScrollDirectionListener.OnScrollUp() {
+            @Override
+            public void onScrollUp() {
+                showFab();
+            }
+        }, new ScrollDirectionListener.OnScrollDown() {
+            @Override
+            public void onScrollDown() {
+                hideFab();
+            }
+        }));
+
+        if(topicPost == null && comments == null) {
+            loadTopicPost();
+            loadNextComments();
+        }else{
+            prepareComments();
+        }
     }
 
     @Background
@@ -155,24 +192,26 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
     public void prepareComments() {
         prepareCommentsDone = false;
         // Flatten Comment and Replies
-        ArrayList<Comment> flattenComments = new ArrayList<Comment>();
-        for (Comment c : tmpCommentsList) {
-            RESTUtils.processComment(c);
-            ArrayList<Comment> replies = c.getReplies();
-            flattenComments.add(c);
-            Iterator<Comment> it = replies.iterator();
-            while (it.hasNext()) {
-                Comment r = it.next();
-                r.setReply(true);
-                r.setParent(c);
-                RESTUtils.processComment(r);
-                flattenComments.add(r);
-                it.remove();
-                c.setLastReply(r.getReply_no());
+        if (tmpCommentsList != null) {
+            ArrayList<Comment> flattenComments = new ArrayList<Comment>();
+            for (Comment c : tmpCommentsList) {
+                RESTUtils.processComment(c);
+                ArrayList<Comment> replies = c.getReplies();
+                flattenComments.add(c);
+                Iterator<Comment> it = replies.iterator();
+                while (it.hasNext()) {
+                    Comment r = it.next();
+                    r.setReply(true);
+                    r.setParent(c);
+                    RESTUtils.processComment(r);
+                    flattenComments.add(r);
+                    it.remove();
+                    c.setLastReply(r.getReply_no());
+                }
             }
+            comments.addComments(flattenComments);
+            tmpCommentsList.clear();
         }
-        comments.addComments(flattenComments);
-        tmpCommentsList.clear();
         prepareCommentsDone = true;
         joinTopic();
     }
@@ -188,8 +227,20 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
 
             commentAdapter.notifyDataSetChanged();
 
-            pullToRefreshLayout.setRefreshComplete();
+            if (lastFirstVisibleItem != 0) {
+                list.setSelection(lastFirstVisibleItem);
+            }
         }
+        pullToRefreshLayout.setRefreshComplete();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        lastFirstVisibleItem = list.getFirstVisiblePosition();
+
+        super.onSaveInstanceState(outState);
+
+
     }
 
     public void loadReplies(Comment c, CommentView waitUpdateCommentView, int newRepliesPosition) {
@@ -209,7 +260,7 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
             comment.setParent(waitUpdateCommentView.getComment().getParent());
             parent.setLastReply(comment.getReply_no());
         }
-        comments.getComments().addAll(newRepliesPosition+1, tmpReplies.getReplies());
+        comments.getComments().addAll(newRepliesPosition + 1, tmpReplies.getReplies());
         waitUpdateCommentView.disableLoadMore();
         tmpReplies = null;
         prepareComments();
@@ -235,7 +286,7 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
     }
 
     @OptionsItem
-    void action_sort_comment(){
+    void action_sort_comment() {
         Log.d("menu", "sort comment");
         app.getEventBus().post(new SortCommentEvent(comments, commentAdapter));
     }
@@ -244,6 +295,20 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
         if (!pullToRefreshLayout.isRefreshing())
             pullToRefreshLayout.setRefreshing(true);
         client.getComments(topic.getId() + "", currentCommentPage, false, commentsCallback);
+    }
+
+    private void hideFab() {
+        if (!fabIsHiding) {
+            fab.animate().translationY(fab.getHeight() * 3).setInterpolator(new AccelerateDecelerateInterpolator()).start();
+            fabIsHiding = true;
+        }
+    }
+
+    private void showFab() {
+        if (fabIsHiding) {
+            fab.animate().translationY(fabDefaultY).setInterpolator(new AccelerateDecelerateInterpolator()).start();
+            fabIsHiding = false;
+        }
     }
 
     class CommentAdapter extends BaseAdapter {

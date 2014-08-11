@@ -4,6 +4,7 @@ import android.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -68,7 +69,7 @@ public class ForumHolderFragment extends BaseFragment {
 
 
 
-    private class ForumSlidePagerAdapter extends FragmentPagerAdapter {
+    private class ForumSlidePagerAdapter extends FragmentStatePagerAdapter{
         public ForumSlidePagerAdapter(FragmentManager fm) {
             super(fm);
         }
@@ -97,9 +98,7 @@ public class ForumHolderFragment extends BaseFragment {
     }
 
     private void hideTabs() {
-        Log.d("scroll","isHiding - "+ tabHiding);
         if (!tabHiding) {
-            Log.d("scroll","hide");
             tabsHeight = tabs.getHeight();
             tabs.animate().translationYBy(0 - tabsHeight).setInterpolator(new AccelerateDecelerateInterpolator()).start();
             actionBarTitle = actionBar.getTitle();
@@ -114,10 +113,8 @@ public class ForumHolderFragment extends BaseFragment {
     }
 
     private void showTabs() {
-        Log.d("scroll","isHiding - "+ tabHiding);
 
         if (tabHiding) {
-            Log.d("scroll", "show");
             tabs.animate().translationY(tabsDefaultY).setInterpolator(new AccelerateDecelerateInterpolator()).start();
             actionBar.setTitle(actionBarTitle);
             tabHiding = false;
