@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.nantaphop.pantipfanapp.BaseApplication;
 import com.nantaphop.pantipfanapp.R;
 import com.nantaphop.pantipfanapp.response.Comment;
@@ -43,6 +44,8 @@ public class CommentView extends RelativeLayout{
     @ViewById
     Button emo;
     @ViewById
+    Button loadMore;
+    @ViewById
     ImageView authorPic;
     @ViewById
     TextView commentNo;
@@ -59,6 +62,8 @@ public class CommentView extends RelativeLayout{
             .imageScaleType(ImageScaleType.EXACTLY_STRETCHED)
             .showImageOnLoading(R.drawable.ic_launcher)
             .build();
+    private OnClickListener onLoadMoreClick;
+    private Comment comment;
 
     public CommentView(Context context) {
         super(context);
@@ -66,22 +71,46 @@ public class CommentView extends RelativeLayout{
     }
 
     public void bind(Comment comment){
+        this.comment = comment;
         author.setText(comment.getUser().getName());
         date.setText(DateUtils.getRelativeTimeSpanString(comment.getDate().getTime(), new Date().getTime(), DateUtils.MINUTE_IN_MILLIS));
         body.setText(Html.fromHtml(comment.getMessage(), new URLImageParser(body, context), null));
-        votes.setText(comment.getPoint()+"");
-        emo.setText(comment.getEmo_score()+"");
+        votes.setText(comment.getPoint()>0 ? comment.getPoint()+"" : "");
+        emo.setText(comment.getEmo_score()>0 ? comment.getEmo_score()+"" : "");
         repiles.setText(comment.getReply_count()+"");
         if(comment.isReply()){
+            repiles.setVisibility(GONE);
             replyIndicator.setVisibility(VISIBLE);
             commentNo.setText("#"+comment.getComment_no()+"-"+comment.getReply_no());
-
+            if(comment.getReply_no() == comment.getParent().getLastReply() && comment.getParent().getReply_count() > comment.getReply_no()){
+                loadMore.setVisibility(VISIBLE);
+            }else {
+                loadMore.setVisibility(GONE);
+            }
         }else{
-            replyIndicator.setVisibility(GONE);
+            if(comment.getReply_count() == 0){
+                repiles.setVisibility(GONE);
+            }else{
+                repiles.setVisibility(VISIBLE);
+            }
             commentNo.setText("#"+comment.getComment_no());
-
+            replyIndicator.setVisibility(GONE);
+            loadMore.setVisibility(GONE);
         }
         app.getImageLoader().displayImage(comment.getUser().getAvatar().getLarge(), authorPic, displayImageOptions);
 
+    }
+
+    public Comment getComment() {
+        return comment;
+    }
+
+    public void setOnLoadMoreClick(OnClickListener onLoadMoreClick){
+        this.onLoadMoreClick = onLoadMoreClick;
+        loadMore.setOnClickListener(onLoadMoreClick);
+    }
+
+    public void disableLoadMore(){
+        loadMore.setVisibility(GONE);
     }
 }

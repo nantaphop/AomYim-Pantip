@@ -12,7 +12,8 @@
             android:layout_height="match_parent"
             />
     <!-- The navigation drawer -->
-    <ListView
+    <fragment
+            android:name="com.nantaphop.pantipfanapp.fragment.DrawerFragment_"
             android:id="@+id/left_drawer"
             android:layout_width="240dp"
             android:layout_height="match_parent"

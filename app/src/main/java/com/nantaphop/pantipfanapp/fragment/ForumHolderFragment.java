@@ -12,12 +12,10 @@ import com.nantaphop.pantipfanapp.BaseApplication;
 import com.nantaphop.pantipfanapp.R;
 import com.nantaphop.pantipfanapp.event.ForumScrollDownEvent;
 import com.nantaphop.pantipfanapp.event.ForumScrollUpEvent;
+import com.nantaphop.pantipfanapp.event.UpdateForumListEvent;
 import com.nantaphop.pantipfanapp.model.ForumPagerItem;
 import com.squareup.otto.Subscribe;
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.App;
-import org.androidannotations.annotations.EFragment;
-import org.androidannotations.annotations.ViewById;
+import org.androidannotations.annotations.*;
 
 import java.util.List;
 
@@ -26,6 +24,8 @@ import java.util.List;
  */
 @EFragment(R.layout.fragment_forumholder)
 public class ForumHolderFragment extends BaseFragment {
+
+    public static final String TAG = "fragmentHolder";
     @ViewById
     ViewPager viewPager;
     @ViewById
@@ -41,7 +41,7 @@ public class ForumHolderFragment extends BaseFragment {
 
     @AfterViews
     void init(){
-        forumPagerItems = ForumPagerItem.getAll();
+        forumPagerItems = ForumPagerItem.getAll("enable");
         pagerAdapter = new ForumSlidePagerAdapter(getFragmentManager());
         viewPager.setAdapter(pagerAdapter);
         tabs.setViewPager(viewPager);
@@ -57,10 +57,16 @@ public class ForumHolderFragment extends BaseFragment {
         tabs.setDividerColorResource(android.R.color.transparent);
         tabs.setIndicatorHeight(getResources().getDimensionPixelOffset(R.dimen.tabs_indicator_height));
         app.getEventBus().register(this);
-        actionBar = getActivity().getActionBar();
+        actionBar = getAttachedActivity().getActionBar();
         tabsDefaultY = tabs.getY();
 
     }
+
+
+
+
+
+
 
     private class ForumSlidePagerAdapter extends FragmentPagerAdapter {
         public ForumSlidePagerAdapter(FragmentManager fm) {
@@ -71,6 +77,8 @@ public class ForumHolderFragment extends BaseFragment {
         public CharSequence getPageTitle(int position) {
             return forumPagerItems.get(position).title;
         }
+
+
 
         @Override
         public Fragment getItem(int position) {

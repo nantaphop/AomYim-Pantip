@@ -1,6 +1,7 @@
 package com.nantaphop.pantipfanapp.fragment;
 
 import android.animation.Animator;
+import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 import android.view.View;
@@ -149,7 +150,7 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
         if (currentPage == 2) { // Do just first load
             // Add Recommend Topic
             for (int i = 0; i < numPreview; i++) {
-                Card card = new Card(getActivity());
+                Card card = new Card(getAttachedActivity());
                 card.setTitle(forumPart.getRecommendTopic().get(i));
                 card.setClickable(true);
                 card.setShadow(false);
@@ -175,14 +176,14 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
     @Trace
     @Background
     void prepareTopic() {
-        tmpTopicCard = forum.toCardList(getActivity(), cardRenderCount);
+        tmpTopicCard = forum.toCardList(getAttachedActivity(), cardRenderCount);
         prepareTopicDone = true;
         joinForum();
     }
 
     @Background
     void prepareTopicFromInstanceState() {
-        tmpTopicCard = forum.toCardList(getActivity(), 0);
+        tmpTopicCard = forum.toCardList(getAttachedActivity(), 0);
         prepareTopicDone = true;
         joinForum();
     }
@@ -269,14 +270,14 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
         Log.d("forum", "init forum fragment " + forumPagerItem.title);
         // Prepare Adapter
         cards = new ArrayList<Card>();
-        cardArrayAdapter = new TopicCardAdapter(getActivity(), cards);
+        cardArrayAdapter = new TopicCardAdapter(getAttachedActivity(), cards);
         cardArrayAdapter.setInnerViewTypeCount(2);
         sections = new ArrayList<TopicSectionCard>();
-        sectionedCardAdapter = new TopicSectionedAdapter(getActivity(), cardArrayAdapter);
+        sectionedCardAdapter = new TopicSectionedAdapter(getAttachedActivity(), cardArrayAdapter);
         cardList.setExternalAdapter(sectionedCardAdapter, cardArrayAdapter);
 
         // Now setup the PullToRefreshLayout
-        ActionBarPullToRefresh.from(this.getActivity())
+        ActionBarPullToRefresh.from(this.getAttachedActivity())
                 // Mark All Children as pullable
                 .allChildrenArePullable()
                         // Set the OnRefreshListener
@@ -285,10 +286,9 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
                 .setup(pullToRefreshLayout);
 
         // Add Blank Margin on top height = Tab's height
-        View blankHeader = new View(getActivity());
+        View blankHeader = new View(getAttachedActivity());
         blankHeader.setMinimumHeight(getResources().getDimensionPixelOffset(R.dimen.tabs_height));
         cardList.addHeaderView(blankHeader);
-
 
         // If from saved
         if (forum != null && forumPart != null) {

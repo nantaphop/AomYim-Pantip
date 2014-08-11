@@ -147,6 +147,10 @@ public class Comment implements Serializable{
         return parent;
     }
 
+    public void setParent(Comment parent) {
+        this.parent = parent;
+    }
+
     public Reply addReplies(Reply reply){
         for (Comment comment : reply.getReplies()) {
             comment.setReply(true);

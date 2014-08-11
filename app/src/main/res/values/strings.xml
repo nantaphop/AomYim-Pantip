@@ -10,10 +10,23 @@
     <string name="recomend_topic">กระทู้แนะนำ</string>
     <string name="view_all">ดูทั้งหมด</string>
 
+
+    <string name="action_sort_topic">เรียงกระทู้</string>
+    <string name="action_sort_comment">เรียงความเห็น</string>
     <string name="topic_sort_type_title">เรียงกระทู้ตาม</string>
+    <string name="comment_sort_type_title">เรียงความเห็นตาม</string>
+    <string name="action_save">บันทึก</string>
+    <string name="feedback_save_arrange_done">บันทึกลำดับเสร็จสิ้น</string>
+    <string name="feedback_save_arrange_inprogress">กำลังบันทึก</string>
+    <string name="enable_room">แสดง</string>
     <array name="topic_sort_type">
         <item>จำนวนความเห็น</item>
-        <item>จำนวนโหวจ</item>
+        <item>จำนวนโหวต</item>
         <item>เวลา</item>
+    </array>
+    <array name="comment_sort_type">
+        <item>จำนวนโหวต</item>
+        <item>จำนวนการแสดงอารมณ์</item>
+        <item>ลำดับ</item>
     </array>
 </resources>

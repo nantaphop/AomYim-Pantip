@@ -3,8 +3,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-
-                android:paddingRight="@dimen/padding_default"
                 >
 
     <TextView
@@ -25,7 +23,7 @@
           android:layout_alignParentTop="true"
           android:layout_alignParentLeft="true"
           android:layout_alignParentStart="true"
-          android:layout_alignBottom="@+id/repiles"/>
+          android:layout_alignBottom="@+id/emo"/>
 
     <TextView
             android:layout_width="wrap_content"
@@ -43,6 +41,8 @@
             android:text="เดี๋ยวเร็วๆ นี้ จะทำให้ดู Tag และ Club ของห้องต่างๆ ได้นะครับ คาดว่าจะเป็น วันพรุ่งนี้มืดๆ หรือไม่ก็วันเสาร์ ครับผม ขอบคุณที่ใช้งานนะครั"
             android:id="@+id/body"
             android:textSize="@dimen/text_body"
+            android:paddingRight="@dimen/padding_default"
+
             android:layout_below="@+id/author"
             android:layout_alignLeft="@+id/author"
             android:layout_alignStart="@+id/author"
@@ -113,4 +113,17 @@
             android:layout_alignLeft="@+id/authorPic"
             android:layout_alignStart="@+id/authorPic"
             android:layout_marginTop="8dp"/>
+
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ดูความเห็นย่อย"
+            android:background="@color/background"
+            style="?android:borderlessButtonStyle"
+            android:id="@+id/loadMore"
+            android:layout_below="@+id/replyIndicator"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignRight="@+id/emo"
+            android:layout_alignEnd="@+id/emo"/>
 </RelativeLayout>

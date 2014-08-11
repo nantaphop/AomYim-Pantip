@@ -1,5 +1,6 @@
 package com.nantaphop.pantipfanapp.fragment;
 
+import android.app.Activity;
 import android.support.v4.app.Fragment;
 import com.nantaphop.pantipfanapp.BaseApplication;
 import com.nantaphop.pantipfanapp.service.PantipRestClient;
@@ -17,4 +18,16 @@ public class BaseFragment extends Fragment {
     protected BaseApplication app;
     @Bean
     protected PantipRestClient client;
+    private Activity activity;
+
+    @Override
+    public void onAttach(Activity activity) {
+        this.activity = activity;
+        super.onAttach(activity);
+    }
+
+
+    public Activity getAttachedActivity() {
+        return activity;
+    }
 }

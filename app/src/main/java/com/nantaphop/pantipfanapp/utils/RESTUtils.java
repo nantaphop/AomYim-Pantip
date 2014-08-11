@@ -142,6 +142,10 @@ public class RESTUtils {
         return BaseApplication.getGson().fromJson(resp, Comments.class);
     }
 
+    public static Reply parseReplies(String resp){
+        return BaseApplication.getGson().fromJson(resp, Reply.class);
+    }
+
     public static void processComment(Comment c) {
         Document doc = Jsoup.parse(c.getMessage());
 

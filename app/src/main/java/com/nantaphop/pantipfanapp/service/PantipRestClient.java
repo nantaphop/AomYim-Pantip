@@ -211,28 +211,23 @@ public class PantipRestClient {
     @Background
     public void getComments(String topicId, int page, boolean justOwner, AsyncHttpResponseHandler cb) {
         String url;
-//        RequestParams params = new RequestParams();
 
         if (justOwner) {
-//            params.add("param", "story");
 
             url = "forum/topic_mode/render_comments?tid="+topicId+"&type=1&page="+page+"&param=story"+page+"&_="+new Date().getTime();
         } else {
-//            params.add("param", "page");
             url = "forum/topic/render_comments?tid="+topicId+"&type=1&page="+page+"&param=page"+page+"&_="+new Date().getTime();
-//                url = "forum/topic/render_comments?tid="+topicId+"&param=&type=1&time=0.23428448126651347&_="+new Date().getTime();
         }
-
-//        params.add("tid", topicId);
-//        params.add("type", "1");
-//        params.add("page", page+"");
-//        params.add("_", new Date().getTime()+"");
-
-//        get(url, params, cb);
         get(url, null, cb);
-//        Log.d(TAG, "get comments - " + params.toString());
         Log.d(TAG, "get comments - " + url);
+    }
 
+    @Trace
+    @Background
+    public void getReplies(int commentId, int lastReply, int maxReplyCount, int parentCommentUserId, AsyncHttpResponseHandler cb){
+        String url = "http://pantip.com/forum/topic/render_replys?last="+ lastReply +"&cid="+ commentId +"&c="+ maxReplyCount +"&ac=n&o="+ parentCommentUserId;
+        get(url, null, cb);
+        Log.d(TAG, "get repiles - " + commentId);
     }
 
 
