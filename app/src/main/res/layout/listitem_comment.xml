@@ -21,9 +21,9 @@
           android:layout_height="100dp"
           android:background="@color/background"
           android:layout_alignParentTop="true"
+          android:layout_alignBottom="@+id/emo"
           android:layout_alignParentLeft="true"
-          android:layout_alignParentStart="true"
-          android:layout_alignBottom="@+id/emo"/>
+          android:layout_alignParentStart="true"/>
 
     <TextView
             android:layout_width="wrap_content"
@@ -41,7 +41,7 @@
             android:text="เดี๋ยวเร็วๆ นี้ จะทำให้ดู Tag และ Club ของห้องต่างๆ ได้นะครับ คาดว่าจะเป็น วันพรุ่งนี้มืดๆ หรือไม่ก็วันเสาร์ ครับผม ขอบคุณที่ใช้งานนะครั"
             android:id="@+id/body"
             android:textSize="@dimen/text_body"
-            android:paddingRight="@dimen/padding_default"
+            android:paddingRight="@dimen/padding_extra"
 
             android:layout_below="@+id/author"
             android:layout_alignLeft="@+id/author"
@@ -81,7 +81,7 @@
             android:id="@+id/emo"
             android:gravity="center_vertical"
             android:drawablePadding="@dimen/padding_narrow"
-            android:paddingRight="@dimen/padding_default"
+            android:paddingRight="@dimen/padding_extra"
             style="?android:borderlessButtonStyle"
             android:layout_alignTop="@+id/votes"
             android:layout_alignParentRight="true"
@@ -104,16 +104,17 @@
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="#100"
+            android:text="#100-20"
+            android:textSize="@dimen/text_caption"
+            android:paddingRight="@dimen/padding_default"
+            android:paddingLeft="@dimen/padding_default"
             android:gravity="center_horizontal"
             android:id="@+id/commentNo"
             android:layout_below="@+id/authorPic"
-            android:layout_alignRight="@+id/authorPic"
-            android:layout_alignEnd="@+id/authorPic"
-            android:layout_alignLeft="@+id/authorPic"
-            android:layout_alignStart="@+id/authorPic"
-            android:layout_marginTop="8dp"/>
+            android:layout_marginTop="8dp"
+            android:layout_toLeftOf="@+id/body"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"/>
 
     <Button
             android:layout_width="wrap_content"

@@ -1,6 +1,8 @@
 package com.nantaphop.pantipfanapp.view;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Color;
 import android.text.Html;
 import android.text.format.DateUtils;
 import android.util.Log;
@@ -86,6 +88,29 @@ public class TopicCard extends Card {
         author.setText(Html.fromHtml(topic.getAuthor())+" - "+ DateUtils.getRelativeTimeSpanString(topic.getDate().getTime(), new Date().getTime(), DateUtils.MINUTE_IN_MILLIS));
         comments.setText(topic.getComments()+" "+ getContext().getString(R.string.comment));
         votes.setText(topic.getVotes() + " " + getContext().getString(R.string.vote));
+
+        Resources resources = context.getResources();
+        // Color indicate
+        if(topic.getComments()==0)
+            comments.setTextColor(resources.getColor(R.color.text_color_score_0));
+        else if (topic.getComments() < 10)
+            comments.setTextColor(resources.getColor(R.color.text_color_score_1));
+        else if (topic.getComments() < 20)
+            comments.setTextColor(resources.getColor(R.color.text_color_score_2));
+        else
+            comments.setTextColor(resources.getColor(R.color.text_color_score_3));
+
+        // Color indicate
+        if(topic.getVotes()==0)
+            votes.setTextColor(resources.getColor(R.color.text_color_score_0));
+        else if (topic.getVotes() < 10)
+            votes.setTextColor(resources.getColor(R.color.text_color_score_1));
+        else if (topic.getVotes() < 20)
+            votes.setTextColor(resources.getColor(R.color.text_color_score_2));
+        else
+            votes.setTextColor(resources.getColor(R.color.text_color_score_3));
+
+
         StringBuilder sb = new StringBuilder();
         for (Tag tag: topic.getTags()){
             sb.append(tag.getTag()+", ");

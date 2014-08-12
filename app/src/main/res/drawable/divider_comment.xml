@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<inset xmlns:android="http://schemas.android.com/apk/res/android"
+        android:insetLeft="@dimen/padding_extra"
+        android:insetRight="@dimen/padding_extra"
+        >
+    <shape>
+        <solid android:color="@color/background" />
+        <corners android:radius="2dp" />
+    </shape>
+</inset>

@@ -59,6 +59,7 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
 
     private byte[] tmpTopicPageHtml;
     private float fabDefaultY;
+    @InstanceState
     int currentCommentPage = 1;
     private CommentAdapter commentAdapter;
     boolean prepareCommentsDone = false, prepareTopicPostDone = false;
@@ -91,7 +92,11 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
                 if (comments.getComments() != null)
                     comments.getComments().clear();
             } else {
+                if(tmpCommentsList == null){
+                    tmpCommentsList = new ArrayList<Comment>();
+                }
                 tmpCommentsList.addAll(newComments.getComments());
+                comments.setPaging(newComments.getPaging());
             }
             currentCommentPage++;
 
@@ -176,6 +181,7 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
             loadTopicPost();
             loadNextComments();
         }else{
+            prepareTopicPostDone = true;
             prepareComments();
         }
     }
@@ -342,7 +348,7 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
         public View getView(final int position, View convertView, ViewGroup parent) {
             final CommentView commentView;
             if (position == getCount() - 5) {
-                if (comments.getCount() > comments.getComments().size()) {
+                if (comments.getCount() > comments.getPaging().getLimit()*comments.getPaging().getPage()) {
                     Log.d("", "Do Loadmore");
                     loadNextComments();
                 }

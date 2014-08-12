@@ -2,14 +2,16 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
-                android:padding="@dimen/padding_default"
                 android:layout_height="match_parent">
 
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:padding="@dimen/padding_extra"
             android:text="ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
             android:id="@+id/title"
+            android:textColor="#fff"
+            android:background="@color/base_color"
             android:textSize="@dimen/text_title"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
@@ -19,9 +21,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/padding_default"
+            android:layout_marginLeft="@dimen/padding_extra"
+            android:layout_marginRight="@dimen/padding_extra"
             android:text="3 มกราคม เวลา 21:40 น."
             android:textSize="@dimen/text_caption"
             android:id="@+id/date"
+            android:layout_marginTop="@dimen/padding_default"
             android:layout_alignLeft="@+id/title"
             android:layout_below="@+id/title"
             android:layout_alignRight="@+id/title"/>
@@ -31,6 +36,8 @@
             android:layout_height="wrap_content"
             android:text="เดี๋ยวเร็วๆ นี้ จะทำให้ดู Tag และ Club ของห้องต่างๆ ได้นะครับ คาดว่าจะเป็น วันพรุ่งนี้มืดๆ หรือไม่ก็วันเสาร์ ครับผม ขอบคุณที่ใช้งานนะครั"
             android:id="@+id/body"
+            android:layout_marginLeft="@dimen/padding_extra"
+            android:layout_marginRight="@dimen/padding_extra"
             android:textSize="@dimen/text_body"
             android:layout_alignLeft="@+id/title"
             android:layout_below="@+id/date"
@@ -53,6 +60,7 @@
             android:drawableLeft="@drawable/ic_action_thumbs_up_small"
             android:gravity="center_vertical"
             android:id="@+id/votes"
+            android:layout_marginLeft="@dimen/padding_extra"
             style="?android:borderlessButtonStyle"
             android:layout_alignLeft="@+id/commentNo"
             android:layout_below="@+id/separator"/>
@@ -88,6 +96,7 @@
             android:layout_height="@dimen/author_pic_comment"
             android:id="@+id/authorPic"
             android:layout_alignRight="@+id/separator"
+            android:layout_marginRight="@dimen/padding_extra"
             android:layout_alignEnd="@+id/separator"
             android:layout_alignTop="@+id/author"
             android:layout_alignBottom="@+id/emo"/>

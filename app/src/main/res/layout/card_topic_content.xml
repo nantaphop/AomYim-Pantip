@@ -20,7 +20,7 @@
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="5"
+            android:text="5 ความเห็น"
             android:id="@+id/comments"
             android:textColor="?android:textColorSecondaryInverse"
 
@@ -33,10 +33,11 @@
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="2"
+            android:text="2 โหวต"
             android:gravity="center_vertical"
             android:id="@+id/votes"
             android:textColor="?android:textColorSecondaryInverse"
+
 
             android:drawablePadding="@dimen/padding_default"
             android:layout_marginRight="@dimen/padding_default"
