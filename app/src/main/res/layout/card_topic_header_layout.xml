@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- This is the Header Layout -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:paddingTop="@dimen/padding_default"
+                android:paddingLeft="@dimen/padding_default"
+                android:paddingRight="@dimen/padding_default"
+                style="@style/card.header_compound_view">
+
+    <!-- This is the Inner Content Header which you can populate runtime
+         with setupInnerViewElements(android.view.ViewGroup, android.view.View) method in CardHeader class. -->
+    <FrameLayout
+            android:id="@+id/card_header_inner_frame"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+
+</RelativeLayout>
