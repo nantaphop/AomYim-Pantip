@@ -4,11 +4,14 @@
     <color name="base_color_highlight">#E5C700</color>
     <color name="base_color_bright">#ffa09cde</color>
     <color name="background">#ffebebeb</color>
-    <color name="card_shadow">#ffe1e1e1</color>
-    <color name="card_header_bg">#88ffffff</color>
+    <color name="card_shadow">#33cccccc</color>
+    <color name="card_header_bg_bright">#88ffffff</color>
+    <color name="card_header_bg_dark">#88000000</color>
 
 
     //Text Color
+    <color name="text_color_title_dark">#000</color>
+    <color name="text_color_title_bright">#fff</color>
     <color name="text_color_tag">#8c88c3</color>
     <color name="text_color_score_0">#bebebe</color>
     <color name="text_color_score_1">#ff8d89e2</color>

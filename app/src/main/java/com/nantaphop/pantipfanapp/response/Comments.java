@@ -17,7 +17,7 @@ public class Comments implements Serializable {
     ArrayList<Comment> comments;
 
     public void addComments(ArrayList<Comment> newComments){
-        if(newComments != null)
+        if(newComments != null & comments!= null)
             comments.addAll(newComments);
 
     }

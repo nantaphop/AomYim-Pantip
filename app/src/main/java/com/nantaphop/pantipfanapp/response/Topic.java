@@ -16,10 +16,13 @@ import java.util.Date;
  * Time: 5:09 PM
  * To change this template use File | Settings | File Templates.
  */
-public class Topic implements Serializable{
+public class Topic implements Serializable {
 
     @SerializedName("cover_img")
     String coverImg;
+
+    Boolean brightCover;
+
 
     @SerializedName("_id")
     int id;
@@ -67,7 +70,15 @@ public class Topic implements Serializable{
 
     public int getId() {
         // id2 is topic when operate with user topic like bookmark etc.
-        return id2>0 ? id2 : id;
+        return id2 > 0 ? id2 : id;
+    }
+
+    public Boolean isBrightCover() {
+        return brightCover;
+    }
+
+    public void setBrightCover(Boolean brightCover) {
+        this.brightCover = brightCover;
     }
 
     public void setId(int id) {
@@ -140,10 +151,10 @@ public class Topic implements Serializable{
 
     @Override
     public String toString() {
-        return title+" - "+author;
+        return title + " - " + author;
     }
 
-    public Card toCard(Context context){
+    public Card toCard(Context context) {
         return new TopicCard(context, this);
     }
 

@@ -95,7 +95,9 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
                 if(tmpCommentsList == null){
                     tmpCommentsList = new ArrayList<Comment>();
                 }
-                tmpCommentsList.addAll(newComments.getComments());
+                if (newComments.getComments() != null) {
+                    tmpCommentsList.addAll(newComments.getComments());
+                }
                 comments.setPaging(newComments.getPaging());
             }
             currentCommentPage++;
@@ -215,7 +217,9 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
                     c.setLastReply(r.getReply_no());
                 }
             }
-            comments.addComments(flattenComments);
+            if (flattenComments != null) {
+                comments.addComments(flattenComments);
+            }
             tmpCommentsList.clear();
         }
         prepareCommentsDone = true;

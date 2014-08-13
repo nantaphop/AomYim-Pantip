@@ -34,7 +34,6 @@
 
             <it.gmariotti.cardslib.library.view.component.CardHeaderView
                     style="@style/card.header_outer_layout"
-                    android:background="@color/card_header_bg"
                     android:id="@+id/card_header_layout"
                     card:card_header_layout_resourceID="@layout/card_topic_header_layout"
                     android:layout_gravity="bottom"

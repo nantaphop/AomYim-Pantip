@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.AbsListView;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -23,6 +24,8 @@ import com.nantaphop.pantipfanapp.response.Topic;
 import com.nantaphop.pantipfanapp.utils.RESTUtils;
 import com.nantaphop.pantipfanapp.utils.ScrollDirectionListener;
 import com.nantaphop.pantipfanapp.view.TopicSectionCard;
+import com.nantaphop.pantipfanapp.view.TopicView;
+import com.nantaphop.pantipfanapp.view.TopicView_;
 import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.internal.CardArrayAdapter;
 import it.gmariotti.cardslib.library.prototypes.SectionedCardAdapter;
@@ -48,8 +51,8 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
 
     @ViewById
     ListView list;
-    @ViewById
-    CardListView cardList;
+    //    @ViewById
+//    CardListView cardList;
     @ViewById
     FloatingActionButton fab;
 
@@ -69,9 +72,9 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
     @InstanceState
     ForumPart forumPart;
 
-    private CardArrayAdapter cardArrayAdapter;
+//    private CardArrayAdapter cardArrayAdapter;
 
-    private SectionedCardAdapter sectionedCardAdapter;
+//    private SectionedCardAdapter sectionedCardAdapter;
 
     @InstanceState
     int lastFirstVisibleItem;
@@ -134,6 +137,7 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
     private float fabDefaultY;
     private boolean fabIsHiding;
     private ArrayList<Card> cards;
+    private TopicAdapter topicAdapter;
 
     @Trace
     @Background
@@ -147,29 +151,29 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
 
     @Background
     public void prepareRecommendCard() {
-        int numPreview = forumPart.getRecommendTopic().size() > 3 ? 3 : forumPart.getRecommendTopic().size();
-        tmpRecommendCard = new ArrayList<Card>(numPreview);
-        if (currentPage == 2) { // Do just first load
-            // Add Recommend Topic
-            for (int i = 0; i < numPreview; i++) {
-                Card card = new Card(getAttachedActivity());
-                card.setTitle(forumPart.getRecommendTopic().get(i));
-                card.setClickable(true);
-                card.setShadow(false);
-                card.setBackgroundResourceId(R.drawable.card_background);
-                final Topic topic = new Topic();
-                topic.setTitle(forumPart.getRecommendTopic().get(i));
-                topic.setId(Integer.parseInt(forumPart.getRecommendUrl().get(i).split("/")[4]));
-                card.setOnClickListener(new Card.OnCardClickListener() {
-                    @Override
-                    public void onClick(Card card, View view) {
-
-                        app.getEventBus().post(new OpenTopicEvent(topic));
-                    }
-                });
-                tmpRecommendCard.add(card);
-            }
-        }
+//        int numPreview = forumPart.getRecommendTopic().size() > 3 ? 3 : forumPart.getRecommendTopic().size();
+//        tmpRecommendCard = new ArrayList<Card>(numPreview);
+//        if (currentPage == 2) { // Do just first load
+//            // Add Recommend Topic
+//            for (int i = 0; i < numPreview; i++) {
+//                Card card = new Card(getAttachedActivity());
+//                card.setTitle(forumPart.getRecommendTopic().get(i));
+//                card.setClickable(true);
+//                card.setShadow(false);
+//                card.setBackgroundResourceId(R.drawable.card_background);
+//                final Topic topic = new Topic();
+//                topic.setTitle(forumPart.getRecommendTopic().get(i));
+//                topic.setId(Integer.parseInt(forumPart.getRecommendUrl().get(i).split("/")[4]));
+//                card.setOnClickListener(new Card.OnCardClickListener() {
+//                    @Override
+//                    public void onClick(Card card, View view) {
+//
+//                        app.getEventBus().post(new OpenTopicEvent(topic));
+//                    }
+//                });
+//                tmpRecommendCard.add(card);
+//            }
+//        }
         tmpForumPartBytes = null;
         prepareRecommendDone = true;
         joinForum();
@@ -178,7 +182,7 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
     @Trace
     @Background
     void prepareTopic() {
-        tmpTopicCard = forum.toCardList(getAttachedActivity(), cardRenderCount);
+//        tmpTopicCard = forum.toCardList(getAttachedActivity(), cardRenderCount);
         prepareTopicDone = true;
         joinForum();
     }
@@ -198,39 +202,38 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
             int numPreview = forumPart.getRecommendTopic().size() > 3 ? 3 : forumPart.getRecommendTopic().size();
 
             // Add Recommend Topic
-            if (tmpRecommendCard != null) {
-                cardArrayAdapter.addAll(tmpRecommendCard);
-                tmpRecommendCard = null;
-            }
-
-
-            // Add Topics
-            if (tmpTopicCard != null) {
-                cardArrayAdapter.addAll(tmpTopicCard);
-                tmpTopicCard = null;
-            }
-            cardRenderCount = forum.getTopics().size();
+//            if (tmpRecommendCard != null) {
+//                cardArrayAdapter.addAll(tmpRecommendCard);
+//                tmpRecommendCard = null;
+//            }
+//
+//
+//            // Add Topics
+//            if (tmpTopicCard != null) {
+//                cardArrayAdapter.addAll(tmpTopicCard);
+//                tmpTopicCard = null;
+//            }
+//            cardRenderCount = forum.getTopics().size();
 
 
             // Split Section
-            sections.clear();
-            sections.add(new TopicSectionCard(0, app.getString(R.string.recomend_topic), app.getString(R.string.view_all), new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    app.getEventBus().post(new ShowRecommendEvent(forumPart.getRecommendTopic(), forumPart.getRecommendUrl()));
-                }
-            }));
-            sections.add(new TopicSectionCard(numPreview, "กระทู้ในห้อง", "", null));
-            TopicSectionCard[] dummy = new TopicSectionCard[sections.size()];
-            sectionedCardAdapter.setCardSections(sections.toArray(dummy));
+//            sections.clear();
+//            sections.add(new TopicSectionCard(0, app.getString(R.string.recomend_topic), app.getString(R.string.view_all), new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    app.getEventBus().post(new ShowRecommendEvent(forumPart.getRecommendTopic(), forumPart.getRecommendUrl()));
+//                }
+//            }));
+//            sections.add(new TopicSectionCard(numPreview, "กระทู้ในห้อง", "", null));
+//            TopicSectionCard[] dummy = new TopicSectionCard[sections.size()];
+//            sectionedCardAdapter.setCardSections(sections.toArray(dummy));
         }
 
         // Update List
-        cardArrayAdapter.notifyDataSetChanged();
-        sectionedCardAdapter.notifyDataSetChanged();
+        topicAdapter.notifyDataSetChanged();
         setRefreshComplete();
         if (lastFirstVisibleItem != 0) {
-            cardList.setSelection(lastFirstVisibleItem);
+            list.setSelection(lastFirstVisibleItem);
         }
 
 
@@ -253,7 +256,7 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
     @OptionsItem
     void action_sort_topic() {
         Log.d("menu", "sort - " + forumPagerItem.title);
-        app.getEventBus().post(new SortForumEvent(forum, cardArrayAdapter, cards));
+//        app.getEventBus().post(new SortForumEvent(forum, cardArrayAdapter, cards));
     }
 
 
@@ -269,12 +272,14 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
         fabDefaultY = fab.getY();
         Log.d("forum", "init forum fragment " + forumPagerItem.title);
         // Prepare Adapter
-        cards = new ArrayList<Card>();
-        cardArrayAdapter = new TopicCardAdapter(getAttachedActivity(), cards);
-        cardArrayAdapter.setInnerViewTypeCount(2);
-        sections = new ArrayList<TopicSectionCard>();
-        sectionedCardAdapter = new TopicSectionedAdapter(getAttachedActivity(), cardArrayAdapter);
-        cardList.setExternalAdapter(sectionedCardAdapter, cardArrayAdapter);
+//        cards = new ArrayList<Card>();
+//        cardArrayAdapter = new TopicCardAdapter(getAttachedActivity(), cards);
+//        cardArrayAdapter.setInnerViewTypeCount(2);
+//        sections = new ArrayList<TopicSectionCard>();
+//        sectionedCardAdapter = new TopicSectionedAdapter(getAttachedActivity(), cardArrayAdapter);
+//        cardList.setExternalAdapter(sectionedCardAdapter, cardArrayAdapter);
+        topicAdapter = new TopicAdapter(getActivity());
+        list.setAdapter(topicAdapter);
 
         // Now setup the PullToRefreshLayout
         ActionBarPullToRefresh.from(this.getAttachedActivity())
@@ -288,12 +293,12 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
         // Add Blank Margin on top height = Tab's height
         View blankHeader = new View(getAttachedActivity());
         blankHeader.setMinimumHeight(getResources().getDimensionPixelOffset(R.dimen.tabs_height));
-        cardList.addHeaderView(blankHeader);
+        list.addHeaderView(blankHeader);
 
         // Attach scroll listener
         Log.d("forum", "init : lastFirstVisibleItem -> " + lastFirstVisibleItem);
 
-        cardList.setOnScrollListener(new ScrollDirectionListener(lastFirstVisibleItem, new ScrollDirectionListener.OnScrollUp() {
+        list.setOnScrollListener(new ScrollDirectionListener(lastFirstVisibleItem, new ScrollDirectionListener.OnScrollUp() {
             @Override
             public void onScrollUp() {
                 app.getEventBus().post(new ForumScrollUpEvent());
@@ -321,7 +326,7 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        lastFirstVisibleItem = cardList.getFirstVisiblePosition();
+        lastFirstVisibleItem = list.getFirstVisiblePosition();
 
         super.onSaveInstanceState(outState);
 
@@ -331,10 +336,6 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
 
     public ScrollDirectionListener getOnScrollListener() {
         return mOnScrollListener;
-    }
-
-    public CardListView getCardList() {
-        return cardList;
     }
 
     private void loadForumPart() {
@@ -435,6 +436,51 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
             }
             return super.getView(position, convertView, parent);
         }
+    }
+
+    class TopicAdapter extends BaseAdapter {
+
+        public TopicAdapter(Context context) {
+        }
+
+
+        @Override
+        public int getCount() {
+            if (forum == null)
+                return 0;
+            else return forum.getTopics().size();
+        }
+
+        @Override
+        public Object getItem(int i) {
+            return forum.getTopics().get(i);
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return 0;
+        }
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            final TopicView topicView;
+            if (position == getCount() - 5) {
+                loadMore();
+            }
+
+            if (convertView != null) {
+                topicView = (TopicView) convertView;
+            } else {
+                topicView = TopicView_.build(getAttachedActivity());
+
+            }
+            topicView.bind((Topic) getItem(position));
+
+
+            return topicView;
+        }
+
+
     }
 
 
