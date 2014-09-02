@@ -152,7 +152,7 @@ public class MainActivity extends FragmentActivity {
     @Subscribe
     public void sortForum(final SortForumEvent e){
 
-        final ArrayList<Topic> topics = e.getForum().getTopics();
+        final ArrayList<Topic> topics = e.getTopics();
         final ListDialog listDialog = ListDialog_.builder().choices(topic_sort_type).title(topic_sort_type_title).listItemLayoutRes(android.R.layout.simple_list_item_1).build();
         listDialog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -161,32 +161,24 @@ public class MainActivity extends FragmentActivity {
                 TopicComparator topicComparator;
                 switch(i){
                     case 0:
-                        topicCardComparator = new TopicCardComparator(TopicCardComparator.SortType.Comment);
                         topicComparator = new TopicComparator(TopicComparator.SortType.Comment);
                         break;
                     case 1:
-                        topicCardComparator = new TopicCardComparator(TopicCardComparator.SortType.Vote);
                         topicComparator = new TopicComparator(TopicComparator.SortType.Vote);
                         break;
                     case 2:
-                        topicCardComparator = new TopicCardComparator(TopicCardComparator.SortType.Time);
                         topicComparator = new TopicComparator(TopicComparator.SortType.Time);
                         break;
                     default:
-                        topicCardComparator = new TopicCardComparator(TopicCardComparator.SortType.Time);
                         topicComparator = new TopicComparator(TopicComparator.SortType.Time);
                         break;
                 }
-                Collections.sort(e.getCardList(), topicCardComparator);
-                Collections.sort(e.getForum().getTopics(), topicComparator);
+                Collections.sort(topics, topicComparator);
                 e.getAdapter().notifyDataSetChanged();
                 listDialog.dismiss();
             }
         });
         listDialog.show(getFragmentManager(), "sort_topic");
-
-
-
     }
 
     @Subscribe

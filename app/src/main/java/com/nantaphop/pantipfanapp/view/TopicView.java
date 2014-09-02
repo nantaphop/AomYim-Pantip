@@ -85,30 +85,22 @@ public class TopicView extends RelativeLayout implements View.OnClickListener {
 
     @AfterViews
     void init() {
+        thumbnail.setDrawingCacheEnabled(true);
     }
 
+    @Trace(tag = "topicView")
     public void bind(final Topic topic) {
         this.topic = topic;
 
         title.setText(Html.fromHtml(topic.getTitle()));
-        title.setTextColor(textDark);
-        title.setBackgroundColor(headerBgTransparent);
+//        title.setTextColor(textDark);
+//        title.setBackgroundColor(headerBgTransparent);
 
         // Process Title Color
         if (topic.getCoverImg().length() > 0) {
             thumbnail.setVisibility(VISIBLE);
             title.setPadding(paddingExtra, paddingExtra, paddingExtra, paddingExtra);
-            app.getImageLoader().displayImage(topic.getCoverImg(), thumbnail, displayImageOptions, new SimpleImageLoadingListener() {
-                @Override
-                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                    super.onLoadingComplete(imageUri, view, loadedImage);
-                    if (topic.isBrightCover() == null)
-                        calculateTitleColor(loadedImage);
-                    else
-                        updateTitleColor(topic.isBrightCover());
-                    
-                }
-            });
+            app.getImageLoader().displayImage(topic.getCoverImg(), thumbnail, displayImageOptions);
         } else {
             thumbnail.setVisibility(GONE);
             title.setPadding(paddingExtra, paddingExtra, paddingExtra, 0);
