@@ -19,7 +19,6 @@ import com.nantaphop.pantipfanapp.fragment.dialog.RecommendDialog_;
 import com.nantaphop.pantipfanapp.response.Comment;
 import com.nantaphop.pantipfanapp.response.Topic;
 import com.nantaphop.pantipfanapp.utils.CommentComparator;
-import com.nantaphop.pantipfanapp.utils.TopicCardComparator;
 import com.nantaphop.pantipfanapp.utils.TopicComparator;
 import com.squareup.otto.Subscribe;
 import org.androidannotations.annotations.*;
@@ -157,7 +156,6 @@ public class MainActivity extends FragmentActivity {
         listDialog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                TopicCardComparator topicCardComparator;
                 TopicComparator topicComparator;
                 switch(i){
                     case 0:

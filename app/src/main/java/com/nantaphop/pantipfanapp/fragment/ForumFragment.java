@@ -128,7 +128,6 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
     private boolean reInitFragment;
     private boolean prepareTopicDone;
     private boolean prepareRecommendDone;
-    private ArrayList<TopicSectionCard> sections;
     private float fabDefaultY;
     private boolean fabIsHiding;
     private ArrayList<Card> cards;
@@ -175,7 +174,6 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
 
     @Background
     void prepareTopicFromInstanceState() {
-        tmpTopicCard = forum.toCardList(getAttachedActivity(), 0);
         prepareTopicDone = true;
         joinForum();
     }
@@ -330,69 +328,6 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
             marginBottom = ((ViewGroup.MarginLayoutParams) layoutParams).bottomMargin;
         }
         return marginBottom;
-    }
-
-    public class TopicSectionedAdapter extends SectionedCardAdapter {
-
-        /*
-         * Define your layout in the constructor
-         */
-        public TopicSectionedAdapter(Context context, CardArrayAdapter cardArrayAdapter) {
-            super(context, R.layout.listitem_topic_section, cardArrayAdapter);
-        }
-
-        /*
-         * Override this method to customize your layout
-         */
-        @Override
-        protected View getSectionView(int position, View view, ViewGroup parent) {
-
-            //Override this method to customize your section's view
-
-            //Get the section
-            TopicSectionCard section = (TopicSectionCard) getCardSections().get(position);
-
-            if (section != null) {
-                //Set the title
-                TextView title = (TextView) view.findViewById(R.id.title);
-                if (title != null)
-                    title.setText(section.getTitle());
-
-                //Set the button
-                TextView buttonMore = (TextView) view.findViewById(R.id.button);
-                if (section.getButtonText().length() > 0) {
-
-                    buttonMore.setVisibility(View.VISIBLE);
-                    if (buttonMore != null) {
-                        buttonMore.setText(section.getButtonText());
-                        if (section.getOnClickListener() != null) {
-                            buttonMore.setOnClickListener(section.getOnClickListener());
-                        }
-                    }
-                } else
-                    buttonMore.setVisibility(View.GONE);
-
-            }
-
-            return view;
-        }
-    }
-
-    class TopicCardAdapter extends CardArrayAdapter {
-
-        public TopicCardAdapter(Context context, List<Card> cards) {
-            super(context, cards);
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-
-            if (position == getCount() - 5) {
-                Log.d("", "Do Loadmore");
-                loadMore();
-            }
-            return super.getView(position, convertView, parent);
-        }
     }
 
     public class TopicAdapter extends BaseAdapter {

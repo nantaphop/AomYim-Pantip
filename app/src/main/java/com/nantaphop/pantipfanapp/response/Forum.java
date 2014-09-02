@@ -59,11 +59,4 @@ public class Forum implements Serializable{
         this.topics = topics;
     }
 
-    public ArrayList<Card> toCardList(Context context, int start){
-        ArrayList<Card> cards = new ArrayList<Card>(topics.size());
-        for(int i = start; i<topics.size();i++){
-            cards.add(topics.get(i).toCard(context));
-        }
-        return cards;
-    }
 }

@@ -1,8 +1,6 @@
 package com.nantaphop.pantipfanapp.utils;
 
 import com.nantaphop.pantipfanapp.response.Topic;
-import com.nantaphop.pantipfanapp.view.TopicCard;
-import it.gmariotti.cardslib.library.internal.Card;
 
 import java.util.Comparator;
 
