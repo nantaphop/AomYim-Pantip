@@ -1,6 +1,7 @@
 package com.nantaphop.pantipfanapp.view;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -30,6 +31,7 @@ public class TopicRecommendView extends LinearLayout {
     }
 
     public void bind(String title, String url) {
+        Log.d("recommend", title + " - "+url);
         this.title.setText(title);
 
         final Topic topic = new Topic();

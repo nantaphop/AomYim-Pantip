@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/root"
                 android:layout_width="match_parent"
-                android:padding="@dimen/padding_default"
-                android:layout_height="60dp"
+                android:paddingTop="@dimen/padding_default"
+                android:paddingLeft="@dimen/padding_extra"
+                android:paddingRight="@dimen/padding_extra"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical">
 
 
@@ -16,7 +18,7 @@
             android:text="กระทู้แนะนำ"
             android:textSize="20sp"
             android:textStyle="italic"
-            android:layout_alignParentLeft="true"
+            android:layout_weight="1"
             android:layout_gravity="center"/>
 
     <TextView
@@ -29,9 +31,6 @@
 
             android:gravity="center_vertical|center_horizontal"
             android:id="@+id/button"
-            android:text="ดูทั้งหมด"
-            android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"/>
+            android:text="ดูทั้งหมด"/>
 
-</RelativeLayout>
+</LinearLayout>

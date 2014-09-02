@@ -79,8 +79,8 @@ public class BaseApplication extends Application {
                     .memoryCacheExtraOptions(480, 800) // default = device screen dimensions
                     .tasksProcessingOrder(QueueProcessingType.FIFO) // default
                     .denyCacheImageMultipleSizesInMemory()
-                    .memoryCache(new LruMemoryCache(2 * 1024 * 1024))
-                    .memoryCacheSize(2 * 1024 * 1024)
+                    .memoryCache(new LruMemoryCache(10 * 1024 * 1024))
+                    .memoryCacheSize(10 * 1024 * 1024)
                     .diskCacheSize(50 * 1024 * 1024)
                     .diskCacheFileCount(100)
                     .writeDebugLogs()

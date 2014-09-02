@@ -3,7 +3,6 @@ package com.nantaphop.pantipfanapp.view;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.Typeface;
 import android.text.Html;
 import android.text.format.DateUtils;
 import android.view.View;
@@ -18,7 +17,6 @@ import com.nantaphop.pantipfanapp.response.Tag;
 import com.nantaphop.pantipfanapp.response.Topic;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import org.androidannotations.annotations.*;
 import org.androidannotations.annotations.res.ColorRes;
 import org.androidannotations.annotations.res.DimensionPixelSizeRes;
@@ -28,12 +26,14 @@ import java.util.Date;
 /**
  * Created by nantaphop on 13-Aug-14.
  */
-@EViewGroup(R.layout.listitem_topic)
-public class TopicView extends RelativeLayout implements View.OnClickListener {
+@EViewGroup(R.layout.listitem_topic_thumbnail)
+public class TopicThumbnailView extends RelativeLayout implements View.OnClickListener {
 
     @App
     BaseApplication app;
 
+    @ViewById
+    ImageView thumbnail;
     @ViewById
     TextView title;
     @ViewById
@@ -64,13 +64,26 @@ public class TopicView extends RelativeLayout implements View.OnClickListener {
     @ColorRes(android.R.color.transparent)
     int headerBgTransparent;
 
+
+    private static DisplayImageOptions displayImageOptions = new DisplayImageOptions.Builder()
+            .resetViewBeforeLoading(true)
+            .cacheInMemory(true)
+            .cacheOnDisk(true)
+//            .imageScaleType(ImageScaleType.EXACTLY_STRETCHED)
+            .showImageOnLoading(R.drawable.ic_image)
+            .build();
     private Topic topic;
 
-    public TopicView(Context context) {
+    public TopicThumbnailView(Context context) {
         super(context);
         this.context = context;
         setOnClickListener(this);
 
+    }
+
+    @AfterViews
+    void init() {
+        thumbnail.setDrawingCacheEnabled(true);
     }
 
     @Trace(tag = "topicView")
@@ -78,6 +91,11 @@ public class TopicView extends RelativeLayout implements View.OnClickListener {
         this.topic = topic;
 
         title.setText(Html.fromHtml(topic.getTitle()));
+//        title.setTextColor(textDark);
+//        title.setBackgroundColor(headerBgTransparent);
+
+        app.getImageLoader().displayImage(topic.getCoverImg(), thumbnail, displayImageOptions);
+
 
         author.setText(Html.fromHtml(topic.getAuthor()));
         date.setText(DateUtils.getRelativeTimeSpanString(topic.getDate().getTime(), new Date().getTime(), DateUtils.MINUTE_IN_MILLIS));

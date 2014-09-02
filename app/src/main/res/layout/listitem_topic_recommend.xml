@@ -2,8 +2,11 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:id="@+id/root"
-              android:background="@drawable/card_bg_base"
-              android:padding="@dimen/padding_extra"
+              android:background="@drawable/card_bg"
+              android:paddingTop="@dimen/padding_default"
+              android:paddingLeft="@dimen/padding_extra"
+              android:paddingRight="@dimen/padding_extra"
+              android:paddingBottom="@dimen/padding_default"
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent">

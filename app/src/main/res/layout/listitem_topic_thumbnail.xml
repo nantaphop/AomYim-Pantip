@@ -5,6 +5,19 @@
                 android:layout_height="match_parent"
         android:background="@drawable/card_bg">
 
+    <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/card_topic_thumbnail_portrait_height"
+            android:id="@+id/thumbnail"
+            android:background="#ddd"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_launcher"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"/>
+
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -16,6 +29,8 @@
             android:paddingTop="@dimen/padding_default"
             android:paddingLeft="@dimen/padding_extra"
             android:paddingRight="@dimen/padding_extra"
+            android:paddingBottom="@dimen/padding_default"
+            android:background="@color/card_header_bg_bright"
             android:layout_alignBottom="@+id/thumbnail"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"

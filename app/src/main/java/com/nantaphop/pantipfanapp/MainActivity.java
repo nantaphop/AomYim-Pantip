@@ -122,9 +122,19 @@ public class MainActivity extends FragmentActivity {
 
     @Subscribe
     public void showRecommend(final ShowRecommendEvent e) {
-        RecommendDialog recommendDialog = RecommendDialog_.builder().topics(e.getRecommendTopics()).urls(e.getRecommendUrls()).build();
-        recommendDialog.show(getFragmentManager(), "recommend");
-
+//        RecommendDialog recommendDialog = RecommendDialog_.builder().topics(e.getRecommendTopics()).urls(e.getRecommendUrls()).build();
+//        recommendDialog.show(getFragmentManager(), "recommend");
+        final ListDialog listDialog = ListDialog_.builder().choicesArrayList( e.getRecommendTopics()).title(getString(R.string.recomend_topic)).listItemLayoutRes(R.layout.listitem_recommend_dialog).build();
+        listDialog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                final Topic topic = new Topic();
+                topic.setTitle(e.getRecommendTopics().get(i));
+                topic.setId(Integer.parseInt(e.getRecommendUrls().get(i).split("/")[4]));
+                app.getEventBus().post(new OpenTopicEvent(topic));
+            }
+        });
+        listDialog.show(getFragmentManager(), null);
     }
 
     @Subscribe

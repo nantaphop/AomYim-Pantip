@@ -31,6 +31,8 @@ public class ListDialog extends DialogFragment {
     @FragmentArg
     String[] choices;
     @FragmentArg
+    ArrayList<String> choicesArrayList;
+    @FragmentArg
     int listItemLayoutRes;
     @FragmentArg
     String title;
@@ -48,7 +50,11 @@ public class ListDialog extends DialogFragment {
         window.getAttributes().gravity = Gravity.RIGHT + Gravity.TOP;
         window.getAttributes().dimAmount = 0.0f;
 
-        list.setAdapter(new ArrayAdapter<String>(getActivity(), listItemLayoutRes, choices));
+        if (choices != null) {
+            list.setAdapter(new ArrayAdapter<String>(getActivity(), listItemLayoutRes, choices));
+        } else {
+            list.setAdapter(new ArrayAdapter<String>(getActivity(), listItemLayoutRes, choicesArrayList));
+        }
         getDialog().setTitle(title);
         list.setOnItemClickListener(onItemClickListener);
 

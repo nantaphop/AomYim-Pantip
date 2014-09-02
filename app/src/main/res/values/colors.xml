@@ -3,6 +3,7 @@
     <color name="base_color">#5e5a9a</color>
     <color name="base_color_highlight">#E5C700</color>
     <color name="base_color_bright">#ffa09cde</color>
+    <color name="base_color_bright_transparency">#44a09cde</color>
     <color name="background">#ffebebeb</color>
     <color name="card_shadow">#33cccccc</color>
     <color name="card_header_bg_bright">#ccffffff</color>

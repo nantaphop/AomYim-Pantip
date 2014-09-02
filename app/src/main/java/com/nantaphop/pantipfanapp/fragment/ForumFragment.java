@@ -22,12 +22,14 @@ import com.nantaphop.pantipfanapp.response.Topic;
 import com.nantaphop.pantipfanapp.utils.RESTUtils;
 import com.nantaphop.pantipfanapp.utils.ScrollDirectionListener;
 import com.nantaphop.pantipfanapp.view.*;
+import com.nhaarman.listviewanimations.swinginadapters.prepared.SwingBottomInAnimationAdapter;
 import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.internal.CardArrayAdapter;
 import it.gmariotti.cardslib.library.prototypes.SectionedCardAdapter;
 import org.androidannotations.annotations.*;
 import org.apache.http.Header;
 import uk.co.senab.actionbarpulltorefresh.library.ActionBarPullToRefresh;
+import uk.co.senab.actionbarpulltorefresh.library.Options;
 import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout;
 import uk.co.senab.actionbarpulltorefresh.library.listeners.OnRefreshListener;
 
@@ -226,15 +228,11 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
     init() {
         fabDefaultY = fab.getY();
         Log.d("forum", "init forum fragment " + forumPagerItem.title);
-        // Prepare Adapter
-//        cards = new ArrayList<Card>();
-//        cardArrayAdapter = new TopicCardAdapter(getAttachedActivity(), cards);
-//        cardArrayAdapter.setInnerViewTypeCount(2);
-//        sections = new ArrayList<TopicSectionCard>();
-//        sectionedCardAdapter = new TopicSectionedAdapter(getAttachedActivity(), cardArrayAdapter);
-//        cardList.setExternalAdapter(sectionedCardAdapter, cardArrayAdapter);
+
         topicAdapter = new TopicAdapter(getActivity());
-        list.setAdapter(topicAdapter);
+        MyAnimationAdapter animationAdapter = new MyAnimationAdapter(topicAdapter);
+        animationAdapter.setAbsListView(list);
+        list.setAdapter(animationAdapter);
 
         // Now setup the PullToRefreshLayout
         ActionBarPullToRefresh.from(this.getAttachedActivity())
@@ -335,6 +333,7 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
         final int TYPE_SECTION = 2;
         final int TYPE_RECOMMEND = 1;
         final int TYPE_TOPIC = 0;
+        final int TYPE_TOPIC_THUMBNAIL = 3;
 
         public TopicAdapter(Context context) {
         }
@@ -362,7 +361,7 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
 
         @Override
         public int getViewTypeCount() {
-            return 3;
+            return 4;
         }
 
         @Override
@@ -375,7 +374,16 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
             } else if (position > 0 && position <= recommendTopicTitle.length) {
                 return TYPE_RECOMMEND;
             } else {
-                return TYPE_TOPIC;
+                Topic topic = null;
+                try {
+                    topic = (Topic) getItem(position);
+                } catch (Exception e) {
+                    return TYPE_TOPIC;
+                }
+                if (topic.getCoverImg().length() > 0)
+                    return TYPE_TOPIC_THUMBNAIL;
+                else
+                    return TYPE_TOPIC;
             }
         }
 
@@ -391,6 +399,9 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
                     break;
                 case TYPE_RECOMMEND:
                     view = getViewTopicRecommend(position, convertView);
+                    break;
+                case TYPE_TOPIC_THUMBNAIL:
+                    view = getViewTopicThumbnail(position, convertView);
                     break;
             }
             return view;
@@ -440,6 +451,22 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
                 topicView = (TopicView) convertView;
             } else {
                 topicView = TopicView_.build(getAttachedActivity());
+
+            }
+            topicView.bind((Topic) getItem(position));
+            return topicView;
+        }
+
+        private TopicThumbnailView getViewTopicThumbnail(int position, View convertView) {
+            final TopicThumbnailView topicView;
+            if (position == getCount() - 5) {
+                loadMore();
+            }
+
+            if (convertView != null) {
+                topicView = (TopicThumbnailView) convertView;
+            } else {
+                topicView = TopicThumbnailView_.build(getAttachedActivity());
 
             }
             topicView.bind((Topic) getItem(position));
