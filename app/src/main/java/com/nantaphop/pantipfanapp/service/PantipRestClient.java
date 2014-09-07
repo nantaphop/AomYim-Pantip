@@ -4,10 +4,13 @@ import android.content.Context;
 import android.util.Log;
 import com.activeandroid.app.Application;
 import com.loopj.android.http.*;
+import com.nantaphop.pantipfanapp.pref.UserPref_;
 import com.nantaphop.pantipfanapp.response.ForumPart;
 import org.androidannotations.annotations.*;
+import org.androidannotations.annotations.sharedpreferences.Pref;
 import org.apache.http.Header;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.params.ClientPNames;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -26,10 +29,14 @@ public class PantipRestClient {
     @RootContext
     Application app;
 
+    @Pref
+    UserPref_ userPref;
+
     private static final String TAG = "REST";
 
     private final String BASE_URL = "http://pantip.com/";
     private AsyncHttpClient client = null;
+    private Context context;
 
     public static enum ForumType {
         Room {
@@ -102,6 +109,7 @@ public class PantipRestClient {
     ;
 
     public PantipRestClient(Context context) {
+        this.context = context;
         client = new AsyncHttpClient();
         PersistentCookieStore myCookieStore = new PersistentCookieStore(context);
         client.setCookieStore(myCookieStore);
@@ -134,6 +142,8 @@ public class PantipRestClient {
     @Trace
     @Background
     public void login(String username, String password, AsyncHttpResponseHandler cb) {
+        logout();
+        client.getHttpClient().getParams().setParameter(ClientPNames.ALLOW_CIRCULAR_REDIRECTS, true);
         RequestParams params = new RequestParams();
         params.put("member[email]", username);
         params.put("member[crypted_password]", password);
@@ -141,6 +151,13 @@ public class PantipRestClient {
         params.put("redirect", "");
         params.put("persistent[remember]", "1");
         post("login/authentication", params, cb);
+    }
+
+    public void logout(){
+        userPref.clear();
+        PersistentCookieStore myCookieStore = new PersistentCookieStore(context);
+        myCookieStore.clear();
+        client.setCookieStore(myCookieStore);
     }
 
     @Trace

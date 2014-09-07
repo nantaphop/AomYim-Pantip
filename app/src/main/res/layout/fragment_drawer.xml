@@ -3,9 +3,48 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:card="http://schemas.android.com/apk/res-auto"
               android:orientation="vertical"
+              android:clickable="true"
               android:background="@color/background"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
+
+    <LinearLayout
+            android:background="@color/base_color"
+            android:padding="@dimen/padding_default"
+            android:id="@+id/userPane"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        <ImageView
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:id="@+id/avatar"
+                android:src="@drawable/ic_launcher_pantip"
+                android:layout_gravity="center_horizontal"/>
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Large Text"
+                android:id="@+id/usernameTxt"
+                android:layout_marginTop="@dimen/padding_extra"
+
+                android:textColor="@android:color/white"
+
+                android:layout_gravity="center_horizontal"/>
+    </LinearLayout>
+
+
+    <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/login"
+            android:id="@+id/login"
+            android:textColor="@android:color/white"
+            android:background="@color/base_color"
+            android:layout_gravity="center_horizontal"/>
 
     <ListView
             android:background="@android:color/white"

@@ -1,10 +1,14 @@
 package com.nantaphop.pantipfanapp.fragment.dialog;
 
+import android.animation.*;
 import android.app.DialogFragment;
 import android.app.FragmentManager;
+import android.content.Context;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -19,6 +23,7 @@ import it.gmariotti.cardslib.library.internal.CardArrayAdapter;
 import org.androidannotations.annotations.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by nantaphop on 04-Aug-14.
@@ -49,7 +54,6 @@ public class ListDialog extends DialogFragment {
         window.getAttributes().windowAnimations = R.style.RecommendDialogAnimation;
         window.getAttributes().gravity = Gravity.RIGHT + Gravity.TOP;
         window.getAttributes().dimAmount = 0.0f;
-
         if (choices != null) {
             list.setAdapter(new ArrayAdapter<String>(getActivity(), listItemLayoutRes, choices));
         } else {
@@ -75,6 +79,8 @@ public class ListDialog extends DialogFragment {
         super.onStop();
         app.getEventBus().post(new DialogDismissEvent());
     }
+
+
 
 
 }

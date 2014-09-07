@@ -12,6 +12,11 @@
     <dimen name="padding_narrow">4dp</dimen>
     <dimen name="padding_extra">16dp</dimen>
 
+    <dimen name="screen_width_padding">8dp</dimen>
+    <dimen name="screen_height_padding">8dp</dimen>
+    <dimen name="screen_width_padding_extra">16dp</dimen>
+    <dimen name="screen_height_padding_extra">16dp</dimen>
+
     <!--PagerSlidingTabStrip-->
     <dimen name="tabs_indicator_height">4dp</dimen>
 

@@ -1,34 +1,65 @@
 package com.nantaphop.pantipfanapp.fragment;
 
-import android.support.v4.app.Fragment;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import com.nantaphop.pantipfanapp.BaseApplication;
+import android.widget.*;
 import com.nantaphop.pantipfanapp.R;
+import com.nantaphop.pantipfanapp.event.UpdateLoginStateEvent;
 import com.nantaphop.pantipfanapp.event.OpenForumRearrangeEvent;
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.App;
-import org.androidannotations.annotations.EFragment;
-import org.androidannotations.annotations.ViewById;
+import com.nantaphop.pantipfanapp.event.OpenLoginScreenEvent;
+import com.nantaphop.pantipfanapp.pref.UserPref_;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
+import com.squareup.otto.Subscribe;
+import org.androidannotations.annotations.*;
 import org.androidannotations.annotations.res.StringArrayRes;
+import org.androidannotations.annotations.sharedpreferences.Pref;
 
 /**
  * Created by nantaphop on 11-Aug-14.
  */
 @EFragment(R.layout.fragment_drawer)
 public class DrawerFragment extends BaseFragment {
-    @App
-    BaseApplication app;
-    @ViewById
-    ListView list;
+
+    @Pref
+    UserPref_ userPref;
+
 
     @StringArrayRes
     String[] drawer_menu;
+    @ViewById
+    ImageView avatar;
+    @ViewById
+    TextView usernameTxt;
+    @ViewById
+    LinearLayout userPane;
+    @ViewById
+    ListView list;
+    @ViewById
+    Button login;
+
+    private static DisplayImageOptions displayImageOptions =  new DisplayImageOptions.Builder()
+            .resetViewBeforeLoading(true)
+            .displayer(new RoundedBitmapDisplayer((int) 180f))
+            .cacheInMemory(true)
+            .cacheOnDisk(true)
+            .imageScaleType(ImageScaleType.EXACTLY_STRETCHED)
+            .showImageOnLoading(R.drawable.ic_image)
+            .build();
 
     @AfterViews
     void init() {
+        app.getEventBus().register(this);
+        if(userPref.username().exists()){
+            login.setVisibility(View.GONE);
+            userPane.setVisibility(View.VISIBLE);
+            usernameTxt.setText(userPref.username().get());
+            app.getImageLoader().displayImage(userPref.avatar().get(), avatar, displayImageOptions);
+        }else{
+            login.setVisibility(View.VISIBLE);
+            userPane.setVisibility(View.GONE);
+        }
+
         list.setAdapter(new ArrayAdapter<String>(getAttachedActivity(), android.R.layout.simple_list_item_1, drawer_menu));
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -37,8 +68,23 @@ public class DrawerFragment extends BaseFragment {
                     case 0:
                         app.getEventBus().post(new OpenForumRearrangeEvent());
                         break;
+
                 }
             }
         });
+    }
+
+    @Subscribe
+    public void update(UpdateLoginStateEvent e) {
+        init();
+    }
+
+    @Click
+    void login(){
+        app.getEventBus().post(new OpenLoginScreenEvent());
+    }
+    @Click
+    void userPane(){
+        app.getEventBus().post(new OpenLoginScreenEvent());
     }
 }

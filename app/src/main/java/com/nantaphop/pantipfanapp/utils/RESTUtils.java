@@ -1,7 +1,10 @@
 package com.nantaphop.pantipfanapp.utils;
 
+import android.util.Log;
 import com.nantaphop.pantipfanapp.BaseApplication;
+import com.nantaphop.pantipfanapp.pref.UserPref_;
 import com.nantaphop.pantipfanapp.response.*;
+import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
@@ -9,12 +12,10 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Formatter;
-import java.util.Locale;
+import java.util.*;
 
 /**
  * Created by nantaphop on 27-Jul-14.
@@ -125,7 +126,7 @@ public class RESTUtils {
         topicPost.setBody(body.html());
         topicPost.setVotes(Integer.parseInt(doc.select("span.like-score ").get(0).text()));
         topicPost.setEmotions(Integer.parseInt(doc.select("span.emotion-score").get(0).text()));
-        topicPost.setAuthor(doc.select("a.display-post-name").text());
+        topicPost.setAuthor(doc.select("a.display-post-name").get(0).text());
 
         Element dateEle = doc.select("abbr.timeago").get(0);
         try {
@@ -165,4 +166,26 @@ public class RESTUtils {
         c.setMessage(doc.html());
     }
 
+    public static boolean isLogin(Header[] headers){
+        for (Header h : headers){
+            if(h.getName().equalsIgnoreCase("Connection") &&
+                    h.getValue().equalsIgnoreCase("keep-alive")){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean parseUserInfo(byte[] httpBody, UserPref_ userPref){
+        try {
+            Document doc = Jsoup.parse(new String(httpBody, "utf-8"));
+            String title = doc.select("title").get(0).text().replace("หน้าของ ","").replace(" - Pantip","");
+            String avatar = doc.select("img.big-avatar").get(0).attr("src");
+            Log.d("login", "User login - "+title+" : "+avatar);
+            userPref.edit().username().put(title).avatar().put(avatar).apply();
+            return true;
+        } catch (UnsupportedEncodingException e) {
+            return false;
+        }
+    }
 }

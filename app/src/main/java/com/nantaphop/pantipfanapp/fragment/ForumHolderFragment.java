@@ -13,6 +13,7 @@ import com.nantaphop.pantipfanapp.BaseApplication;
 import com.nantaphop.pantipfanapp.R;
 import com.nantaphop.pantipfanapp.event.ForumScrollDownEvent;
 import com.nantaphop.pantipfanapp.event.ForumScrollUpEvent;
+import com.nantaphop.pantipfanapp.event.ToggleDrawerEvent;
 import com.nantaphop.pantipfanapp.event.UpdateForumListEvent;
 import com.nantaphop.pantipfanapp.model.ForumPagerItem;
 import com.squareup.otto.Subscribe;
@@ -63,11 +64,10 @@ public class ForumHolderFragment extends BaseFragment {
 
     }
 
-
-
-
-
-
+    @Override
+    void back() {
+        app.getEventBus().post(new ToggleDrawerEvent());
+    }
 
     private class ForumSlidePagerAdapter extends FragmentStatePagerAdapter{
         public ForumSlidePagerAdapter(FragmentManager fm) {

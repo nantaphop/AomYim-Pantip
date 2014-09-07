@@ -99,7 +99,7 @@
 
         <ImageView
                 android:layout_width="@dimen/author_pic_comment"
-                android:src="@drawable/ic_launcher"
+                android:src="@drawable/ic_launcher_pantip"
                 android:layout_height="@dimen/author_pic_comment"
                 android:id="@+id/authorPic"
                 android:layout_alignRight="@+id/separator"

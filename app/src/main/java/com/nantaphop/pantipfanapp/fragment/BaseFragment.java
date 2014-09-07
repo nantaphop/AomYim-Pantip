@@ -4,9 +4,7 @@ import android.app.Activity;
 import android.support.v4.app.Fragment;
 import com.nantaphop.pantipfanapp.BaseApplication;
 import com.nantaphop.pantipfanapp.service.PantipRestClient;
-import org.androidannotations.annotations.App;
-import org.androidannotations.annotations.Bean;
-import org.androidannotations.annotations.EFragment;
+import org.androidannotations.annotations.*;
 import org.jsoup.Connection;
 
 /**
@@ -24,6 +22,11 @@ public class BaseFragment extends Fragment {
     public void onAttach(Activity activity) {
         this.activity = activity;
         super.onAttach(activity);
+    }
+
+    @OptionsItem(android.R.id.home)
+    void back(){
+        getActivity().onBackPressed();
     }
 
 

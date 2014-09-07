@@ -143,7 +143,10 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
     @Background
     void prepareForumPart() {
         forumPart = RESTUtils.parseForumPart(new String(tmpForumPartBytes));
-
+        Log.d("forumPart", "prepareForumPart recommend size : "+forumPart.getRecommendUrl().size()+" - "+forumPart.getRecommendTopic().size());
+        for(String s: forumPart.getRecommendTopic()){
+            Log.d("recommend",forumPagerItem.title+" "+s);
+        }
         prepareRecommendCard();
 
 
@@ -157,6 +160,7 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
         if (currentPage == 2) { // Do just first load
 //            // Add Recommend Topic
             for (int i = 0; i < numPreview; i++) {
+                Log.d("recommend","prepareRecommendCard "+i+" : "+forumPart.getRecommendTopic().get(i));
                 recommendTopicTitle[i] = forumPart.getRecommendTopic().get(i);
                 recommendTopicUrl[i] = forumPart.getRecommendUrl().get(i);
             }
@@ -174,11 +178,11 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
         joinForum();
     }
 
-    @Background
-    void prepareTopicFromInstanceState() {
-        prepareTopicDone = true;
-        joinForum();
-    }
+//    @Background
+//    void prepareTopicFromInstanceState() {
+//        prepareTopicDone = true;
+//        joinForum();
+//    }
 
     @Trace(tag = "joinForum")
     @UiThread
@@ -194,6 +198,11 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
         }
 
 
+    }
+
+    @Override
+    void back() {
+        app.getEventBus().post(new ToggleDrawerEvent());
     }
 
     private void hideFab() {
@@ -268,7 +277,7 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
         // If from saved
         if (forum != null && forumPart != null) {
             prepareRecommendCard();
-            prepareTopicFromInstanceState();
+            prepareTopic();
             return;
         } else {
             // Load Initial Data
@@ -416,7 +425,12 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
                 topicRecommendView = TopicRecommendView_.build(getAttachedActivity());
 
             }
-            topicRecommendView.bind(recommendTopicTitle[position - 1], recommendTopicUrl[position - 1]);
+            Log.d("recommend", "get recommend view [ total:"+recommendTopicTitle.length+"]"+" get at "+(position-1)+" "+recommendTopicTitle[position - 1]+" "+recommendTopicUrl[position - 1]);
+            try {
+                topicRecommendView.bind(recommendTopicTitle[position - 1], recommendTopicUrl[position - 1]);
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            }
             return topicRecommendView;
         }
 

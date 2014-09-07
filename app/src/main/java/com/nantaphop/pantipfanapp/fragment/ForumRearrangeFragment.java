@@ -30,6 +30,7 @@ import java.util.*;
 @OptionsMenu(R.menu.menu_forum_rearrange)
 @EFragment(R.layout.fragment_forum_rearrange)
 public class ForumRearrangeFragment extends BaseFragment {
+    public static final String TAG ="rearrange";
 
     @App
     BaseApplication app;

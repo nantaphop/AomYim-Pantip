@@ -4,10 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
@@ -294,6 +291,8 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
         inflater.inflate(com.nantaphop.pantipfanapp.R.menu.menu_topic, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
+
+
 
     @OptionsItem
     void action_sort_comment() {
