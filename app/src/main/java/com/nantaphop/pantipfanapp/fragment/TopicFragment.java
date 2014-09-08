@@ -2,6 +2,8 @@ package com.nantaphop.pantipfanapp.fragment;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.*;
@@ -298,6 +300,31 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
     void action_sort_comment() {
         Log.d("menu", "sort comment");
         app.getEventBus().post(new SortCommentEvent(comments, commentAdapter));
+    }
+
+    @OptionsItem
+    void action_open_browser(){
+        Intent i = new Intent(Intent.ACTION_VIEW);
+        i.setData(Uri.parse("http://pantip.com/topic/"+topic.getId()));
+        startActivity(i);
+
+    }
+
+    @OptionsItem
+    public void action_share(){
+
+        try {
+
+            Intent intent=new Intent(Intent.ACTION_SEND);
+            intent.setType("text/plain");
+
+            intent.putExtra(Intent.EXTRA_SUBJECT, app.getString(R.string.share_title));
+            intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_text, topic.getTitle(), "http://pantip.com/topic/"+topic.getId()));
+
+            startActivity(Intent.createChooser(intent, app.getString(R.string.share_prompt)));
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
     }
 
     private void loadNextComments() {
