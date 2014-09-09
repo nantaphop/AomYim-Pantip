@@ -20,6 +20,15 @@ public class TopicPost implements Serializable{
     int votes;
     int comments;
     boolean fav;
+    String authorPic;
+
+    public String getAuthorPic() {
+        return authorPic;
+    }
+
+    public void setAuthorPic(String authorPic) {
+        this.authorPic = authorPic;
+    }
 
     public boolean isFav() {
         return fav;

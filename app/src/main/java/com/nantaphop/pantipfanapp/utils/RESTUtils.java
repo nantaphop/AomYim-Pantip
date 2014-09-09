@@ -127,6 +127,7 @@ public class RESTUtils {
         topicPost.setVotes(Integer.parseInt(doc.select("span.like-score ").get(0).text()));
         topicPost.setEmotions(Integer.parseInt(doc.select("span.emotion-score").get(0).text()));
         topicPost.setAuthor(doc.select("a.display-post-name").get(0).text());
+        topicPost.setAuthorPic(doc.select("div.display-post-avatar a img").get(0).attr("src"));
 
         Element dateEle = doc.select("abbr.timeago").get(0);
         try {

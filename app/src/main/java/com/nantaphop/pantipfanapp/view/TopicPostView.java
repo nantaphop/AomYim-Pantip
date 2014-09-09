@@ -40,6 +40,8 @@ public class TopicPostView extends RelativeLayout{
     ImageView authorPic;
     private Context context;
 
+
+
     private static DisplayImageOptions displayImageOptions =  new DisplayImageOptions.Builder()
             .resetViewBeforeLoading(true)
             .displayer(new RoundedBitmapDisplayer((int) 60f))
@@ -61,6 +63,8 @@ public class TopicPostView extends RelativeLayout{
         votes.setText(topicPost.getVotes()+"");
         emo.setText(topicPost.getEmotions()+"");
         author.setText(topicPost.getAuthor());
+        app.getImageLoader().displayImage(topicPost.getAuthorPic(), authorPic, displayImageOptions);
+
 
     }
 }

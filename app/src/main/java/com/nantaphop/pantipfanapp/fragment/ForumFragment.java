@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.BaseAdapter;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -52,6 +53,8 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
 //    CardListView cardList;
     @ViewById
     FloatingActionButton fab;
+    @ViewById
+    FrameLayout root;
 
 
     @FragmentArg
@@ -138,6 +141,7 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
     public String[] recommendTopicTitle;
     @InstanceState
     public String[] recommendTopicUrl;
+    private SimpleEmptyView emptyView;
 
     @Trace
     @Background
@@ -241,7 +245,11 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
         topicAdapter = new TopicAdapter(getActivity());
         MyAnimationAdapter animationAdapter = new MyAnimationAdapter(topicAdapter);
         animationAdapter.setAbsListView(list);
+        emptyView = SimpleEmptyView_.build(getActivity());
+        root.addView(emptyView);
+
         list.setAdapter(animationAdapter);
+        list.setEmptyView(emptyView);
 
         // Now setup the PullToRefreshLayout
         ActionBarPullToRefresh.from(this.getAttachedActivity())

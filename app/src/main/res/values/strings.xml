@@ -34,6 +34,8 @@
     <string name="share_prompt">แชร์กระทู้ ใน...</string>
     <string name="action_share">แชร์</string>
     <string name="action_open_browser">ดูบน Browser</string>
+    <string name="add_comment">เพิ่มความเห็น</string>
+    <string name="no_comment">ยังไม่มีความเห็น</string>
 
     <array name="topic_sort_type">
         <item>จำนวนความเห็น</item>
