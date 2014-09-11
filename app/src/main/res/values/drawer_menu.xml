@@ -2,5 +2,6 @@
 <resources>
     <array name="drawer_menu">
         <item>จัดการห้อง</item>
+        <item>กระทู้ทดสอบความเห็น</item>
     </array>
 </resources>

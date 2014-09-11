@@ -3,10 +3,12 @@ package com.nantaphop.pantipfanapp.fragment;
 import android.view.View;
 import android.widget.*;
 import com.nantaphop.pantipfanapp.R;
+import com.nantaphop.pantipfanapp.event.OpenTopicEvent;
 import com.nantaphop.pantipfanapp.event.UpdateLoginStateEvent;
 import com.nantaphop.pantipfanapp.event.OpenForumRearrangeEvent;
 import com.nantaphop.pantipfanapp.event.OpenLoginScreenEvent;
 import com.nantaphop.pantipfanapp.pref.UserPref_;
+import com.nantaphop.pantipfanapp.response.Topic;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
@@ -67,6 +69,12 @@ public class DrawerFragment extends BaseFragment {
                 switch (i) {
                     case 0:
                         app.getEventBus().post(new OpenForumRearrangeEvent());
+                        break;
+                    case 1:
+                        Topic topic = new Topic();
+                        topic.setId(31049053);
+                        topic.setTitle("[SR]รีวิวสั้น Pantip Fan App - Dark Theme [Android]");
+                        app.getEventBus().post(new OpenTopicEvent(topic));
                         break;
 
                 }

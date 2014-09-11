@@ -19,5 +19,8 @@
     <color name="text_color_score_2">#ff7773c4</color>
     <color name="text_color_score_3">#5e5a9a</color>
 
+    <color name="comment_tools_bg">#ddffffff</color>
+
+
 
 </resources>

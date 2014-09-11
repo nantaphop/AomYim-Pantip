@@ -36,6 +36,8 @@
     <string name="action_open_browser">ดูบน Browser</string>
     <string name="add_comment">เพิ่มความเห็น</string>
     <string name="no_comment">ยังไม่มีความเห็น</string>
+    <string name="feedback_comment_success">แสดงความเห็นเสร็จสิ้น</string>
+    <string name="feedback_comment_failed">คุณได้แสดงแล้ว กรุณารอ 5 วินาที ก่อนแสดงความเห็นใหม่</string>
 
     <array name="topic_sort_type">
         <item>จำนวนความเห็น</item>

@@ -17,18 +17,29 @@ public class ScrollDirectionListener implements AbsListView.OnScrollListener {
 
     private OnScrollUp onScrollUp;
     private OnScrollDown onScrollDown;
+    private OnBottomReach onBottomReach;
     private int startItem;
-
-    public ScrollDirectionListener(OnScrollUp onScrollUp, OnScrollDown onScrollDown) {
-        this.onScrollUp = onScrollUp;
-        this.onScrollDown = onScrollDown;
-    }
+    private int preLast;
 
     public ScrollDirectionListener(int startItem, OnScrollUp onScrollUp, OnScrollDown onScrollDown) {
+        this.onScrollUp = onScrollUp;
+        this.onScrollDown = onScrollDown;
+        this.startItem = startItem;
+
+    }
+
+    public ScrollDirectionListener(int startItem, OnScrollUp onScrollUp, OnScrollDown onScrollDown, OnBottomReach onBottomReach) {
         this.startItem = startItem;
         this.onScrollUp = onScrollUp;
         this.onScrollDown = onScrollDown;
+        this.onBottomReach = onBottomReach;
         currentFVI = startItem;
+    }
+
+    public ScrollDirectionListener(OnScrollUp onScrollUp, OnScrollDown onScrollDown, OnBottomReach onBottomReach) {
+        this.onScrollUp = onScrollUp;
+        this.onScrollDown = onScrollDown;
+        this.onBottomReach = onBottomReach;
     }
 
     public void resetScrollDirectionState() {
@@ -76,6 +87,17 @@ public class ScrollDirectionListener implements AbsListView.OnScrollListener {
         }
         if (currentFVI != firstVisibleItem)
             isStop = false;
+        // Sample calculation to determine if the last
+        // item is fully visible.
+        final int lastItem = firstVisibleItem + visibleItemCount;
+        if(lastItem == totalItemCount) {
+//            if(preLast!=lastItem){ //to avoid multiple calls for last item
+               if(onBottomReach!=null){
+                   onBottomReach.onBottomReach();
+               }
+                preLast = lastItem;
+//            }
+        }
     }
 
     public interface OnScrollUp {
@@ -84,5 +106,9 @@ public class ScrollDirectionListener implements AbsListView.OnScrollListener {
 
     public interface OnScrollDown {
         public void onScrollDown();
+    }
+
+    public interface OnBottomReach {
+        public void onBottomReach();
     }
 }

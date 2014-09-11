@@ -18,6 +18,7 @@
         <!--android:layout_height="match_parent"></ListView>-->
         <uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout
                 android:id="@+id/pullToRefreshLayout"
+                android:layout_weight="1"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent">
 
@@ -29,16 +30,77 @@
         </uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout>
 
 
+
     </LinearLayout>
-    <com.melnykov.fab.FloatingActionButton
-            android:id="@+id/fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|right"
-            android:layout_margin="16dp"
-            android:src="@drawable/ic_content_new"
-            fab:fab_colorNormal="@color/base_color"
-            fab:fab_colorPressed="@color/base_color_bright"/>
+
+    <LinearLayout
+            android:orientation="vertical"
+            android:showDividers="end"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        <LinearLayout
+                android:id="@+id/commentTools"
+                android:orientation="vertical"
+                android:background="@color/comment_tools_bg"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:visibility="invisible"
+                android:layout_weight="1"
+                android:gravity="bottom">
+
+            <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/expandMoreComment"
+                    android:src="@drawable/ic_expand_less"
+                    style="?android:borderlessButtonStyle"
+                    android:layout_gravity="center_vertical|center_horizontal"/>
+            <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/expandLessComment"
+                    android:src="@drawable/ic_expand_more"
+                    style="?android:borderlessButtonStyle"
+
+                    android:layout_gravity="center_vertical|center_horizontal"/>
+        </LinearLayout>
+        <View
+                android:id="@+id/commentBarSeparator"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/base_color"/>
+        <LinearLayout
+                android:id="@+id/commentPane"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_gravity="bottom"
+                android:layout_height="wrap_content"
+                android:gravity="bottom"
+                android:background="@android:color/white"
+                android:weightSum="1">
+
+
+            <EditText
+                    android:layout_width="240dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="bottom"
+                    android:id="@+id/shortComment"
+                    android:inputType="textMultiLine"
+                    android:maxLines="3"
+                    android:layout_weight="1"
+                    android:layout_gravity="bottom"/>
+
+            <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/comment"
+                    android:src="@drawable/ic_send"
+                    style="?android:borderlessButtonStyle"
+                    android:layout_gravity="bottom"/>
+        </LinearLayout>
+            </LinearLayout>
+
+
 
 
 

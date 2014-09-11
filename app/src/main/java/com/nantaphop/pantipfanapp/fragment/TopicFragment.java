@@ -1,31 +1,30 @@
 package com.nantaphop.pantipfanapp.fragment;
 
+import android.animation.Animator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.BaseJsonHttpResponseHandler;
-import com.melnykov.fab.FloatingActionButton;
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.nantaphop.pantipfanapp.R;
 import com.nantaphop.pantipfanapp.event.SortCommentEvent;
 import com.nantaphop.pantipfanapp.response.*;
 import com.nantaphop.pantipfanapp.utils.RESTUtils;
 import com.nantaphop.pantipfanapp.utils.ScrollDirectionListener;
 import com.nantaphop.pantipfanapp.view.*;
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
 import org.androidannotations.annotations.*;
 import org.androidannotations.annotations.res.DimensionPixelSizeRes;
-import org.androidannotations.annotations.sharedpreferences.Pref;
 import org.apache.http.Header;
-import org.w3c.dom.Text;
 import uk.co.senab.actionbarpulltorefresh.library.ActionBarPullToRefresh;
 import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout;
 import uk.co.senab.actionbarpulltorefresh.library.listeners.OnRefreshListener;
@@ -42,14 +41,6 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
 
     @FragmentArg
     Topic topic;
-    @ViewById
-    ListView list;
-    @ViewById
-    PullToRefreshLayout pullToRefreshLayout;
-    @ViewById
-    FloatingActionButton fab;
-    @ViewById
-    FrameLayout root;
 
     @InstanceState
     int lastFirstVisibleItem;
@@ -60,17 +51,35 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
 
     @DimensionPixelSizeRes(R.dimen.list_footer_height)
     int footerHeight;
+    @ViewById
+    ListView list;
+    @ViewById
+    PullToRefreshLayout pullToRefreshLayout;
+    @ViewById
+    ImageButton expandMoreComment;
+    @ViewById
+    ImageButton expandLessComment;
+    @ViewById
+    LinearLayout commentTools;
+    @ViewById
+    View commentBarSeparator;
+    @ViewById
+    EditText shortComment;
+    @ViewById
+    ImageButton comment;
+    @ViewById
+    LinearLayout commentPane;
+    @ViewById
+    FrameLayout root;
 
 
-    private byte[] tmpTopicPageHtml;
-    private float fabDefaultY;
+    private CommentView waitUpdateCommentView;
+    private int newRepliesPosition;
+    private Reply tmpReplies;
     @InstanceState
     int currentCommentPage = 1;
-    private CommentAdapter commentAdapter;
     boolean prepareCommentsDone = false, prepareTopicPostDone = false;
-    private ArrayList<Comment> tmpCommentsList;
-
-
+    private byte[] tmpTopicPageHtml;
     private AsyncHttpResponseHandler topicPostCallback = new AsyncHttpResponseHandler() {
         @Override
         public void onSuccess(int i, Header[] headers, byte[] bytes) {
@@ -83,7 +92,9 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
 
         }
     };
-
+    private float commentViewDefaultHeight;
+    private CommentAdapter commentAdapter;
+    private ArrayList<Comment> tmpCommentsList;
     private BaseJsonHttpResponseHandler commentsCallback = new BaseJsonHttpResponseHandler() {
         @Override
         public void onSuccess(int i, Header[] headers, String s, Object o) {
@@ -140,9 +151,37 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
             return RESTUtils.parseReplies(s);
         }
     };
-    private CommentView waitUpdateCommentView;
-    private int newRepliesPosition;
-    private Reply tmpReplies;
+
+    private BaseJsonHttpResponseHandler doCommentCallback = new BaseJsonHttpResponseHandler() {
+        @Override
+        public void onSuccess(int i, Header[] headers, String s, Object o) {
+            CommentResponse response = (CommentResponse) o;
+            if (!response.isError()) {
+                lastFirstVisibleItem = list.getAdapter().getCount()-1; // Force scroll to last after doComment
+                comments = null;
+                currentCommentPage = 1;
+                loadNextComments();
+                list.requestFocus();
+                shortComment.setText("");
+                Crouton.makeText(getActivity(), getActivity().getString(R.string.feedback_comment_success), Style.CONFIRM).show();
+            }else {
+                Crouton.makeText(getActivity(), getActivity().getString(R.string.feedback_comment_failed), Style.ALERT).show();
+            }
+            pullToRefreshLayout.setRefreshComplete();
+
+        }
+
+        @Override
+        public void onFailure(int i, Header[] headers, Throwable throwable, String s, Object o) {
+
+        }
+
+        @Override
+        protected Object parseResponse(String s, boolean b) throws Throwable {
+            return RESTUtils.parseCommentResp(s);
+        }
+    };
+
     private boolean fabIsHiding;
     private SimpleEmptyView emptyView;
 
@@ -154,7 +193,7 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
 
     @AfterViews
     void init() {
-        fabDefaultY = fab.getY();
+        commentViewDefaultHeight = commentPane.getY();
         Log.d("topic", "init topic fragment " + topic.getId());
         // Prepare Adapter
         commentAdapter = new CommentAdapter(getAttachedActivity());
@@ -162,9 +201,9 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
         emptyView = SimpleEmptyView_.build(getActivity());
         root.addView(emptyView);
         list.setEmptyView(emptyView);
-        View footer= new View(getActivity());
+        View footer = new View(getActivity());
         footer.setMinimumHeight(footerHeight);
-        list.addFooterView(AddCommentView_.build(getActivity()));
+        list.addFooterView(footer);
         // Now setup the PullToRefreshLayout
         ActionBarPullToRefresh.from(this.getAttachedActivity())
                 // Mark All Children as pullable
@@ -181,12 +220,17 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
         list.setOnScrollListener(new ScrollDirectionListener(lastFirstVisibleItem, new ScrollDirectionListener.OnScrollUp() {
             @Override
             public void onScrollUp() {
-                showFab();
+                showCommentPane();
             }
         }, new ScrollDirectionListener.OnScrollDown() {
             @Override
             public void onScrollDown() {
-                hideFab();
+                hideCommentPane();
+            }
+        }, new ScrollDirectionListener.OnBottomReach() {
+            @Override
+            public void onBottomReach() {
+                showCommentPane();
             }
         }));
 
@@ -197,7 +241,25 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
             prepareTopicPostDone = true;
             prepareComments();
         }
+        list.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                list.requestFocus();
+                return false;
+            }
+        });
     }
+
+    @FocusChange(R.id.shortComment)
+    void commentFocused() {
+
+        if (shortComment.isFocused()) {
+            showCommentTools();
+        } else {
+            hideCommentTools();
+        }
+    }
+
 
     @Background
     public void prepareTopicPost() {
@@ -290,12 +352,17 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
 
     @Override
     public void onRefreshStarted(View view) {
+        topicPost = null;
+        comments = null;
+        currentCommentPage = 1;
         loadNextComments();
+        loadTopicPost();
     }
 
     public void loadTopicPost() {
         if (!pullToRefreshLayout.isRefreshing())
             pullToRefreshLayout.setRefreshing(true);
+        prepareTopicPostDone = false;
         client.getTopicPost(topic.getId() + "", topicPostCallback);
     }
 
@@ -304,6 +371,15 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
         menu.clear();
         inflater.inflate(R.menu.menu_topic, menu);
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Click
+    void comment(){
+        if(shortComment.getText().length()>0){
+            pullToRefreshLayout.setRefreshing(true);
+            hideCommentTools();
+            client.comment(topic.getId()+"", shortComment.getText().toString(), doCommentCallback);
+        }
     }
 
 
@@ -341,30 +417,68 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
     private void loadNextComments() {
         if (!pullToRefreshLayout.isRefreshing())
             pullToRefreshLayout.setRefreshing(true);
+        prepareCommentsDone = false;
+        client.getComments(topic.getId() + "", currentCommentPage, false, commentsCallback);
+    }
+    private void updateNewComment(int commentNo) {
+        if (!pullToRefreshLayout.isRefreshing())
+            pullToRefreshLayout.setRefreshing(true);
+        prepareCommentsDone = false;
         client.getComments(topic.getId() + "", currentCommentPage, false, commentsCallback);
     }
 
-    @Click
-    void fab(){
 
-    }
-
-    private void hideFab() {
+    private void hideCommentPane() {
         if (!fabIsHiding) {
-            fab.animate().translationY(fab.getHeight() * 3).setInterpolator(new AccelerateDecelerateInterpolator()).start();
+            commentBarSeparator.animate().translationY(commentPane.getHeight() * 3).setInterpolator(new AccelerateDecelerateInterpolator()).start();
+            commentPane.animate().translationY(commentPane.getHeight() * 3).setInterpolator(new AccelerateDecelerateInterpolator()).start();
             fabIsHiding = true;
         }
     }
 
-    private void showFab() {
+    private void showCommentPane() {
         if (fabIsHiding) {
-            fab.animate().translationY(fabDefaultY).setInterpolator(new AccelerateDecelerateInterpolator()).start();
+            commentPane.animate().translationY(commentViewDefaultHeight).setInterpolator(new AccelerateDecelerateInterpolator()).start();
+            commentBarSeparator.animate().translationY(commentViewDefaultHeight).setInterpolator(new AccelerateDecelerateInterpolator()).start();
             fabIsHiding = false;
         }
     }
 
+    void showCommentTools() {
+        commentTools.setVisibility(View.VISIBLE);
+        commentTools.animate().alpha(1).setListener(null).setDuration(200).setInterpolator(new AccelerateDecelerateInterpolator()).start();
+    }
+
+    void hideCommentTools() {
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(shortComment.getWindowToken(), 0);
+        commentTools.animate().alpha(0).setDuration(200).setInterpolator(new AccelerateDecelerateInterpolator())
+                .setListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animator) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animator) {
+                        commentTools.setVisibility(View.INVISIBLE);
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animator) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animator) {
+
+                    }
+                }).start();
+    }
+
     class CommentAdapter extends BaseAdapter {
         boolean noComment = false;
+
         public CommentAdapter(Context context) {
         }
 
@@ -396,7 +510,8 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
 
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
-            if(noComment){
+
+            if (noComment) {
 //                NoCommentView noCommentView = NoCommentView_.build(getActivity());
 //                noCommentView.bind();
 

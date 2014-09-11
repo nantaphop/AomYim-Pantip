@@ -127,7 +127,10 @@ public class RESTUtils {
         topicPost.setVotes(Integer.parseInt(doc.select("span.like-score ").get(0).text()));
         topicPost.setEmotions(Integer.parseInt(doc.select("span.emotion-score").get(0).text()));
         topicPost.setAuthor(doc.select("a.display-post-name").get(0).text());
-        topicPost.setAuthorPic(doc.select("div.display-post-avatar a img").get(0).attr("src"));
+        String avatar = doc.select("div.display-post-avatar a img").get(0).attr("src");
+        if(avatar.startsWith("/images"))
+            avatar += "http://pantip.com" + avatar;
+        topicPost.setAuthorPic(avatar);
 
         Element dateEle = doc.select("abbr.timeago").get(0);
         try {
@@ -146,6 +149,10 @@ public class RESTUtils {
 
     public static Reply parseReplies(String resp){
         return BaseApplication.getGson().fromJson(resp, Reply.class);
+    }
+    public static CommentResponse parseCommentResp(String resp){
+        Log.d("resp", resp);
+        return BaseApplication.getGson().fromJson(resp, CommentResponse.class);
     }
 
     public static void processComment(Comment c) {
@@ -182,6 +189,8 @@ public class RESTUtils {
             Document doc = Jsoup.parse(new String(httpBody, "utf-8"));
             String title = doc.select("title").get(0).text().replace("หน้าของ ","").replace(" - Pantip","");
             String avatar = doc.select("img.big-avatar").get(0).attr("src");
+            if(avatar.startsWith("/images"))
+                avatar += "http://pantip.com" + avatar;
             Log.d("login", "User login - "+title+" : "+avatar);
             userPref.edit().username().put(title).avatar().put(avatar).apply();
             return true;

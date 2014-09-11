@@ -170,6 +170,8 @@ public class MainActivity extends FragmentActivity {
         TopicFragment topicFragment = TopicFragment_.builder().topic(e.getTopic()).build();
         openFragment(topicFragment, null);
         Log.d("fragment", "open topic");
+        drawer_layout.closeDrawers();
+
     }
 
     @Subscribe
@@ -249,7 +251,6 @@ public class MainActivity extends FragmentActivity {
         mDrawerToggle.setDrawerIndicatorEnabled(false);
         getSupportFragmentManager().popBackStackImmediate(LoginFragment.TAG, android.support.v4.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
         openFragment(LoginFragment_.builder().build(), LoginFragment.TAG);
-        drawer_layout.closeDrawers();
     }
 
 
