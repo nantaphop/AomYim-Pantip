@@ -29,7 +29,7 @@ public class CommentComparator implements Comparator<Comment> {
                 return c2.getEmo_score() - c.getEmo_score();
             } else if (sortBy == SortType.Order) {
                 if (c2.getComment_no() != c.getComment_no()) {
-                    return c2.getComment_no() - c.getComment_no();
+                    return c.getComment_no() - c2.getComment_no();
                 }else{
                     return c.getReply_no() - c2.getReply_no();
                 }

@@ -61,6 +61,7 @@ dependencies {
     compile 'com.melnykov:floatingactionbutton:1.0.0'
     compile 'com.nhaarman.listviewanimations:library:2.6.0'
     compile 'com.devddagnet.bright.lib:bright:1.0@aar'
+    compile 'com.github.markushi:android-ui:1.2'
     compile('de.keyboardsurfer.android.widget:crouton:1.8.4') {
         // exclusion is not neccessary, but generally a good idea.
         exclude group: 'com.google.android', module: 'support-v4'

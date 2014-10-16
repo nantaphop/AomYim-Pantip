@@ -14,8 +14,13 @@
       <entry name="!?*.clj" />
     </wildcardResourcePatterns>
     <annotationProcessing>
-      <profile default="true" name="Default" enabled="false">
-        <processorPath useClasspath="true" />
+      <profile default="true" name="Default" enabled="true">
+        <sourceOutputDir name="aa" />
+        <sourceTestOutputDir name="aa_tests" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$PROJECT_DIR$/../androidannotations-3.0.1.jar" />
+        </processorPath>
       </profile>
     </annotationProcessing>
   </component>

@@ -129,7 +129,7 @@ public class RESTUtils {
         topicPost.setAuthor(doc.select("a.display-post-name").get(0).text());
         String avatar = doc.select("div.display-post-avatar a img").get(0).attr("src");
         if(avatar.startsWith("/images"))
-            avatar += "http://pantip.com" + avatar;
+            avatar = "http://pantip.com" + avatar;
         topicPost.setAuthorPic(avatar);
 
         Element dateEle = doc.select("abbr.timeago").get(0);

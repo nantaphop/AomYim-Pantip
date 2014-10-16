@@ -30,7 +30,6 @@
         </uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout>
 
 
-
     </LinearLayout>
 
     <LinearLayout
@@ -38,7 +37,8 @@
             android:showDividers="end"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-        <LinearLayout
+
+        <TableLayout
                 android:id="@+id/commentTools"
                 android:orientation="vertical"
                 android:background="@color/comment_tools_bg"
@@ -48,27 +48,33 @@
                 android:layout_weight="1"
                 android:gravity="bottom">
 
-            <ImageButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/expandMoreComment"
-                    android:src="@drawable/ic_expand_less"
-                    style="?android:borderlessButtonStyle"
-                    android:layout_gravity="center_vertical|center_horizontal"/>
-            <ImageButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/expandLessComment"
-                    android:src="@drawable/ic_expand_more"
-                    style="?android:borderlessButtonStyle"
+            <TableRow>
 
-                    android:layout_gravity="center_vertical|center_horizontal"/>
-        </LinearLayout>
+                <ImageButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/expandMoreComment"
+                        android:src="@drawable/ic_expand_less"
+                        style="?android:borderlessButtonStyle"
+                        android:layout_gravity="center_vertical|center_horizontal"/>
+
+                <ImageButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/expandLessComment"
+                        android:src="@drawable/ic_expand_more"
+                        style="?android:borderlessButtonStyle"
+
+                        android:layout_gravity="center_vertical|center_horizontal"/>
+            </TableRow>
+        </TableLayout>
+
         <View
                 android:id="@+id/commentBarSeparator"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@color/base_color"/>
+
         <LinearLayout
                 android:id="@+id/commentPane"
                 android:orientation="horizontal"
@@ -87,6 +93,7 @@
                     android:id="@+id/shortComment"
                     android:inputType="textMultiLine"
                     android:maxLines="3"
+                    android:hint="@string/hint_comment"
                     android:layout_weight="1"
                     android:layout_gravity="bottom"/>
 
@@ -98,12 +105,7 @@
                     style="?android:borderlessButtonStyle"
                     android:layout_gravity="bottom"/>
         </LinearLayout>
-            </LinearLayout>
-
-
-
-
-
+    </LinearLayout>
 
 
 </FrameLayout>

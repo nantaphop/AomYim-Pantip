@@ -11,10 +11,7 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import com.astuetz.PagerSlidingTabStrip;
 import com.nantaphop.pantipfanapp.BaseApplication;
 import com.nantaphop.pantipfanapp.R;
-import com.nantaphop.pantipfanapp.event.ForumScrollDownEvent;
-import com.nantaphop.pantipfanapp.event.ForumScrollUpEvent;
-import com.nantaphop.pantipfanapp.event.ToggleDrawerEvent;
-import com.nantaphop.pantipfanapp.event.UpdateForumListEvent;
+import com.nantaphop.pantipfanapp.event.*;
 import com.nantaphop.pantipfanapp.model.ForumPagerItem;
 import com.squareup.otto.Subscribe;
 import org.androidannotations.annotations.*;
@@ -102,7 +99,8 @@ public class ForumHolderFragment extends BaseFragment {
             tabsHeight = tabs.getHeight();
             tabs.animate().translationYBy(0 - tabsHeight).setInterpolator(new AccelerateDecelerateInterpolator()).start();
             actionBarTitle = actionBar.getTitle();
-            actionBar.setTitle(pagerAdapter.getPageTitle(currentPage));
+//            actionBar.setTitle(pagerAdapter.getPageTitle(currentPage));
+            app.getEventBus().post(new SetTitleEvent(pagerAdapter.getPageTitle(currentPage).toString()));
             tabHiding = true;
         }
     }
@@ -116,7 +114,7 @@ public class ForumHolderFragment extends BaseFragment {
 
         if (tabHiding) {
             tabs.animate().translationY(tabsDefaultY).setInterpolator(new AccelerateDecelerateInterpolator()).start();
-            actionBar.setTitle(actionBarTitle);
+            app.getEventBus().post(new SetTitleEvent(getString(R.string.app_name)));
             tabHiding = false;
         }
     }

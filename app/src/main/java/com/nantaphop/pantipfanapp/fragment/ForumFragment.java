@@ -88,10 +88,11 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
         public void onSuccess(int i, Header[] headers, String s, Object o) {
             Log.d("forum", "success");
             Forum newForum = (Forum) o;
-            if (currentPage == 1) {
+            if ( currentPage == 1 ) {
                 forum = newForum;
                 lastIdCurrentPage = forum.getLastIdCurrentPage();
-            } else {
+            }
+            else {
                 forum.getTopics().addAll(newForum.getTopics());
                 lastIdCurrentPage = newForum.getLastIdCurrentPage();
             }
@@ -147,9 +148,13 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
     @Background
     void prepareForumPart() {
         forumPart = RESTUtils.parseForumPart(new String(tmpForumPartBytes));
-        Log.d("forumPart", "prepareForumPart recommend size : "+forumPart.getRecommendUrl().size()+" - "+forumPart.getRecommendTopic().size());
-        for(String s: forumPart.getRecommendTopic()){
-            Log.d("recommend",forumPagerItem.title+" "+s);
+        Log.d(
+                "forumPart",
+                "prepareForumPart recommend size : " + forumPart.getRecommendUrl()
+                                                                .size() + " - " + forumPart.getRecommendTopic().size()
+             );
+        for ( String s : forumPart.getRecommendTopic() ) {
+            Log.d("recommend", forumPagerItem.title + " " + s);
         }
         prepareRecommendCard();
 
@@ -161,10 +166,10 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
         int numPreview = forumPart.getRecommendTopic().size() > 3 ? 3 : forumPart.getRecommendTopic().size();
         recommendTopicTitle = new String[numPreview];
         recommendTopicUrl = new String[numPreview];
-        if (currentPage == 2) { // Do just first load
+        if ( currentPage == 2 ) { // Do just first load
 //            // Add Recommend Topic
-            for (int i = 0; i < numPreview; i++) {
-                Log.d("recommend","prepareRecommendCard "+i+" : "+forumPart.getRecommendTopic().get(i));
+            for ( int i = 0; i < numPreview; i++ ) {
+                Log.d("recommend", "prepareRecommendCard " + i + " : " + forumPart.getRecommendTopic().get(i));
                 recommendTopicTitle[i] = forumPart.getRecommendTopic().get(i);
                 recommendTopicUrl[i] = forumPart.getRecommendUrl().get(i);
             }
@@ -192,11 +197,11 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
     @UiThread
     void joinForum() {
         // Join Thread
-        if (prepareRecommendDone && prepareTopicDone) {
+        if ( prepareRecommendDone && prepareTopicDone ) {
             // Update List
             topicAdapter.notifyDataSetChanged();
             setRefreshComplete();
-            if (lastFirstVisibleItem != 0) {
+            if ( lastFirstVisibleItem != 0 ) {
                 list.setSelection(lastFirstVisibleItem);
             }
         }
@@ -210,14 +215,17 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
     }
 
     private void hideFab() {
-        if (!fabIsHiding) {
-            fab.animate().translationY(fab.getHeight() * 3).setInterpolator(new AccelerateDecelerateInterpolator()).start();
+        if ( !fabIsHiding ) {
+            fab.animate()
+               .translationY(fab.getHeight() * 3)
+               .setInterpolator(new AccelerateDecelerateInterpolator())
+               .start();
             fabIsHiding = true;
         }
     }
 
     private void showFab() {
-        if (fabIsHiding) {
+        if ( fabIsHiding ) {
             fab.animate().translationY(fabDefaultY).setInterpolator(new AccelerateDecelerateInterpolator()).start();
             fabIsHiding = false;
         }
@@ -268,26 +276,31 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
         // Attach scroll listener
         Log.d("forum", "init : lastFirstVisibleItem -> " + lastFirstVisibleItem);
 
-        list.setOnScrollListener(new ScrollDirectionListener(lastFirstVisibleItem, new ScrollDirectionListener.OnScrollUp() {
-            @Override
-            public void onScrollUp() {
-                app.getEventBus().post(new ForumScrollUpEvent());
-                showFab();
-            }
-        }, new ScrollDirectionListener.OnScrollDown() {
-            @Override
-            public void onScrollDown() {
-                app.getEventBus().post(new ForumScrollDownEvent());
-                hideFab();
-            }
-        }));
+        list.setOnScrollListener(
+                new ScrollDirectionListener(
+                        lastFirstVisibleItem, new ScrollDirectionListener.OnScrollUp() {
+                    @Override
+                    public void onScrollUp() {
+                        app.getEventBus().post(new ForumScrollUpEvent());
+                        showFab();
+                    }
+                }, new ScrollDirectionListener.OnScrollDown() {
+                    @Override
+                    public void onScrollDown() {
+                        app.getEventBus().post(new ForumScrollDownEvent());
+                        hideFab();
+                    }
+                }
+                )
+                                );
 
         // If from saved
-        if (forum != null && forumPart != null) {
+        if ( forum != null && forumPart != null ) {
             prepareRecommendCard();
             prepareTopic();
             return;
-        } else {
+        }
+        else {
             // Load Initial Data
             loadMore();
             loadForumPart();
@@ -309,7 +322,7 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
     }
 
     private void loadForumPart() {
-        if (!pullToRefreshLayout.isRefreshing())
+        if ( !pullToRefreshLayout.isRefreshing() )
             pullToRefreshLayout.setRefreshing(true);
         prepareRecommendDone = false;
         client.getForumPart(forumPagerItem.url, forumPartCallback);
@@ -330,16 +343,24 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
     }
 
     private void loadMore() {
-        if (!pullToRefreshLayout.isRefreshing())
+        if ( !pullToRefreshLayout.isRefreshing() )
             pullToRefreshLayout.setRefreshing(true);
         prepareTopicDone = false;
-        client.getForum(forumPagerItem.url, ForumType.Room, TopicType.All_Except_Sell, currentPage, lastIdCurrentPage, false, forumCallback);
+        client.getForum(
+                forumPagerItem.url,
+                ForumType.Room,
+                TopicType.All_Except_Sell,
+                currentPage,
+                lastIdCurrentPage,
+                false,
+                forumCallback
+                       );
     }
 
     private int getFabMarginBottom() {
         int marginBottom = 0;
         final ViewGroup.LayoutParams layoutParams = fab.getLayoutParams();
-        if (layoutParams instanceof ViewGroup.MarginLayoutParams) {
+        if ( layoutParams instanceof ViewGroup.MarginLayoutParams ) {
             marginBottom = ((ViewGroup.MarginLayoutParams) layoutParams).bottomMargin;
         }
         return marginBottom;
@@ -365,7 +386,7 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
 
         @Override
         public Object getItem(int i) {
-            if (recommendTopicTitle != null && recommendTopicTitle.length > 0)
+            if ( recommendTopicTitle != null && recommendTopicTitle.length > 0 )
                 return forum.getTopics().get(i - 2 - recommendTopicTitle.length);
             else
                 return -1;
@@ -383,21 +404,23 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
 
         @Override
         public int getItemViewType(int position) {
-            if (recommendTopicTitle == null) {
+            if ( recommendTopicTitle == null ) {
                 return 0;
             }
-            if (position == 0 || position == recommendTopicTitle.length + 1) {
+            if ( position == 0 || position == recommendTopicTitle.length + 1 ) {
                 return TYPE_SECTION;
-            } else if (position > 0 && position <= recommendTopicTitle.length) {
+            }
+            else if ( position > 0 && position <= recommendTopicTitle.length ) {
                 return TYPE_RECOMMEND;
-            } else {
+            }
+            else {
                 Topic topic = null;
                 try {
                     topic = (Topic) getItem(position);
                 } catch (Exception e) {
                     return TYPE_TOPIC;
                 }
-                if (topic.getCoverImg().length() > 0)
+                if ( topic.getCoverImg().length() > 0 )
                     return TYPE_TOPIC_THUMBNAIL;
                 else
                     return TYPE_TOPIC;
@@ -427,13 +450,17 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
         private TopicRecommendView getViewTopicRecommend(int position, View convertView) {
             final TopicRecommendView topicRecommendView;
 
-            if (convertView != null) {
+            if ( convertView != null ) {
                 topicRecommendView = (TopicRecommendView) convertView;
-            } else {
+            }
+            else {
                 topicRecommendView = TopicRecommendView_.build(getAttachedActivity());
 
             }
-            Log.d("recommend", "get recommend view [ total:"+recommendTopicTitle.length+"]"+" get at "+(position-1)+" "+recommendTopicTitle[position - 1]+" "+recommendTopicUrl[position - 1]);
+            Log.d(
+                    "recommend",
+                    "get recommend view [ total:" + recommendTopicTitle.length + "]" + " get at " + (position - 1) + " " + recommendTopicTitle[position - 1] + " " + recommendTopicUrl[position - 1]
+                 );
             try {
                 topicRecommendView.bind(recommendTopicTitle[position - 1], recommendTopicUrl[position - 1]);
             } catch (NullPointerException e) {
@@ -444,20 +471,30 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
 
         private TopicSectionView getViewTopicSection(int position, View convertView) {
             final TopicSectionView topicSectionView;
-            if (convertView != null) {
+            if ( convertView != null ) {
                 topicSectionView = (TopicSectionView) convertView;
-            } else {
+            }
+            else {
                 topicSectionView = TopicSectionView_.build(getAttachedActivity());
 
             }
-            if (position == 0) {
-                topicSectionView.bind(getString(R.string.recomend_topic), getString(R.string.view_all), new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        app.getEventBus().post(new ShowRecommendEvent(forumPart.getRecommendTopic(), forumPart.getRecommendUrl()));
-                    }
-                });
-            } else if (position == recommendTopicTitle.length + 1) {
+            if ( position == 0 ) {
+                topicSectionView.bind(
+                        getString(R.string.recomend_topic), getString(R.string.view_all), new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                app.getEventBus()
+                                   .post(
+                                           new ShowRecommendEvent(
+                                                   forumPart.getRecommendTopic(),
+                                                   forumPart.getRecommendUrl()
+                                           )
+                                        );
+                            }
+                        }
+                                     );
+            }
+            else if ( position == recommendTopicTitle.length + 1 ) {
                 topicSectionView.bind(getString(R.string.topic_in_forum));
             }
             return topicSectionView;
@@ -465,13 +502,14 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
 
         private TopicView getViewTopic(int position, View convertView) {
             final TopicView topicView;
-            if (position == getCount() - 5) {
+            if ( position == getCount() - 5 ) {
                 loadMore();
             }
 
-            if (convertView != null) {
+            if ( convertView != null ) {
                 topicView = (TopicView) convertView;
-            } else {
+            }
+            else {
                 topicView = TopicView_.build(getAttachedActivity());
 
             }
@@ -481,13 +519,14 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
 
         private TopicThumbnailView getViewTopicThumbnail(int position, View convertView) {
             final TopicThumbnailView topicView;
-            if (position == getCount() - 5) {
+            if ( position == getCount() - 5 ) {
                 loadMore();
             }
 
-            if (convertView != null) {
+            if ( convertView != null ) {
                 topicView = (TopicThumbnailView) convertView;
-            } else {
+            }
+            else {
                 topicView = TopicThumbnailView_.build(getAttachedActivity());
 
             }

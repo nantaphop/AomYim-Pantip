@@ -1,7 +1,6 @@
 package com.nantaphop.pantipfanapp;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
+import android.app.ActionBar;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentActivity;
@@ -9,20 +8,23 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
+import at.markushi.ui.action.Action;
+import at.markushi.ui.action.BackAction;
+import at.markushi.ui.action.CloseAction;
+import at.markushi.ui.action.DrawerAction;
 import com.nantaphop.pantipfanapp.event.*;
 import com.nantaphop.pantipfanapp.fragment.*;
 import com.nantaphop.pantipfanapp.fragment.dialog.ListDialog;
 import com.nantaphop.pantipfanapp.fragment.dialog.ListDialog_;
-import com.nantaphop.pantipfanapp.fragment.dialog.RecommendDialog;
-import com.nantaphop.pantipfanapp.fragment.dialog.RecommendDialog_;
 import com.nantaphop.pantipfanapp.response.Comment;
 import com.nantaphop.pantipfanapp.response.Topic;
 import com.nantaphop.pantipfanapp.utils.CommentComparator;
 import com.nantaphop.pantipfanapp.utils.TopicComparator;
+import com.nantaphop.pantipfanapp.view.ActionBarView;
+import com.nantaphop.pantipfanapp.view.ActionBarView_;
 import com.squareup.otto.Subscribe;
 import org.androidannotations.annotations.*;
 import org.androidannotations.annotations.res.StringArrayRes;
@@ -58,6 +60,31 @@ public class MainActivity extends FragmentActivity {
     String comment_sort_type_title;
     @StringArrayRes
     String[] comment_sort_type;
+    private ActionBarView actionBarView;
+
+    View.OnClickListener openDrawer = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            drawer_layout.openDrawer(Gravity.START);
+            actionBarView.setAction(new CloseAction());
+            actionBarView.setOnClickListener(closeDrawer);
+
+        }
+    };
+    View.OnClickListener closeDrawer = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            drawer_layout.closeDrawer(Gravity.START);
+            actionBarView.setAction(new DrawerAction());
+            actionBarView.setOnClickListener(openDrawer);
+        }
+    };
+    View.OnClickListener backAction = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            onBackPressed();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,33 +103,55 @@ public class MainActivity extends FragmentActivity {
 
         mTitle = drawer_close;
         mDrawerTitle = drawer_open;
-
+        actionBarView = ActionBarView_.build(this);
+        drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        final ActionBar actionBar = getActionBar();
 
         mDrawerToggle = new ActionBarDrawerToggle(this, drawer_layout,
                 R.drawable.ic_navigation_drawer, R.string.drawer_open, R.string.drawer_close) {
 
+            Action tmpAction;
+            View.OnClickListener tmpOnClick;
+
             /** Called when a drawer has settled in a completely closed state. */
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
-                mDrawerTitle = getActionBar().getTitle();
-                getActionBar().setTitle(mTitle);
+                mDrawerTitle = actionBar.getTitle();
+                actionBar.setTitle(mTitle);
+//                actionBarView.setOnClickListener(tmpOnClick);
+//                actionBarView.setAction(tmpAction);
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
 
             /** Called when a drawer has settled in a completely open state. */
             public void onDrawerOpened(View drawerView) {
+                tmpAction = actionBarView.getAction();
+                tmpOnClick = actionBarView.getOnClickListener();
                 super.onDrawerOpened(drawerView);
-                mTitle = getActionBar().getTitle();
-                getActionBar().setTitle(mDrawerTitle);
+//                actionBarView.setOnClickListener(closeDrawer);
+                mTitle = actionBar.getTitle();
+//                actionBarView.setAction(new CloseAction());
+//                actionBarView.setOnClickListener(closeDrawer);
+                actionBar.setTitle(mDrawerTitle);
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
         };
 
+
         // Set the drawer toggle as the DrawerListener
         drawer_layout.setDrawerListener(mDrawerToggle);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setHomeButtonEnabled(true);
+//        actionBar.setDisplayHomeAsUpEnabled(true);
+//        actionBar.setHomeButtonEnabled(true);
         mDrawerToggle.syncState();
+        actionBarView.setOnClickListener(openDrawer);
+
+        actionBar.setCustomView(actionBarView);
+        actionBar.setDisplayShowCustomEnabled(true);
+        actionBar.setDisplayShowHomeEnabled(false);
+        actionBar.setDisplayShowTitleEnabled(false);
+        actionBar.setDisplayUseLogoEnabled(false);
+
+
 
     }
 
@@ -123,9 +172,14 @@ public class MainActivity extends FragmentActivity {
         super.onBackPressed();
         if(getSupportFragmentManager().getBackStackEntryCount() == 0){
             mDrawerToggle.setDrawerIndicatorEnabled(true);
+            actionBarView.setAction(new DrawerAction());
+            actionBarView.setOnClickListener(openDrawer);
             Log.d("drawer", "main "+getSupportFragmentManager().getBackStackEntryCount());
         }else{
             mDrawerToggle.setDrawerIndicatorEnabled(false);
+            actionBarView.setAction(new BackAction());
+            actionBarView.setOnClickListener(backAction);
+
             Log.d("drawer", "not main "+getSupportFragmentManager().getBackStackEntryCount());
         }
     }
@@ -171,6 +225,8 @@ public class MainActivity extends FragmentActivity {
         openFragment(topicFragment, null);
         Log.d("fragment", "open topic");
         drawer_layout.closeDrawers();
+        actionBarView.setOnClickListener(backAction);
+        actionBarView.setAction(new BackAction());
 
     }
 
@@ -236,12 +292,16 @@ public class MainActivity extends FragmentActivity {
         listDialog.show(getFragmentManager(), "sort_topic");
     }
 
+
+
     @Subscribe
     public void openForumRearrange(OpenForumRearrangeEvent e) {
         Log.d("fragment", "rearrange");
-        mDrawerToggle.setDrawerIndicatorEnabled(false);
+//        mDrawerToggle.setDrawerIndicatorEnabled(false);
         getSupportFragmentManager().popBackStackImmediate(ForumRearrangeFragment.TAG, android.support.v4.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
         openFragment(ForumRearrangeFragment_.builder().build(), ForumRearrangeFragment.TAG);
+        actionBarView.setOnClickListener(backAction);
+        actionBarView.setAction(new BackAction());
         drawer_layout.closeDrawers();
     }
 
@@ -251,6 +311,10 @@ public class MainActivity extends FragmentActivity {
         mDrawerToggle.setDrawerIndicatorEnabled(false);
         getSupportFragmentManager().popBackStackImmediate(LoginFragment.TAG, android.support.v4.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
         openFragment(LoginFragment_.builder().build(), LoginFragment.TAG);
+        actionBarView.setOnClickListener(backAction);
+        actionBarView.setAction(new BackAction());
+        drawer_layout.closeDrawers();
+
     }
 
 
@@ -277,5 +341,10 @@ public class MainActivity extends FragmentActivity {
         }else{
             drawer_layout.openDrawer(Gravity.START);
         }
+    }
+
+    @Subscribe
+    public void setTitle(SetTitleEvent e){
+        actionBarView.setTitle(e.title);
     }
 }

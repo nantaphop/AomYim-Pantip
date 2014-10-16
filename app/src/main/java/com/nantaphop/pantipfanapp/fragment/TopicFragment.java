@@ -445,35 +445,35 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
     }
 
     void showCommentTools() {
-        commentTools.setVisibility(View.VISIBLE);
-        commentTools.animate().alpha(1).setListener(null).setDuration(200).setInterpolator(new AccelerateDecelerateInterpolator()).start();
+//        commentTools.setVisibility(View.VISIBLE);
+//        commentTools.animate().alpha(1).setListener(null).setDuration(200).setInterpolator(new AccelerateDecelerateInterpolator()).start();
     }
 
     void hideCommentTools() {
-        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(shortComment.getWindowToken(), 0);
-        commentTools.animate().alpha(0).setDuration(200).setInterpolator(new AccelerateDecelerateInterpolator())
-                .setListener(new Animator.AnimatorListener() {
-                    @Override
-                    public void onAnimationStart(Animator animator) {
-
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animator animator) {
-                        commentTools.setVisibility(View.INVISIBLE);
-                    }
-
-                    @Override
-                    public void onAnimationCancel(Animator animator) {
-
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animator animator) {
-
-                    }
-                }).start();
+//        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+//        imm.hideSoftInputFromWindow(shortComment.getWindowToken(), 0);
+//        commentTools.animate().alpha(0).setDuration(200).setInterpolator(new AccelerateDecelerateInterpolator())
+//                .setListener(new Animator.AnimatorListener() {
+//                    @Override
+//                    public void onAnimationStart(Animator animator) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onAnimationEnd(Animator animator) {
+//                        commentTools.setVisibility(View.INVISIBLE);
+//                    }
+//
+//                    @Override
+//                    public void onAnimationCancel(Animator animator) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onAnimationRepeat(Animator animator) {
+//
+//                    }
+//                }).start();
     }
 
     class CommentAdapter extends BaseAdapter {
