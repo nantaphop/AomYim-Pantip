@@ -39,6 +39,7 @@
     <string name="feedback_comment_success">แสดงความเห็นเสร็จสิ้น</string>
     <string name="feedback_comment_failed">คุณได้แสดงแล้ว กรุณารอ 5 วินาที ก่อนแสดงความเห็นใหม่</string>
     <string name="hint_comment">แสดงความคิดเห็น</string>
+    <string name="reply_comment_prefix"><![CDATA[<B>ตอบ คห. %d -> </B>]]></string>
 
     <array name="topic_sort_type">
         <item>จำนวนความเห็น</item>
@@ -50,4 +51,14 @@
         <item>จำนวนการแสดงอารมณ์</item>
         <item>ลำดับ</item>
     </array>
+    <array name="topic_type">
+        <item>กระทู้ทั้งหมด ยกเว้นขายของ</item>
+        <item>กระทู้คำถาม</item>
+        <item>กระทู้สนทนา</item>
+        <item>กระทู้โพล</item>
+        <item>กระทู้รีวิว</item>
+        <item>กระทู้ข่าว</item>
+        <item>กระทู้ขายของ</item>
+    </array>
+
 </resources>

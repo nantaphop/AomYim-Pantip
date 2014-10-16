@@ -22,14 +22,14 @@ public class MyAnimationAdapter extends AnimationAdapter {
     public Animator[] getAnimators(ViewGroup parent, View view) {
         Animator bottomInAnimator = ObjectAnimator.ofFloat(view, "translationY", 1000, 0);
         Animator rotateIn = ObjectAnimator.ofFloat(view, "rotationX", 60, 0);
-        bottomInAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
-        rotateIn.setInterpolator(new AccelerateDecelerateInterpolator());
+        bottomInAnimator.setInterpolator(new DecelerateInterpolator());
+        rotateIn.setInterpolator(new DecelerateInterpolator());
         return new Animator[] { bottomInAnimator, rotateIn };
     }
 
     @Override
     protected long getAnimationDelayMillis() {
-        return 150;
+        return 50;
     }
 
     @Override

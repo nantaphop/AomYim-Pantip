@@ -53,7 +53,7 @@ public class TestActivity extends Activity {
 
     @Click
     void comment(){
-        client.comment("30012560", "Test", new AsyncHttpResponseHandler(){
+        client.comment(30012560, "Test", new AsyncHttpResponseHandler(){
 
             @Override
             public void onSuccess(int i, Header[] headers, byte[] bytes) {

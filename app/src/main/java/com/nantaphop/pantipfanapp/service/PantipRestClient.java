@@ -162,7 +162,23 @@ public class PantipRestClient {
 
     @Trace
     @Background
-    public void comment(String topicId, String msg, AsyncHttpResponseHandler cb) {
+    public void reply(int topicId, int commentRefId, int commentNo, long commentTimestamp, String msg, AsyncHttpResponseHandler cb) {
+        RequestParams params = new RequestParams();
+        params.put("topic_id", topicId);
+        params.put("msg[raw]", msg);
+        params.put("msg[disp]", "msg");
+        params.put("msg[time]", commentTimestamp);
+        params.put("type", "1");
+        params.put("msg[ref_id]", commentRefId+"pantip3g");
+        params.put("msg[ref_comment]", "comment"+commentNo);
+
+
+        post("forum/topic/save_reply", params, cb);
+    }
+
+    @Trace
+    @Background
+    public void comment(int topicId, String msg, AsyncHttpResponseHandler cb) {
         RequestParams params = new RequestParams();
         params.put("topic_id", topicId);
         params.put("msg[raw]", msg);

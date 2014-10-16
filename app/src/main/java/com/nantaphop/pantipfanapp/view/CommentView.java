@@ -8,15 +8,16 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.nantaphop.pantipfanapp.BaseApplication;
 import com.nantaphop.pantipfanapp.R;
+import com.nantaphop.pantipfanapp.event.DoReplyEvent;
 import com.nantaphop.pantipfanapp.response.Comment;
 import com.nantaphop.pantipfanapp.utils.URLImageParser;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 import org.androidannotations.annotations.App;
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;
 
@@ -38,7 +39,7 @@ public class CommentView extends RelativeLayout{
     @ViewById
     TextView body;
     @ViewById
-    Button repiles;
+    Button reply;
     @ViewById
     Button votes;
     @ViewById
@@ -73,13 +74,17 @@ public class CommentView extends RelativeLayout{
     public void bind(Comment comment){
         this.comment = comment;
         author.setText(comment.getUser().getName());
-        date.setText(DateUtils.getRelativeTimeSpanString(comment.getDate().getTime(), new Date().getTime(), DateUtils.MINUTE_IN_MILLIS));
+        date.setText(DateUtils.getRelativeTimeSpanString(
+                             comment.getDate().getTime(),
+                             new Date().getTime(),
+                             DateUtils.MINUTE_IN_MILLIS
+                     ));
         body.setText(Html.fromHtml(comment.getMessage(), new URLImageParser(body, context), null));
         votes.setText(comment.getPoint()>0 ? comment.getPoint()+"" : "");
         emo.setText(comment.getEmo_score()>0 ? comment.getEmo_score()+"" : "");
-        repiles.setText(comment.getReply_count()+"");
+        reply.setText(comment.getReply_count() > 0 ? comment.getReply_count() + "" : "");
         if(comment.isReply()){
-            repiles.setVisibility(GONE);
+            reply.setVisibility(GONE);
             replyIndicator.setVisibility(VISIBLE);
             commentNo.setText("#"+comment.getComment_no()+"-"+comment.getReply_no());
             if(comment.getReply_no() == comment.getParent().getLastReply() && comment.getParent().getReply_count() > comment.getReply_no()){
@@ -88,10 +93,10 @@ public class CommentView extends RelativeLayout{
                 loadMore.setVisibility(GONE);
             }
         }else{
-            if(comment.getReply_count() == 0){
-                repiles.setVisibility(GONE);
+            if(comment.isReply()){
+                reply.setVisibility(GONE);
             }else{
-                repiles.setVisibility(VISIBLE);
+                reply.setVisibility(VISIBLE);
             }
             commentNo.setText("#"+comment.getComment_no());
             replyIndicator.setVisibility(GONE);
@@ -113,4 +118,11 @@ public class CommentView extends RelativeLayout{
     public void disableLoadMore(){
         loadMore.setVisibility(GONE);
     }
+
+    @Click
+    public void reply(){
+        app.getEventBus().post(new DoReplyEvent(comment.getComment_id(), comment.getComment_no(), comment.getDate().getTime()));
+    }
+
+
 }

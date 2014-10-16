@@ -12,10 +12,16 @@ public class CommentResponse {
     private String status;
     @SerializedName("comment_no")
     @Expose
-    private int commentNo;
+    private String commentNo;
     @SerializedName("comment_id")
     @Expose
     private int commentId;
+    @SerializedName("reply_no")
+    @Expose
+    private String replyNo;
+    @SerializedName("reply_id")
+    @Expose
+    private int replyId;
     @SerializedName("topic_id")
     @Expose
     private String topicId;
@@ -35,11 +41,11 @@ public class CommentResponse {
         this.status = status;
     }
 
-    public int getCommentNo() {
+    public String getCommentNo() {
         return commentNo;
     }
 
-    public void setCommentNo(int commentNo) {
+    public void setCommentNo(String commentNo) {
         this.commentNo = commentNo;
     }
 

@@ -294,6 +294,7 @@ public class MainActivity extends FragmentActivity {
 
 
 
+
     @Subscribe
     public void openForumRearrange(OpenForumRearrangeEvent e) {
         Log.d("fragment", "rearrange");

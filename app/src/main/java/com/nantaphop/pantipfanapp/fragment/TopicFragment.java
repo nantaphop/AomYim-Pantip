@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.*;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -15,11 +16,13 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.BaseJsonHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.nantaphop.pantipfanapp.R;
+import com.nantaphop.pantipfanapp.event.DoReplyEvent;
 import com.nantaphop.pantipfanapp.event.SortCommentEvent;
 import com.nantaphop.pantipfanapp.response.*;
 import com.nantaphop.pantipfanapp.utils.RESTUtils;
 import com.nantaphop.pantipfanapp.utils.ScrollDirectionListener;
 import com.nantaphop.pantipfanapp.view.*;
+import com.squareup.otto.Subscribe;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 import org.androidannotations.annotations.*;
@@ -100,18 +103,19 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
         public void onSuccess(int i, Header[] headers, String s, Object o) {
             Log.d("forum", "success");
             Comments newComments = (Comments) o;
-            if (comments == null) {
+            if ( comments == null ) {
                 comments = newComments;
-                if (newComments.getComments() != null) {
+                if ( newComments.getComments() != null ) {
                     tmpCommentsList = (ArrayList<Comment>) newComments.getComments().clone();
                 }
-                if (comments.getComments() != null)
+                if ( comments.getComments() != null )
                     comments.getComments().clear();
-            } else {
-                if (tmpCommentsList == null) {
+            }
+            else {
+                if ( tmpCommentsList == null ) {
                     tmpCommentsList = new ArrayList<Comment>();
                 }
-                if (newComments.getComments() != null) {
+                if ( newComments.getComments() != null ) {
                     tmpCommentsList.addAll(newComments.getComments());
                 }
                 comments.setPaging(newComments.getPaging());
@@ -136,7 +140,7 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
         @Override
         public void onSuccess(int i, Header[] headers, String s, Object o) {
             tmpReplies = (Reply) o;
-            if (tmpReplies != null) {
+            if ( tmpReplies != null ) {
                 addReplies();
             }
         }
@@ -156,16 +160,22 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
         @Override
         public void onSuccess(int i, Header[] headers, String s, Object o) {
             CommentResponse response = (CommentResponse) o;
-            if (!response.isError()) {
-                lastFirstVisibleItem = list.getAdapter().getCount()-1; // Force scroll to last after doComment
+            if ( !response.isError() ) {
+                lastFirstVisibleItem = list.getAdapter().getCount() - 1; // Force scroll to last after doComment
                 comments = null;
                 currentCommentPage = 1;
                 loadNextComments();
                 list.requestFocus();
                 shortComment.setText("");
-                Crouton.makeText(getActivity(), getActivity().getString(R.string.feedback_comment_success), Style.CONFIRM).show();
-            }else {
-                Crouton.makeText(getActivity(), getActivity().getString(R.string.feedback_comment_failed), Style.ALERT).show();
+                Crouton.makeText(
+                        getActivity(),
+                        getActivity().getString(R.string.feedback_comment_success),
+                        Style.CONFIRM
+                ).show();
+            }
+            else {
+                Crouton.makeText(getActivity(), getActivity().getString(R.string.feedback_comment_failed), Style.ALERT)
+                       .show();
             }
             pullToRefreshLayout.setRefreshComplete();
 
@@ -217,45 +227,53 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
         // Attach scroll listener
         Log.d("forum", "init : lastFirstVisibleItem -> " + lastFirstVisibleItem);
 
-        list.setOnScrollListener(new ScrollDirectionListener(lastFirstVisibleItem, new ScrollDirectionListener.OnScrollUp() {
-            @Override
-            public void onScrollUp() {
-                showCommentPane();
-            }
-        }, new ScrollDirectionListener.OnScrollDown() {
-            @Override
-            public void onScrollDown() {
-                hideCommentPane();
-            }
-        }, new ScrollDirectionListener.OnBottomReach() {
-            @Override
-            public void onBottomReach() {
-                showCommentPane();
-            }
-        }));
+        list.setOnScrollListener(
+                new ScrollDirectionListener(
+                        lastFirstVisibleItem, new ScrollDirectionListener.OnScrollUp() {
+                    @Override
+                    public void onScrollUp() {
+                        showCommentPane();
+                    }
+                }, new ScrollDirectionListener.OnScrollDown() {
+                    @Override
+                    public void onScrollDown() {
+                        hideCommentPane();
+                    }
+                }, new ScrollDirectionListener.OnBottomReach() {
+                    @Override
+                    public void onBottomReach() {
+                        showCommentPane();
+                    }
+                }
+                )
+        );
 
-        if (topicPost == null && comments == null) {
+        if ( topicPost == null && comments == null ) {
             loadTopicPost();
             loadNextComments();
-        } else {
+        }
+        else {
             prepareTopicPostDone = true;
             prepareComments();
         }
-        list.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                list.requestFocus();
-                return false;
-            }
-        });
+        list.setOnTouchListener(
+                new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View view, MotionEvent motionEvent) {
+                        list.requestFocus();
+                        return false;
+                    }
+                }
+        );
     }
 
     @FocusChange(R.id.shortComment)
     void commentFocused() {
 
-        if (shortComment.isFocused()) {
+        if ( shortComment.isFocused() ) {
             showCommentTools();
-        } else {
+        }
+        else {
             hideCommentTools();
         }
     }
@@ -273,14 +291,14 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
     public void prepareComments() {
         prepareCommentsDone = false;
         // Flatten Comment and Replies
-        if (tmpCommentsList != null) {
+        if ( tmpCommentsList != null ) {
             ArrayList<Comment> flattenComments = new ArrayList<Comment>();
-            for (Comment c : tmpCommentsList) {
+            for ( Comment c : tmpCommentsList ) {
                 RESTUtils.processComment(c);
                 ArrayList<Comment> replies = c.getReplies();
                 flattenComments.add(c);
                 Iterator<Comment> it = replies.iterator();
-                while (it.hasNext()) {
+                while ( it.hasNext() ) {
                     Comment r = it.next();
                     r.setReply(true);
                     r.setParent(c);
@@ -290,7 +308,7 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
                     c.setLastReply(r.getReply_no());
                 }
             }
-            if (flattenComments != null) {
+            if ( flattenComments != null ) {
                 comments.addComments(flattenComments);
             }
             tmpCommentsList.clear();
@@ -301,20 +319,18 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
 
     @UiThread
     public void joinTopic() {
-        if (prepareCommentsDone && prepareTopicPostDone) {
+        if ( prepareCommentsDone && prepareTopicPostDone ) {
 
             TopicPostView topicPostView = TopicPostView_.build(getAttachedActivity());
             topicPostView.bind(topicPost);
-            if (list.getHeaderViewsCount() == 0)
+            if ( list.getHeaderViewsCount() == 0 )
                 list.addHeaderView(topicPostView);
-
             commentAdapter.notifyDataSetChanged();
-
-            if (lastFirstVisibleItem != 0) {
+            if ( lastFirstVisibleItem != 0 ) {
                 list.setSelection(lastFirstVisibleItem);
             }
+            pullToRefreshLayout.setRefreshComplete();
         }
-        pullToRefreshLayout.setRefreshComplete();
     }
 
     @Override
@@ -327,7 +343,7 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
     }
 
     public void loadReplies(Comment c, CommentView waitUpdateCommentView, int newRepliesPosition) {
-        if (!pullToRefreshLayout.isRefreshing())
+        if ( !pullToRefreshLayout.isRefreshing() )
             pullToRefreshLayout.setRefreshing(true);
         this.waitUpdateCommentView = waitUpdateCommentView;
         this.newRepliesPosition = newRepliesPosition;
@@ -338,7 +354,7 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
     @UiThread
     void addReplies() {
         Comment parent = comments.getComments().get(newRepliesPosition).getParent();
-        for (Comment comment : tmpReplies.getReplies()) {
+        for ( Comment comment : tmpReplies.getReplies() ) {
             comment.setReply(true);
             comment.setParent(waitUpdateCommentView.getComment().getParent());
             parent.setLastReply(comment.getReply_no());
@@ -360,7 +376,7 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
     }
 
     public void loadTopicPost() {
-        if (!pullToRefreshLayout.isRefreshing())
+        if ( !pullToRefreshLayout.isRefreshing() )
             pullToRefreshLayout.setRefreshing(true);
         prepareTopicPostDone = false;
         client.getTopicPost(topic.getId() + "", topicPostCallback);
@@ -374,12 +390,22 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
     }
 
     @Click
-    void comment(){
-        if(shortComment.getText().length()>0){
+    void comment() {
+        String msg = shortComment.getText().toString();
+        // Detect for reply or new comment
+        boolean isReply = false;
+        if ( msg.startsWith("ตอบ คห.") ) {
+            String commentNo = msg.substring(0, msg.indexOf(">")).split(" ")[2];
+            msg = msg.split(">")[1].trim();
+            DoReplyEvent e = (DoReplyEvent)shortComment.getTag();
+            client.reply(topic.getId(), e.commentRefId, e.commentNo, e.commentTimestamp, msg, doCommentCallback);
+
+        }else if ( msg.length() > 0 ) {
             pullToRefreshLayout.setRefreshing(true);
             hideCommentTools();
-            client.comment(topic.getId()+"", shortComment.getText().toString(), doCommentCallback);
+            client.comment(topic.getId(), msg, doCommentCallback);
         }
+
     }
 
 
@@ -406,7 +432,10 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
             intent.setType("text/plain");
 
             intent.putExtra(Intent.EXTRA_SUBJECT, app.getString(R.string.share_title));
-            intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_text, topic.getTitle(), "http://pantip.com/topic/" + topic.getId()));
+            intent.putExtra(
+                    Intent.EXTRA_TEXT,
+                    getString(R.string.share_text, topic.getTitle(), "http://pantip.com/topic/" + topic.getId())
+            );
 
             startActivity(Intent.createChooser(intent, app.getString(R.string.share_prompt)));
         } catch (NullPointerException e) {
@@ -414,14 +443,43 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        app.getEventBus().register(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        app.getEventBus().unregister(this);
+    }
+
+    @Subscribe
+    public void reply(DoReplyEvent e) {
+        shortComment.setText(
+                Html.fromHtml(
+                        String.format(
+                                app.getString(R.string.reply_comment_prefix),
+                                e.commentNo
+                        ) + " "
+                )
+        );
+        showCommentPane();
+        shortComment.requestFocus();
+        shortComment.setSelection(shortComment.getText().length());
+        shortComment.setTag(e);
+    }
+
     private void loadNextComments() {
-        if (!pullToRefreshLayout.isRefreshing())
+        if ( !pullToRefreshLayout.isRefreshing() )
             pullToRefreshLayout.setRefreshing(true);
         prepareCommentsDone = false;
         client.getComments(topic.getId() + "", currentCommentPage, false, commentsCallback);
     }
+
     private void updateNewComment(int commentNo) {
-        if (!pullToRefreshLayout.isRefreshing())
+        if ( !pullToRefreshLayout.isRefreshing() )
             pullToRefreshLayout.setRefreshing(true);
         prepareCommentsDone = false;
         client.getComments(topic.getId() + "", currentCommentPage, false, commentsCallback);
@@ -429,17 +487,29 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
 
 
     private void hideCommentPane() {
-        if (!fabIsHiding) {
-            commentBarSeparator.animate().translationY(commentPane.getHeight() * 3).setInterpolator(new AccelerateDecelerateInterpolator()).start();
-            commentPane.animate().translationY(commentPane.getHeight() * 3).setInterpolator(new AccelerateDecelerateInterpolator()).start();
+        if ( !fabIsHiding ) {
+            commentBarSeparator.animate()
+                               .translationY(commentPane.getHeight() * 3)
+                               .setInterpolator(new AccelerateDecelerateInterpolator())
+                               .start();
+            commentPane.animate()
+                       .translationY(commentPane.getHeight() * 3)
+                       .setInterpolator(new AccelerateDecelerateInterpolator())
+                       .start();
             fabIsHiding = true;
         }
     }
 
     private void showCommentPane() {
-        if (fabIsHiding) {
-            commentPane.animate().translationY(commentViewDefaultHeight).setInterpolator(new AccelerateDecelerateInterpolator()).start();
-            commentBarSeparator.animate().translationY(commentViewDefaultHeight).setInterpolator(new AccelerateDecelerateInterpolator()).start();
+        if ( fabIsHiding ) {
+            commentPane.animate()
+                       .translationY(commentViewDefaultHeight)
+                       .setInterpolator(new AccelerateDecelerateInterpolator())
+                       .start();
+            commentBarSeparator.animate()
+                               .translationY(commentViewDefaultHeight)
+                               .setInterpolator(new AccelerateDecelerateInterpolator())
+                               .start();
             fabIsHiding = false;
         }
     }
@@ -484,15 +554,17 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
 
         @Override
         public int getCount() {
-            if (comments != null) {
-                if (comments.getComments() != null) {
+            if ( comments != null ) {
+                if ( comments.getComments() != null ) {
                     noComment = false;
                     return comments.getComments().size();
-                } else {
+                }
+                else {
                     noComment = true;
                     return 1;
                 }
-            } else {
+            }
+            else {
                 noComment = true;
                 return 0;
             }
@@ -511,35 +583,38 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
 
-            if (noComment) {
+            if ( noComment ) {
 //                NoCommentView noCommentView = NoCommentView_.build(getActivity());
 //                noCommentView.bind();
 
                 return new View(getActivity());
             }
             final CommentView commentView;
-            if (position == getCount() - 5) {
-                if (comments.getCount() > comments.getPaging().getLimit() * comments.getPaging().getPage()) {
+            if ( position == getCount() - 5 ) {
+                if ( comments.getCount() > comments.getPaging().getLimit() * comments.getPaging().getPage() ) {
                     Log.d("", "Do Loadmore");
                     loadNextComments();
                 }
             }
 
-            if (convertView != null) {
+            if ( convertView != null ) {
                 commentView = (CommentView) convertView;
-            } else {
+            }
+            else {
                 commentView = CommentView_.build(getAttachedActivity());
 
             }
             commentView.bind(comments.getComments().get(position));
-            commentView.setOnLoadMoreClick(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Comment comment = commentView.getComment();
-                    loadReplies(comment, commentView, position);
+            commentView.setOnLoadMoreClick(
+                    new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Comment comment = commentView.getComment();
+                            loadReplies(comment, commentView, position);
 
-                }
-            });
+                        }
+                    }
+            );
 
             return commentView;
         }

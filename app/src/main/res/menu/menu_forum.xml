@@ -2,5 +2,6 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/action_sort_topic" android:title="@string/action_sort_topic" android:icon="@drawable/ic_action_sort" android:showAsAction="ifRoom"/>
+    <item android:id="@+id/action_topic_type" android:title="เลือกประเภทกระทู้"  android:showAsAction="never"/>
 
 </menu>

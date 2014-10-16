@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="fontloader-1.0.1">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/app/build/exploded-aar/co.52inc/fontloader/1.0.1/classes.jar!/" />
+      <root url="file://$PROJECT_DIR$/app/build/exploded-aar/co.52inc/fontloader/1.0.1/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
