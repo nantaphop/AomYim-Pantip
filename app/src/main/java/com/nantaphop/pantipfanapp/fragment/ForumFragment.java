@@ -406,6 +406,11 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState) {
         lastFirstVisibleItem = list.getFirstVisiblePosition();
 

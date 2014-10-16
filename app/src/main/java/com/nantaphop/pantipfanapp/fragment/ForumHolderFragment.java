@@ -44,20 +44,34 @@ public class ForumHolderFragment extends BaseFragment {
         pagerAdapter = new ForumSlidePagerAdapter(getFragmentManager());
         viewPager.setAdapter(pagerAdapter);
         tabs.setViewPager(viewPager);
-        tabs.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener(){
-            @Override
-            public void onPageSelected(int position) {
-                super.onPageSelected(position);
-                currentPage = position;
-                showTabs();
-            }
-        });
+        tabs.setOnPageChangeListener(
+                new ViewPager.SimpleOnPageChangeListener() {
+                    @Override
+                    public void onPageSelected(int position) {
+                        super.onPageSelected(position);
+                        currentPage = position;
+                        showTabs();
+                    }
+                }
+        );
         tabs.setIndicatorColorResource(R.color.base_color_highlight);
         tabs.setDividerColorResource(android.R.color.transparent);
         tabs.setIndicatorHeight(getResources().getDimensionPixelOffset(R.dimen.tabs_indicator_height));
-        app.getEventBus().register(this);
         actionBar = getAttachedActivity().getActionBar();
         tabsDefaultY = tabs.getY();
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        app.getEventBus().register(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        app.getEventBus().unregister(this);
 
     }
 
