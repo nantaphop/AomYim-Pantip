@@ -35,6 +35,9 @@ public class TopicView extends RelativeLayout implements View.OnClickListener {
     BaseApplication app;
 
     @ViewById
+    RelativeLayout root;
+
+    @ViewById
     TextView title;
     @ViewById
     TextView author;
@@ -63,14 +66,23 @@ public class TopicView extends RelativeLayout implements View.OnClickListener {
     int headerBgDark;
     @ColorRes(android.R.color.transparent)
     int headerBgTransparent;
+    @ColorRes(R.color.base_color_bright)
+    int rippleColor;
 
     private Topic topic;
+
 
     public TopicView(Context context) {
         super(context);
         this.context = context;
-        setOnClickListener(this);
 
+
+    }
+
+    @AfterViews
+    void init(){
+        RippleDrawable.createRipple(root, rippleColor);
+        root.setOnClickListener(this);
     }
 
     @Trace(tag = "topicView")

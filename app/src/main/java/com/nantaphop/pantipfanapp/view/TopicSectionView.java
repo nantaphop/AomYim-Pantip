@@ -5,8 +5,10 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.nantaphop.pantipfanapp.R;
+import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;
+import org.androidannotations.annotations.res.ColorRes;
 
 /**
  * Created by nantaphop on 02-Sep-14.
@@ -19,9 +21,16 @@ public class TopicSectionView extends LinearLayout{
     TextView title;
     @ViewById
     TextView button;
+    @ColorRes(R.color.base_color_bright)
+    int rippleColor;
 
     public TopicSectionView(Context context) {
         super(context);
+    }
+
+    @AfterViews
+    void init(){
+        RippleDrawable.createRipple(root, rippleColor);
     }
 
     public void bind(String title){

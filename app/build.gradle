@@ -63,7 +63,6 @@ dependencies {
     compile 'com.devddagnet.bright.lib:bright:1.0@aar'
     compile 'com.r0adkll:postoffice:1.0.5'
     compile 'com.github.markushi:android-ui:1.2'
-
     compile('de.keyboardsurfer.android.widget:crouton:1.8.4@aar') {
         exclude group: 'com.google.android', module: 'support-v4'
     }

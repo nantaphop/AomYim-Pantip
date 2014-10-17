@@ -9,9 +9,11 @@ import com.nantaphop.pantipfanapp.BaseApplication;
 import com.nantaphop.pantipfanapp.R;
 import com.nantaphop.pantipfanapp.event.OpenTopicEvent;
 import com.nantaphop.pantipfanapp.response.Topic;
+import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.App;
 import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;
+import org.androidannotations.annotations.res.ColorRes;
 
 /**
  * Created by nantaphop on 02-Sep-14.
@@ -25,9 +27,16 @@ public class TopicRecommendView extends LinearLayout {
     TextView title;
     @ViewById
     LinearLayout root;
+    @ColorRes(R.color.base_color_bright)
+    int rippleColor;
 
     public TopicRecommendView(Context context) {
         super(context);
+    }
+
+    @AfterViews
+    void init(){
+        RippleDrawable.createRipple(root, rippleColor);
     }
 
     public void bind(String title, String url) {

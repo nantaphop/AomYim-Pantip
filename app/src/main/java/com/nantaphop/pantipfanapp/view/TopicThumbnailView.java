@@ -32,6 +32,10 @@ public class TopicThumbnailView extends RelativeLayout implements View.OnClickLi
     @App
     BaseApplication app;
 
+
+    @ViewById
+    RelativeLayout root;
+
     @ViewById
     ImageView thumbnail;
     @ViewById
@@ -63,6 +67,8 @@ public class TopicThumbnailView extends RelativeLayout implements View.OnClickLi
     int headerBgDark;
     @ColorRes(android.R.color.transparent)
     int headerBgTransparent;
+    @ColorRes(R.color.base_color_bright)
+    int rippleColor;
 
 
     private static DisplayImageOptions displayImageOptions = new DisplayImageOptions.Builder()
@@ -77,13 +83,15 @@ public class TopicThumbnailView extends RelativeLayout implements View.OnClickLi
     public TopicThumbnailView(Context context) {
         super(context);
         this.context = context;
-        setOnClickListener(this);
 
     }
 
     @AfterViews
     void init() {
         thumbnail.setDrawingCacheEnabled(true);
+        RippleDrawable.createRipple(root, rippleColor);
+        root.setOnClickListener(this);
+
     }
 
     @Trace(tag = "topicView")
