@@ -35,7 +35,6 @@ public class TopicThumbnailView extends RelativeLayout implements View.OnClickLi
 
     @ViewById
     RelativeLayout root;
-
     @ViewById
     ImageView thumbnail;
     @ViewById

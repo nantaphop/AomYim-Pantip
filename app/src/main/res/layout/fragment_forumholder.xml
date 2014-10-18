@@ -22,7 +22,7 @@
 
 
     </LinearLayout>
-    <com.astuetz.PagerSlidingTabStrip
+    <com.nantaphop.pantipfanapp.view.RipplePagerSlidingTabStrip
             android:id="@+id/tabs"
             android:background="@color/base_color"
             android:layout_width="match_parent"

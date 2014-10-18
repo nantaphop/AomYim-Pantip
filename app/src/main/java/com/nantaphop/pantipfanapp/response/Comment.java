@@ -1,5 +1,6 @@
 package com.nantaphop.pantipfanapp.response;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
@@ -13,7 +14,7 @@ import java.util.Date;
  * Time: 5:27 PM
  * To change this template use File | Settings | File Templates.
  */
-public class Comment implements Serializable{
+public class Comment implements Serializable {
 
     public void setUser(User user) {
         this.user = user;
@@ -32,6 +33,9 @@ public class Comment implements Serializable{
         return reply_id;
     }
 
+    @SerializedName("good_bad_vote")
+    @Expose
+    private GoodBadVote goodBadVote;
     int emo_score;
     int point;
     String message; // TODO: Have to remove javascript
@@ -151,8 +155,8 @@ public class Comment implements Serializable{
         this.parent = parent;
     }
 
-    public Reply addReplies(Reply reply){
-        for (Comment comment : reply.getReplies()) {
+    public Reply addReplies(Reply reply) {
+        for ( Comment comment : reply.getReplies() ) {
             comment.setReply(true);
             comment.parent = this;
             comment.setComment_parent_id(id);
@@ -161,16 +165,32 @@ public class Comment implements Serializable{
 
 
         replies.addAll(reply.getReplies());
-        this.setLastReply(replies.get(replies.size()-1).getReply_no());
+        this.setLastReply(replies.get(replies.size() - 1).getReply_no());
 
         return reply;
 
     }
 
-    public void initReplies(){
-        for (Comment comment : getReplies()) {
+    public boolean isVoted() {
+        return this.getGoodBadVote().getGoodVoted().equals(GoodBadVote.I_VOTE);
+    }
+
+    public void setVoted() {
+        this.getGoodBadVote().setGoodVoted(GoodBadVote.I_VOTE);
+    }
+
+    public void initReplies() {
+        for ( Comment comment : getReplies() ) {
             comment.setReply(true);
         }
+    }
+
+    public GoodBadVote getGoodBadVote() {
+        return goodBadVote;
+    }
+
+    public void setGoodBadVote(GoodBadVote goodBadVote) {
+        this.goodBadVote = goodBadVote;
     }
 
     public int getReply_no() {
@@ -179,5 +199,55 @@ public class Comment implements Serializable{
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public class GoodBadVote {
+
+        public static final String I_VOTE = "i-vote";
+
+        @SerializedName("good_voted")
+        @Expose
+        private String goodVoted;
+        @SerializedName("bad_voted")
+        @Expose
+        private String badVoted;
+        @Expose
+        private Integer point;
+        @SerializedName("class_score")
+        @Expose
+        private String classScore;
+
+        public String getGoodVoted() {
+            return goodVoted;
+        }
+
+        public void setGoodVoted(String goodVoted) {
+            this.goodVoted = goodVoted;
+        }
+
+        public String getBadVoted() {
+            return badVoted;
+        }
+
+        public void setBadVoted(String badVoted) {
+            this.badVoted = badVoted;
+        }
+
+        public Integer getPoint() {
+            return point;
+        }
+
+        public void setPoint(Integer point) {
+            this.point = point;
+        }
+
+        public String getClassScore() {
+            return classScore;
+        }
+
+        public void setClassScore(String classScore) {
+            this.classScore = classScore;
+        }
+
     }
 }

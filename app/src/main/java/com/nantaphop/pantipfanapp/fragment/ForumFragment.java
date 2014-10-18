@@ -102,6 +102,8 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
     String[] topic_type;
 
 
+
+
     BaseJsonHttpResponseHandler forumCallback = new BaseJsonHttpResponseHandler() {
         @Override
         public void onSuccess(int i, Header[] headers, String s, Object o) {
@@ -164,6 +166,7 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
     private SimpleEmptyView emptyView;
     private Delivery recommendDialog;
     private TopicType forumType;
+    private Delivery sortDialog;
 
     @Trace
     @Background
@@ -272,11 +275,22 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
         }
     }
 
+    @Override
+    public void onPause() {
+        if ( recommendDialog!=null ) {
+            recommendDialog.dismiss();
+        }
+        if ( sortDialog!=null ) {
+            sortDialog.dismiss();
+        }
+        super.onPause();
+    }
+
     @OptionsItem
     void action_sort_topic() {
         Log.d("menu", "sort - " + forumPagerItem.title);
 //        app.getEventBus().post(new SortForumEvent(forum.getTopics(), topicAdapter));
-        PostOfficeHelper.newSimpleListMailCancelable(
+        sortDialog = PostOfficeHelper.newSimpleListMailCancelable(
                 getAttachedActivity()
                 , topic_sort_type_title
                 , Design.MATERIAL_LIGHT
@@ -304,7 +318,8 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
 //                        listDialog.dismiss();
                     }
                 }
-        ).show(getFragmentManager());
+        );
+        sortDialog.show(getFragmentManager());
     }
 
     @OptionsItem

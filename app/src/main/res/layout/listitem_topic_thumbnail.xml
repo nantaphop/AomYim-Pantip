@@ -6,6 +6,8 @@
                 android:layout_height="match_parent"
         android:background="@drawable/card_bg">
 
+
+
     <ImageView
             android:layout_width="wrap_content"
             android:layout_height="@dimen/card_topic_thumbnail_portrait_height"
@@ -120,5 +122,6 @@
                 android:id="@+id/comments"
                 android:layout_weight="1"/>
     </LinearLayout>
+
 
 </RelativeLayout>

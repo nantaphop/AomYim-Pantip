@@ -8,9 +8,11 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import at.markushi.ui.action.Action;
 import at.markushi.ui.action.BackAction;
 import at.markushi.ui.action.CloseAction;
@@ -25,6 +27,7 @@ import com.nantaphop.pantipfanapp.utils.CommentComparator;
 import com.nantaphop.pantipfanapp.utils.TopicComparator;
 import com.nantaphop.pantipfanapp.view.ActionBarView;
 import com.nantaphop.pantipfanapp.view.ActionBarView_;
+import com.nantaphop.pantipfanapp.view.RippleDrawable;
 import com.squareup.otto.Subscribe;
 import org.androidannotations.annotations.*;
 import org.androidannotations.annotations.res.StringArrayRes;
@@ -96,6 +99,8 @@ public class MainActivity extends FragmentActivity {
             fragmentTransaction.commit();
         }
     }
+
+
 
     @AfterViews
     void init() {

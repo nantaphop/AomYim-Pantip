@@ -155,6 +155,11 @@ public class RESTUtils {
         return BaseApplication.getGson().fromJson(resp, CommentResponse.class);
     }
 
+    public static VoteResponse parseVoteResp(String resp){
+        Log.d("resp", resp);
+        return BaseApplication.getGson().fromJson(resp, VoteResponse.class);
+    }
+
     public static void processComment(Comment c) {
         Document doc = Jsoup.parse(c.getMessage());
 

@@ -1,6 +1,5 @@
 package com.nantaphop.pantipfanapp.fragment;
 
-import android.animation.Animator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -10,13 +9,12 @@ import android.text.Html;
 import android.util.Log;
 import android.view.*;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.BaseJsonHttpResponseHandler;
-import com.loopj.android.http.JsonHttpResponseHandler;
 import com.nantaphop.pantipfanapp.R;
 import com.nantaphop.pantipfanapp.event.DoReplyEvent;
+import com.nantaphop.pantipfanapp.event.DoVoteEvent;
 import com.nantaphop.pantipfanapp.event.SortCommentEvent;
 import com.nantaphop.pantipfanapp.response.*;
 import com.nantaphop.pantipfanapp.utils.RESTUtils;
@@ -189,6 +187,42 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
         @Override
         protected Object parseResponse(String s, boolean b) throws Throwable {
             return RESTUtils.parseCommentResp(s);
+        }
+    };
+
+    CommentView tmpCommentView;
+    Comment tmpComment;
+    private BaseJsonHttpResponseHandler doVoteCallback = new BaseJsonHttpResponseHandler() {
+        @Override
+        public void onSuccess(int i, Header[] headers, String s, Object o) {
+            VoteResponse response = (VoteResponse) o;
+            if ( !response.isError() ) {
+                Crouton.makeText(
+                        getActivity(),
+                        response.getVote_message(),
+                        Style.CONFIRM
+                ).show();
+                tmpCommentView.setVote(response.getPoint());
+                tmpComment.setPoint(response.getPoint());
+                tmpCommentView = null;
+                tmpComment = null;
+            }
+            else {
+                Crouton.makeText(getActivity(), response.getError_message(), Style.ALERT)
+                       .show();
+            }
+            pullToRefreshLayout.setRefreshComplete();
+
+        }
+
+        @Override
+        public void onFailure(int i, Header[] headers, Throwable throwable, String s, Object o) {
+
+        }
+
+        @Override
+        protected Object parseResponse(String s, boolean b) throws Throwable {
+            return RESTUtils.parseVoteResp(s);
         }
     };
 
@@ -469,6 +503,19 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
         shortComment.requestFocus();
         shortComment.setSelection(shortComment.getText().length());
         shortComment.setTag(e);
+    }
+
+    @Subscribe
+    public void vote(DoVoteEvent e){
+        tmpCommentView = e.view;
+        tmpComment = e.comment;
+
+        if ( e.comment.isReply() ) {
+            client.voteReply(topic.getId(), e.comment.getParent().getId(), e.comment.getComment_no(), e.comment.getReply_id(), e.comment.getReply_no(), doVoteCallback);
+        }
+        else {
+            client.voteComment(topic.getId(), e.comment.getId(), e.comment.getComment_no(), doVoteCallback);
+        }
     }
 
     private void loadNextComments() {

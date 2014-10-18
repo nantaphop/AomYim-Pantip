@@ -13,6 +13,7 @@ import com.nantaphop.pantipfanapp.BaseApplication;
 import com.nantaphop.pantipfanapp.R;
 import com.nantaphop.pantipfanapp.event.*;
 import com.nantaphop.pantipfanapp.model.ForumPagerItem;
+import com.nantaphop.pantipfanapp.view.RipplePagerSlidingTabStrip;
 import com.squareup.otto.Subscribe;
 import org.androidannotations.annotations.*;
 
@@ -28,7 +29,7 @@ public class ForumHolderFragment extends BaseFragment {
     @ViewById
     ViewPager viewPager;
     @ViewById
-    PagerSlidingTabStrip tabs;
+    RipplePagerSlidingTabStrip tabs;
     private List<ForumPagerItem> forumPagerItems;
     private int tabsHeight;
     private CharSequence actionBarTitle;
@@ -57,6 +58,7 @@ public class ForumHolderFragment extends BaseFragment {
         tabs.setIndicatorColorResource(R.color.base_color_highlight);
         tabs.setDividerColorResource(android.R.color.transparent);
         tabs.setIndicatorHeight(getResources().getDimensionPixelOffset(R.dimen.tabs_indicator_height));
+
         actionBar = getAttachedActivity().getActionBar();
         tabsDefaultY = tabs.getY();
 

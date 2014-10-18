@@ -108,6 +108,29 @@ public class PantipRestClient {
 
     ;
 
+    public static enum VoteType {
+        Topic {
+            @Override
+            public String toString() {
+                return "1";
+            }
+        },
+        Comment {
+            @Override
+            public String toString() {
+                return "2";
+            }
+        },
+        Reply {
+            @Override
+            public String toString() {
+                return "3";
+            }
+        }
+    }
+
+    ;
+
     public PantipRestClient(Context context) {
         this.context = context;
         client = new AsyncHttpClient();
@@ -116,7 +139,10 @@ public class PantipRestClient {
         client.addHeader("origin", "http://pantip.com");
         client.addHeader("Content-Type", "application/x-www-form-urlencoded");
         client.addHeader("Accept-Encoding", "gzip,deflate,sdch");
-        client.addHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.125 Safari/537.36");
+        client.addHeader(
+                "User-Agent",
+                "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.125 Safari/537.36"
+        );
         client.addHeader("Referer", "http://pantip.com/login?redirect=Lw==");
         client.addHeader("Accept-Language", "en-US,en;q=0.8,th;q=0.6");
 
@@ -153,7 +179,7 @@ public class PantipRestClient {
         post("login/authentication", params, cb);
     }
 
-    public void logout(){
+    public void logout() {
         userPref.clear();
         PersistentCookieStore myCookieStore = new PersistentCookieStore(context);
         myCookieStore.clear();
@@ -169,8 +195,8 @@ public class PantipRestClient {
         params.put("msg[disp]", "msg");
         params.put("msg[time]", commentTimestamp);
         params.put("type", "1");
-        params.put("msg[ref_id]", commentRefId+"pantip3g");
-        params.put("msg[ref_comment]", "comment"+commentNo);
+        params.put("msg[ref_id]", commentRefId + "pantip3g");
+        params.put("msg[ref_comment]", "comment" + commentNo);
 
 
         post("forum/topic/save_reply", params, cb);
@@ -195,17 +221,19 @@ public class PantipRestClient {
         int defaultType = topicType == TopicType.All_Except_Sell ? 1 : 0;
 
         String url;
-        if (type == ForumType.Tag) {
+        if ( type == ForumType.Tag ) {
             url = "forum/topic/ajax_json_all_topic_tag";
-        } else if (type == ForumType.Room) {
+        }
+        else if ( type == ForumType.Room ) {
             url = "forum/topic/ajax_json_all_topic_info_loadmore";
-        } else {
+        }
+        else {
             url = "forum/topic/ajax_json_all_topic_club";
             type = ForumType.Tag;
         }
 
         // ห้องไร้สังกัด
-        if (forum == null) {
+        if ( forum == null ) {
             forum = "undefined";
         }
 
@@ -245,11 +273,14 @@ public class PantipRestClient {
     public void getComments(String topicId, int page, boolean justOwner, AsyncHttpResponseHandler cb) {
         String url;
 
-        if (justOwner) {
+        if ( justOwner ) {
 
-            url = "forum/topic_mode/render_comments?tid="+topicId+"&type=1&page="+page+"&param=story"+page+"&_="+new Date().getTime();
-        } else {
-            url = "forum/topic/render_comments?tid="+topicId+"&type=1&page="+page+"&param=page"+page+"&_="+new Date().getTime();
+            url = "forum/topic_mode/render_comments?tid=" + topicId + "&type=1&page=" + page + "&param=story" + page + "&_=" + new Date()
+                    .getTime();
+        }
+        else {
+            url = "forum/topic/render_comments?tid=" + topicId + "&type=1&page=" + page + "&param=page" + page + "&_=" + new Date()
+                    .getTime();
         }
         get(url, null, cb);
         Log.d(TAG, "get comments - " + url);
@@ -257,13 +288,52 @@ public class PantipRestClient {
 
     @Trace
     @Background
-    public void getReplies(int commentId, int lastReply, int maxReplyCount, int parentCommentUserId, AsyncHttpResponseHandler cb){
-        String url = "http://pantip.com/forum/topic/render_replys?last="+ lastReply +"&cid="+ commentId +"&c="+ maxReplyCount +"&ac=n&o="+ parentCommentUserId;
+    public void getReplies(int commentId, int lastReply, int maxReplyCount, int parentCommentUserId, AsyncHttpResponseHandler cb) {
+        String url = "http://pantip.com/forum/topic/render_replys?last=" + lastReply + "&cid=" + commentId + "&c=" + maxReplyCount + "&ac=n&o=" + parentCommentUserId;
         get(url, null, cb);
         Log.d(TAG, "get repiles - " + commentId);
     }
 
+    @Trace
+    @Background
+    public void voteComment(int topic_id, int comment_id, int commentNo, AsyncHttpResponseHandler cb) {
+        client.addHeader("X-Requested-With", "XMLHttpRequest");
+        RequestParams params = new RequestParams();
+        params.add("vote_status", "1");
+        params.add("vote_type", VoteType.Comment.toString());
+        params.add("topic_id", topic_id + "");
+        params.add("comment_id", comment_id + "");
+        params.add("comment_no", commentNo + "");
 
+        post("vote1/cal_like", params, cb);
+    }
+
+    @Trace
+    @Background
+    public void voteReply(int topic_id, int comment_id, int commentNo, int reply_id, int replyNo, AsyncHttpResponseHandler cb) {
+        client.addHeader("X-Requested-With", "XMLHttpRequest");
+        RequestParams params = new RequestParams();
+        params.add("vote_status", "1");
+        params.add("vote_type", VoteType.Reply.toString());
+        params.add("topic_id", topic_id + "");
+        params.add("cid", comment_id + "");
+        params.add("comment_no", commentNo + "");
+        params.add("rp_id", reply_id + "");
+        params.add("rp_no", replyNo + "");
+
+        post("vote1/cal_like", params, cb);
+    }
+
+    @Trace
+    @Background
+    public void voteTopic(int topic_id, AsyncHttpResponseHandler cb) {
+        client.addHeader("X-Requested-With", "XMLHttpRequest");
+        RequestParams params = new RequestParams();
+        params.add("vote_status", "1");
+        params.add("vote_type", VoteType.Topic.toString());
+        params.add("topic_id", topic_id + "");
+        post("vote1/cal_like", params, cb);
+    }
 
 
 }

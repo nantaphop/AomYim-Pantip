@@ -7,6 +7,7 @@ import android.widget.TextView;
 import at.markushi.ui.ActionView;
 import at.markushi.ui.action.Action;
 import com.nantaphop.pantipfanapp.R;
+import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;
@@ -25,6 +26,11 @@ public class ActionBarView extends LinearLayout{
 
     public ActionBarView(Context context) {
         super(context);
+    }
+
+    @AfterViews
+    void init(){
+        RippleDrawable.createRipple(this, getResources().getColor(R.color.base_color_bright));
     }
 
     public void setAction(Action action){
