@@ -40,6 +40,12 @@
     <string name="feedback_comment_failed">คุณได้แสดงแล้ว กรุณารอ 5 วินาที ก่อนแสดงความเห็นใหม่</string>
     <string name="hint_comment">แสดงความคิดเห็น</string>
     <string name="reply_comment_prefix"><![CDATA[<B>ตอบ คห. %d -> </B>]]></string>
+    <string name="action_view_tag">ดูแท็ก</string>
+    <string name="action_topic_type">เลือกประเภทกระทู้</string>
+    <string name="title_tags_dialog">เลือกแท็ก</string>
+    <string name="action_view_club">ดูคลับ</string>
+    <string name="title_topic_type_dialog">เลือกประเภทกระทู้</string>
+    <string name="title_club_dialog">เลือกคลับ</string>
 
     <array name="topic_sort_type">
         <item>จำนวนความเห็น</item>

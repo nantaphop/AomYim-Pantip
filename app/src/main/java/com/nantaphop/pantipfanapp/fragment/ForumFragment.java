@@ -327,7 +327,7 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
 //        app.getEventBus().post(new ChooseTopicType());
         PostOfficeHelper.newSimpleListMailCancelable(
                 getAttachedActivity()
-                , "เลือกประเภทกระทู้"
+                , app.getString(R.string.title_topic_type_dialog)
                 , Design.MATERIAL_LIGHT
                 , topic_type
                 , new ListStyle.OnItemAcceptedListener<CharSequence>() {
@@ -343,6 +343,38 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
                             case 6: forumType = TopicType.Sell; break;
                         }
                         refresh();
+                    }
+                }
+        ).show(getFragmentManager());
+    }
+
+    @OptionsItem
+    void action_view_tag(){
+        PostOfficeHelper.newSimpleListMailCancelable(
+                getAttachedActivity()
+                , app.getString(R.string.title_tags_dialog)
+                , Design.MATERIAL_LIGHT
+                , forumPart.getTag().toArray(new String[forumPart.getTag().size()])
+                , new ListStyle.OnItemAcceptedListener<CharSequence>() {
+                    @Override
+                    public void onItemAccepted(CharSequence charSequence, int i) {
+
+                    }
+                }
+        ).show(getFragmentManager());
+    }
+
+    @OptionsItem
+    void action_view_club(){
+        PostOfficeHelper.newSimpleListMailCancelable(
+                getAttachedActivity()
+                , app.getString(R.string.title_club_dialog)
+                , Design.MATERIAL_LIGHT
+                , forumPart.getClub().toArray(new String[forumPart.getClub().size()])
+                , new ListStyle.OnItemAcceptedListener<CharSequence>() {
+                    @Override
+                    public void onItemAccepted(CharSequence charSequence, int i) {
+
                     }
                 }
         ).show(getFragmentManager());

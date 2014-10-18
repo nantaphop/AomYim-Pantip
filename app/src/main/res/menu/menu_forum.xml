@@ -8,8 +8,16 @@
             android:showAsAction="ifRoom"
             />
     <item
+            android:id="@+id/action_view_tag"
+            android:title="@string/action_view_tag"
+            android:showAsAction="never"/>
+    <item
+            android:id="@+id/action_view_club"
+            android:title="@string/action_view_club"
+            android:showAsAction="never"/>
+    <item
             android:id="@+id/action_topic_type"
-            android:title="เลือกประเภทกระทู้"
+            android:title="@string/action_topic_type"
             android:showAsAction="never"/>
 
 </menu>
