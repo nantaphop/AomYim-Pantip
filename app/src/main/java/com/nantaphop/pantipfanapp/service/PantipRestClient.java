@@ -108,6 +108,48 @@ public class PantipRestClient {
 
     ;
 
+    public static enum Emo {
+        Like {
+            @Override
+            public String toString() {
+                return "like";
+            }
+        },
+        Laugh {
+            @Override
+            public String toString() {
+                return "laugh";
+            }
+        },
+        Love {
+            @Override
+            public String toString() {
+                return "love";
+            }
+        },
+        Impress {
+            @Override
+            public String toString() {
+                return "impress";
+            }
+        },
+        Scary {
+            @Override
+            public String toString() {
+                return "scary";
+            }
+        },
+        Surprised {
+            @Override
+            public String toString() {
+                return "surprised";
+            }
+        },
+
+    }
+
+    ;
+
     public static enum VoteType {
         Topic {
             @Override
@@ -334,6 +376,57 @@ public class PantipRestClient {
         params.add("topic_id", topic_id + "");
         post("vote1/cal_like", params, cb);
     }
+
+    @Trace
+    @Background
+    public void emoTopic(int topic_id, Emo emo, AsyncHttpResponseHandler cb) {
+        client.addHeader("X-Requested-With", "XMLHttpRequest");
+        RequestParams params = new RequestParams();
+        params.add("id", topic_id+"");
+        params.add("topic_id", topic_id+"");
+        params.add("type", "topic");
+        params.add("emo", emo.toString());
+
+        post("forum/topic/express_emotion", params, cb);
+    }
+
+    @Trace
+    @Background
+    public void emoComment(int topic_id,int comment_id, Emo emo, AsyncHttpResponseHandler cb) {
+        client.addHeader("X-Requested-With", "XMLHttpRequest");
+        RequestParams params = new RequestParams();
+        params.add("id", comment_id+"");
+        params.add("topic_id", topic_id+"");
+        params.add("type", "comment");
+        params.add("emo", emo.toString());
+
+        post("forum/topic/express_emotion", params, cb);
+    }
+
+    @Trace
+    @Background
+    public void emoReply(int topic_id,int comment_id,int reply_id,int comment_no, int reply_no, Emo emo, AsyncHttpResponseHandler cb) {
+        client.addHeader("X-Requested-With", "XMLHttpRequest");
+        RequestParams params = new RequestParams();
+        params.add("id", reply_id+"");
+        params.add("rid", comment_id+"");
+        params.add("topic_id", topic_id+"");
+        params.add("type", "comment");
+        params.add("emo", emo.toString());
+        params.add("comment_no", comment_no+"");
+        params.add("no", reply_no+"");
+
+        post("forum/topic/express_emotion", params, cb);
+    }
+
+    @Trace
+    @Background
+    public void getRoomsTags(AsyncHttpResponseHandler cb) {
+        RequestParams params = new RequestParams();
+        post("forum/new_topic/get_rooms_tags", params, cb);
+    }
+
+
 
 
 }
