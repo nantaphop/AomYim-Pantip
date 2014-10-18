@@ -426,6 +426,15 @@ public class PantipRestClient {
         post("forum/new_topic/get_rooms_tags", params, cb);
     }
 
+    @Trace
+    @Background
+    public void saveTopic(AsyncHttpResponseHandler cb) {
+        RequestParams params = new RequestParams();
+        post("forum/new_topic/save", params, cb);
+    }
+
+
+
 
 
 
