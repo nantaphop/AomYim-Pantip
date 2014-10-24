@@ -42,7 +42,7 @@ public class RippleDrawable extends Drawable implements View.OnTouchListener{
                 }
             };
 
-    final static int DEFAULT_ANIM_DURATION = 250;
+    final static int DEFAULT_ANIM_DURATION = 500;
     final static float END_RIPPLE_TOUCH_RADIUS = 150f;
     final static float END_SCALE = 1.3f;
 
