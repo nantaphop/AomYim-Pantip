@@ -1,6 +1,7 @@
 package com.nantaphop.pantipfanapp.view;
 
 import android.content.Context;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -23,6 +24,9 @@ public class TopicRecommendView extends LinearLayout {
 
     @App
     BaseApplication app;
+
+    @ViewById
+    CardView card;
     @ViewById
     TextView title;
     @ViewById

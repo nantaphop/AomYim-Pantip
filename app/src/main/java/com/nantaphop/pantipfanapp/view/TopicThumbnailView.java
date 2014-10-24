@@ -3,6 +3,7 @@ package com.nantaphop.pantipfanapp.view;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.support.v7.widget.CardView;
 import android.text.Html;
 import android.text.format.DateUtils;
 import android.view.View;
@@ -32,7 +33,8 @@ public class TopicThumbnailView extends RelativeLayout implements View.OnClickLi
     @App
     BaseApplication app;
 
-
+    @ViewById
+    CardView card;
     @ViewById
     RelativeLayout root;
     @ViewById
@@ -55,17 +57,6 @@ public class TopicThumbnailView extends RelativeLayout implements View.OnClickLi
     int paddingExtra;
     @DimensionPixelSizeRes(R.dimen.padding_default)
     int paddingDefault;
-
-    @ColorRes(R.color.text_color_title_dark)
-    int textDark;
-    @ColorRes(R.color.text_color_title_bright)
-    int textBright;
-    @ColorRes(R.color.card_header_bg_bright)
-    int headerBgBright;
-    @ColorRes(R.color.card_header_bg_dark)
-    int headerBgDark;
-    @ColorRes(android.R.color.transparent)
-    int headerBgTransparent;
     @ColorRes(R.color.base_color_bright)
     int rippleColor;
 
@@ -140,28 +131,6 @@ public class TopicThumbnailView extends RelativeLayout implements View.OnClickLi
         } catch (Exception e) {
         }
     }
-
-    @Background
-    void calculateTitleColor(Bitmap loadedImage) {
-        boolean isBright = Bright.setup(Bright.Config.RELATIVE | Bright.Config.PERFORMANCE).isBright(loadedImage);
-        topic.setBrightCover(isBright);
-        updateTitleColor(isBright);
-
-    }
-
-
-    @UiThread
-    void updateTitleColor(boolean isBright) {
-        if (isBright) {
-            title.setTextColor(textDark);
-            title.setBackgroundColor(headerBgBright);
-        } else {
-            title.setTextColor(textBright);
-            title.setBackgroundColor(headerBgDark);
-
-        }
-    }
-
 
     @Override
     public void onClick(View view) {

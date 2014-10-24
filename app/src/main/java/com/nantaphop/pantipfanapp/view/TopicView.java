@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.support.v7.widget.CardView;
 import android.text.Html;
 import android.text.format.DateUtils;
 import android.view.View;
@@ -37,6 +38,8 @@ public class TopicView extends RelativeLayout implements View.OnClickListener {
     @ViewById
     RelativeLayout root;
 
+    @ViewById
+    CardView card;
     @ViewById
     TextView title;
     @ViewById
