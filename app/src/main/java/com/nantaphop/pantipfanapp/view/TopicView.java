@@ -152,6 +152,6 @@ public class TopicView extends RelativeLayout implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
-        app.getEventBus().post(new OpenTopicEvent(topic));
+        app.getEventBus().post(new OpenTopicEvent(topic, this));
     }
 }

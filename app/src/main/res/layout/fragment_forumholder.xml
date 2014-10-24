@@ -10,7 +10,6 @@
             android:layout_height="match_parent">
 
 
-
         <android.support.v4.view.ViewPager
                 android:id="@+id/viewPager"
                 android:background="@color/background"
@@ -24,7 +23,7 @@
     </LinearLayout>
     <com.nantaphop.pantipfanapp.view.RipplePagerSlidingTabStrip
             android:id="@+id/tabs"
-            android:background="@color/base_color"
+            android:background="?attr/colorPrimaryDark"
             android:layout_width="match_parent"
             android:textColor="#ffffffff"
             android:layout_height="@dimen/tabs_height"/>

@@ -16,7 +16,10 @@ import com.nantaphop.pantipfanapp.R;
 import com.nantaphop.pantipfanapp.event.DoReplyEvent;
 import com.nantaphop.pantipfanapp.event.DoVoteEvent;
 import com.nantaphop.pantipfanapp.event.SortCommentEvent;
+import com.nantaphop.pantipfanapp.fragment.dialog.ListDialog;
+import com.nantaphop.pantipfanapp.fragment.dialog.ListDialog_;
 import com.nantaphop.pantipfanapp.response.*;
+import com.nantaphop.pantipfanapp.utils.CommentComparator;
 import com.nantaphop.pantipfanapp.utils.RESTUtils;
 import com.nantaphop.pantipfanapp.utils.ScrollDirectionListener;
 import com.nantaphop.pantipfanapp.view.*;
@@ -25,12 +28,15 @@ import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 import org.androidannotations.annotations.*;
 import org.androidannotations.annotations.res.DimensionPixelSizeRes;
+import org.androidannotations.annotations.res.StringArrayRes;
+import org.androidannotations.annotations.res.StringRes;
 import org.apache.http.Header;
 import uk.co.senab.actionbarpulltorefresh.library.ActionBarPullToRefresh;
 import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout;
 import uk.co.senab.actionbarpulltorefresh.library.listeners.OnRefreshListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 
 /**
@@ -72,6 +78,11 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
     LinearLayout commentPane;
     @ViewById
     FrameLayout root;
+
+    @StringRes
+    String comment_sort_type_title;
+    @StringArrayRes
+    String[] comment_sort_type;
 
 
     private CommentView waitUpdateCommentView;
@@ -235,8 +246,16 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
         Log.d("topic", " on attached");
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+        // update the actionbar to show the up carat/affordance
+    }
+
     @AfterViews
     void init() {
+        getAttachedActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         commentViewDefaultHeight = commentPane.getY();
         Log.d("topic", "init topic fragment " + topic.getId());
         // Prepare Adapter
@@ -423,6 +442,8 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
+
+
     @Click
     void comment() {
         String msg = shortComment.getText().toString();
@@ -442,6 +463,11 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
 
     }
 
+
+    @OptionsItem(android.R.id.home)
+    void backHome(){
+        getAttachedActivity().onBackPressed();
+    }
 
     @OptionsItem
     void action_sort_comment() {
@@ -487,6 +513,43 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
     public void onPause() {
         super.onPause();
         app.getEventBus().unregister(this);
+    }
+
+    @Subscribe
+    public void sortComment(final SortCommentEvent e) {
+
+        final ArrayList<Comment> comments = e.getComments().getComments();
+        final ListDialog listDialog = ListDialog_.builder()
+                                                 .choices(comment_sort_type)
+                                                 .title(comment_sort_type_title)
+                                                 .listItemLayoutRes(android.R.layout.simple_list_item_1)
+                                                 .build();
+        listDialog.setOnItemClickListener(
+                new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                        CommentComparator commentComparator;
+                        switch (i) {
+                            case 0:
+                                commentComparator = new CommentComparator(CommentComparator.SortType.Vote);
+                                break;
+                            case 1:
+                                commentComparator = new CommentComparator(CommentComparator.SortType.Emo);
+                                break;
+                            case 2:
+                                commentComparator = new CommentComparator(CommentComparator.SortType.Order);
+                                break;
+                            default:
+                                commentComparator = new CommentComparator(CommentComparator.SortType.Order);
+                                break;
+                        }
+                        Collections.sort(comments, commentComparator);
+                        e.getAdapter().notifyDataSetChanged();
+                        listDialog.dismiss();
+                    }
+                }
+        );
+        listDialog.show(getAttachedActivity().getFragmentManager(), "sort_topic");
     }
 
     @Subscribe

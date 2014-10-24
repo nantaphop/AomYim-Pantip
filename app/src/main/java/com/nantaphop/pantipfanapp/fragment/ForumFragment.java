@@ -7,15 +7,14 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.widget.BaseAdapter;
-import android.widget.FrameLayout;
-import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.*;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.BaseJsonHttpResponseHandler;
 import com.melnykov.fab.FloatingActionButton;
 import com.nantaphop.pantipfanapp.R;
 import com.nantaphop.pantipfanapp.event.*;
+import com.nantaphop.pantipfanapp.fragment.dialog.ListDialog;
+import com.nantaphop.pantipfanapp.fragment.dialog.ListDialog_;
 import com.nantaphop.pantipfanapp.model.ForumPagerItem;
 import com.nantaphop.pantipfanapp.response.Forum;
 import com.nantaphop.pantipfanapp.response.ForumPart;
@@ -31,6 +30,7 @@ import com.r0adkll.postoffice.PostOffice;
 import com.r0adkll.postoffice.model.Delivery;
 import com.r0adkll.postoffice.model.Design;
 import com.r0adkll.postoffice.styles.ListStyle;
+import com.squareup.otto.Subscribe;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 import it.gmariotti.cardslib.library.internal.Card;
@@ -275,6 +275,8 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
         }
     }
 
+
+
     @Override
     public void onPause() {
         if ( recommendDialog!=null ) {
@@ -283,7 +285,71 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
         if ( sortDialog!=null ) {
             sortDialog.dismiss();
         }
+        app.getEventBus().unregister(this);
         super.onPause();
+
+    }
+
+    @Subscribe
+    public void showRecommend(final ShowRecommendEvent e) {
+//        RecommendDialog recommendDialog = RecommendDialog_.builder().topics(e.getRecommendTopics()).urls(e.getRecommendUrls()).build();
+//        recommendDialog.show(getFragmentManager(), "recommend");
+        final ListDialog listDialog = ListDialog_.builder()
+                                                 .choicesArrayList(e.getRecommendTopics())
+                                                 .title(getString(R.string.recomend_topic))
+                                                 .listItemLayoutRes(R.layout.listitem_recommend_dialog)
+                                                 .build();
+        listDialog.setOnItemClickListener(
+                new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                        final Topic topic = new Topic();
+                        topic.setTitle(e.getRecommendTopics().get(i));
+                        topic.setId(Integer.parseInt(e.getRecommendUrls().get(i).split("/")[4]));
+                        app.getEventBus().post(new OpenTopicEvent(topic));
+                        listDialog.dismiss();
+
+                    }
+                }
+        );
+        listDialog.show(getAttachedActivity().getFragmentManager(), null);
+    }
+
+    @Subscribe
+    public void sortForum(final SortForumEvent e) {
+
+        final ArrayList<Topic> topics = e.getTopics();
+        final ListDialog listDialog = ListDialog_.builder()
+                                                 .choices(topic_sort_type)
+                                                 .title(topic_sort_type_title)
+                                                 .listItemLayoutRes(android.R.layout.simple_list_item_1)
+                                                 .build();
+        listDialog.setOnItemClickListener(
+                new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                        TopicComparator topicComparator;
+                        switch (i) {
+                            case 0:
+                                topicComparator = new TopicComparator(TopicComparator.SortType.Comment);
+                                break;
+                            case 1:
+                                topicComparator = new TopicComparator(TopicComparator.SortType.Vote);
+                                break;
+                            case 2:
+                                topicComparator = new TopicComparator(TopicComparator.SortType.Time);
+                                break;
+                            default:
+                                topicComparator = new TopicComparator(TopicComparator.SortType.Time);
+                                break;
+                        }
+                        Collections.sort(topics, topicComparator);
+                        e.getAdapter().notifyDataSetChanged();
+                        listDialog.dismiss();
+                    }
+                }
+        );
+        listDialog.show(getAttachedActivity().getFragmentManager(), "sort_topic");
     }
 
     @OptionsItem
@@ -455,6 +521,7 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
     @Override
     public void onResume() {
         super.onResume();
+        app.getEventBus().register(this);
     }
 
     @Override

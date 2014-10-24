@@ -1,8 +1,8 @@
 <component name="libraryTable">
   <library name="crouton-1.8.4">
     <CLASSES>
-      <root url="file://$PROJECT_DIR$/app/build/exploded-aar/de.keyboardsurfer.android.widget/crouton/1.8.4/res" />
-      <root url="jar://$PROJECT_DIR$/app/build/exploded-aar/de.keyboardsurfer.android.widget/crouton/1.8.4/classes.jar!/" />
+      <root url="jar://$PROJECT_DIR$/app/build/intermediates/exploded-aar/de.keyboardsurfer.android.widget/crouton/1.8.4/classes.jar!/" />
+      <root url="file://$PROJECT_DIR$/app/build/intermediates/exploded-aar/de.keyboardsurfer.android.widget/crouton/1.8.4/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

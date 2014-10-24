@@ -19,32 +19,72 @@
 
 <resources>
 
-    <style name="Theme.Pantip" parent="@android:style/Theme.Holo.Light.DarkActionBar">
+    <style name="Theme.Pantip" parent="Theme.AppCompat.Light">
+
+        <item name="colorPrimary">@color/base_color_bright</item>
+        <!--<item name="textColorPrimary">@android:color/white</item>-->
+        <item name="colorPrimaryDark">@color/base_color</item>
+        <item name="colorAccent">@color/base_color_highlight</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+
         <item name="android:actionBarSize">56dp</item>
         <item name="actionBarSize">56dp</item>
+        <item name="actionBarStyle">@style/MyActionBarStyle</item>
 
-        <item name="android:actionBarItemBackground">@drawable/selectable_background_pantip</item>
-        <item name="android:popupMenuStyle">@style/PopupMenu.Pantip</item>
-        <item name="android:dropDownListViewStyle">@style/DropDownListView.Pantip</item>
-        <item name="android:actionBarTabStyle">@style/ActionBarTabStyle.Pantip</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="android:actionDropDownStyle">@style/DropDownNav.Pantip</item>
-        <item name="android:actionBarStyle">@style/ActionBar.Solid.Pantip</item>
-        <item name="android:actionModeBackground">@drawable/cab_background_top_pantip</item>
-        <item name="android:actionModeSplitBackground">@drawable/cab_background_bottom_pantip</item>
-        <item name="android:actionModeCloseButtonStyle">@style/ActionButton.CloseMode.Pantip</item>
+        <item name="ptrHeaderStyle">@style/Widget.Custom.PtrHeader</item>
+        <!--<item name="android:actionBarItemBackground">@drawable/selectable_background_pantip</item>-->
+        <!--<item name="android:popupMenuStyle">@style/PopupMenu.Pantip</item>-->
+        <!--<item name="android:dropDownListViewStyle">@style/DropDownListView.Pantip</item>-->
+        <!--<item name="android:actionBarTabStyle">@style/ActionBarTabStyle.Pantip</item>-->
+        <!--<item name="android:windowContentOverlay">@null</item>-->
+        <!--<item name="android:actionDropDownStyle">@style/DropDownNav.Pantip</item>-->
+        <!--<item name="android:actionBarStyle">@style/ActionBar.Solid.Pantip</item>-->
+        <!--<item name="android:actionModeBackground">@drawable/cab_background_top_pantip</item>-->
+        <!--<item name="android:actionModeSplitBackground">@drawable/cab_background_bottom_pantip</item>-->
+        <!--<item name="android:actionModeCloseButtonStyle">@style/ActionButton.CloseMode.Pantip</item>-->
 
-                <!-- Light.DarkActionBar specific -->
-        <item name="android:actionBarWidgetTheme">@style/Theme.Pantip.Widget</item>
+
+        <!--<item name="android:actionBarWidgetTheme">@style/Theme.Pantip.Widget</item>-->
 
     </style>
 
-    <style name="ActionBar.Solid.Pantip" parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
+    <style name="Widget.Custom.PtrHeader" parent="android:Widget">
+        <!-- The background of the header view -->
+        <item name="ptrHeaderBackground">?attr/colorPrimaryDark</item>
+
+        <!-- The height of the header view. Please note, only set if in you really need to -->
+        <!--<item name="ptrHeaderHeight">...</item>-->
+
+         <!--TextAppearance of the header view's title text -->
+        <!--<item name="ptrHeaderTitleTextAppearance">...</item>-->
+
+        <!-- Color to tint the progress bar -->
+        <!--<item name="ptrProgressBarColor">...</item>-->
+
+        <!-- Radius of the progress bar corners -->
+        <!--<item name="ptrProgressBarCornerRadius">4dp</item>-->
+
+        <!-- Style of the Progress Bar. Values are either: inside or outside -->
+        <!--<item name="ptrProgressBarStyle">...</item>-->
+
+        <!-- The strings to be displayed at the various states -->
+        <!--<item name="ptrPullText">@string/empty_string</item>-->
+        <!--<item name="ptrRefreshingText">@string/empty_string</item>-->
+        <!--<item name="ptrReleaseText">@string/empty_string</item>-->
+    </style>
+
+    <style name="MyActionBarStyle" parent="@style/Widget.AppCompat.Light.ActionBar.Solid">
+        <!--<item name="android:titleTextStyle">@style/TitleBarTextColor</item>-->
         <item name="android:background">@drawable/ab_solid_pantip</item>
-        <item name="android:backgroundStacked">@drawable/ab_stacked_solid_pantip</item>
-        <item name="android:backgroundSplit">@drawable/ab_bottom_solid_pantip</item>
-        <item name="android:progressBarStyle">@style/ProgressBar.Pantip</item>
+        <!--<item name="android:backgroundStacked">@drawable/ab_stacked_solid_pantip</item>-->
+        <!--<item name="android:backgroundSplit">@drawable/ab_bottom_solid_pantip</item>-->
+        <!--<item name="android:progressBarStyle">@style/ProgressBar.Pantip</item>-->
     </style>
+
+    <!--<style name="TitleBarTextColor" parent="@style/TextAppearance.AppCompat.Widget.">-->
+        <!--<item name="android:textColor">@android:color/white</item>-->
+    <!--</style>-->
 
     <style name="ActionBar.Transparent.Pantip" parent="@android:style/Widget.Holo.ActionBar">
         <item name="android:background">@drawable/ab_transparent_pantip</item>

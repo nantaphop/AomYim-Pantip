@@ -1,11 +1,12 @@
 package com.nantaphop.pantipfanapp.fragment;
 
-import android.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import com.astuetz.PagerSlidingTabStrip;
@@ -30,6 +31,7 @@ public class ForumHolderFragment extends BaseFragment {
     ViewPager viewPager;
     @ViewById
     RipplePagerSlidingTabStrip tabs;
+
     private List<ForumPagerItem> forumPagerItems;
     private int tabsHeight;
     private CharSequence actionBarTitle;
@@ -59,7 +61,7 @@ public class ForumHolderFragment extends BaseFragment {
         tabs.setDividerColorResource(android.R.color.transparent);
         tabs.setIndicatorHeight(getResources().getDimensionPixelOffset(R.dimen.tabs_indicator_height));
 
-        actionBar = getAttachedActivity().getActionBar();
+        actionBar = ((ActionBarActivity)getAttachedActivity()).getSupportActionBar();
         tabsDefaultY = tabs.getY();
 
     }

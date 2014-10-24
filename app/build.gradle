@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.9.+'
+        classpath 'com.android.tools.build:gradle:0.12.2'
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.4'
     }
 
@@ -20,12 +20,12 @@ repositories {
 }
 
 android {
-    compileSdkVersion 20
-    buildToolsVersion '20'
+    compileSdkVersion 21
+    buildToolsVersion '21.0.1'
 
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 20
+        targetSdkVersion 21
         versionCode 16
         versionName "2"
     }
@@ -49,10 +49,10 @@ def AAVersion = '3.0.1'
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:support-v4:19.1.0'
-    compile 'com.android.support:appcompat-v7:19.0.0'
+    compile 'com.android.support:appcompat-v7:21.+'
     compile 'com.github.amlcurran.showcaseview:library:5.0.0'
     compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
-    compile 'com.google.android.gms:play-services:5.0.77'
+    compile 'com.google.android.gms:play-services:+'
     compile 'com.github.gabrielemariotti.cards:library:1.8.0'
     compile 'com.github.gabrielemariotti.cards:library-extra:1.8.0'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.2'

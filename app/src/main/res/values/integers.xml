@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <integer name="dialog_anim_duration">180</integer>
+    <integer name="activity_anim_duration">600</integer>
     <integer name="fragment_anim_duration">400</integer>
 </resources>

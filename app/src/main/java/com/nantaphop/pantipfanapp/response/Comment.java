@@ -201,7 +201,7 @@ public class Comment implements Serializable {
         this.message = message;
     }
 
-    public class GoodBadVote {
+    public class GoodBadVote implements Serializable{
 
         public static final String I_VOTE = "i-vote";
 

@@ -3,10 +3,15 @@
 <set xmlns:android="http://schemas.android.com/apk/res/android"
      android:duration="@integer/activity_anim_duration"
      android:interpolator="@android:interpolator/decelerate_cubic">
+    <scale
+            android:fromXScale="0.8"
+            android:toXScale="1"
+            android:fromYScale="0.8"
+            android:toYScale="1"
+            android:pivotX="50%"/>
     <translate
-            android:fromYDelta="100%"
+            android:fromYDelta="20%"
             android:toYDelta="0%"
             />
-
 
 </set>

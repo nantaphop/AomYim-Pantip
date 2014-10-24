@@ -46,6 +46,7 @@
     <string name="action_view_club">ดูคลับ</string>
     <string name="title_topic_type_dialog">เลือกประเภทกระทู้</string>
     <string name="title_club_dialog">เลือกคลับ</string>
+    <string name="empty_string"></string>
 
     <array name="topic_sort_type">
         <item>จำนวนความเห็น</item>
