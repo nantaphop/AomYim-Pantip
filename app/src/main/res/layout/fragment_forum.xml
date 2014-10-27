@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:card="http://schemas.android.com/apk/res-auto"
+             xmlns:ptr="http://schemas.android.com/apk/res-auto"
              android:id="@+id/root"
              xmlns:fab="http://schemas.android.com/apk/res-auto"
              xmlns:tools="http://schemas.android.com/tools"
@@ -16,7 +16,7 @@
         <!--android:id="@+id/list"-->
         <!--android:layout_width="match_parent"-->
         <!--android:layout_height="match_parent"></ListView>-->
-        <uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout
+        <uk.co.senab.actionbarpulltorefresh.extras.actionbarcompat.PullToRefreshLayout
                 android:id="@+id/pullToRefreshLayout"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent">
@@ -35,7 +35,7 @@
                     android:dividerHeight="@dimen/padding_default"
                     android:id="@+id/list"
                     tools:listitem="@layout/listitem_topic"></ListView>
-        </uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout>
+        </uk.co.senab.actionbarpulltorefresh.extras.actionbarcompat.PullToRefreshLayout>
 
 
 

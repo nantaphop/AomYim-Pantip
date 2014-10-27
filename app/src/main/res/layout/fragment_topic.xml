@@ -16,7 +16,7 @@
         <!--android:id="@+id/list"-->
         <!--android:layout_width="match_parent"-->
         <!--android:layout_height="match_parent"></ListView>-->
-        <uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout
+        <uk.co.senab.actionbarpulltorefresh.extras.actionbarcompat.PullToRefreshLayout
                 android:id="@+id/pullToRefreshLayout"
                 android:layout_weight="1"
                 android:layout_width="fill_parent"
@@ -27,7 +27,7 @@
                     android:layout_height="match_parent"
                     android:id="@+id/list"
                     tools:listitem="@android:layout/simple_list_item_1"/>
-        </uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout>
+        </uk.co.senab.actionbarpulltorefresh.extras.actionbarcompat.PullToRefreshLayout>
 
 
     </LinearLayout>

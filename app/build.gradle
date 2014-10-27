@@ -57,7 +57,7 @@ dependencies {
     compile 'com.github.gabrielemariotti.cards:library:1.8.0'
     compile 'com.github.gabrielemariotti.cards:library-extra:1.8.0'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.2'
-    compile 'com.github.chrisbanes.actionbarpulltorefresh:library:+'
+    compile 'com.github.chrisbanes.actionbarpulltorefresh:extra-abc:+'
     compile 'com.readystatesoftware.systembartint:systembartint:1.0.3'
     compile 'com.melnykov:floatingactionbutton:1.0.0'
     compile 'com.nhaarman.listviewanimations:library:2.6.0'
