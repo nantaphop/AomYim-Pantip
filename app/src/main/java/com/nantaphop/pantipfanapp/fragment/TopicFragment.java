@@ -13,19 +13,23 @@ import android.widget.*;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.BaseJsonHttpResponseHandler;
 import com.nantaphop.pantipfanapp.R;
+import com.nantaphop.pantipfanapp.event.DoEmoEvent;
 import com.nantaphop.pantipfanapp.event.DoReplyEvent;
 import com.nantaphop.pantipfanapp.event.DoVoteEvent;
 import com.nantaphop.pantipfanapp.event.SortCommentEvent;
 import com.nantaphop.pantipfanapp.fragment.dialog.ListDialog;
 import com.nantaphop.pantipfanapp.fragment.dialog.ListDialog_;
 import com.nantaphop.pantipfanapp.response.*;
+import com.nantaphop.pantipfanapp.service.PantipRestClient;
 import com.nantaphop.pantipfanapp.utils.CommentComparator;
+import com.nantaphop.pantipfanapp.utils.PostOfficeHelper;
 import com.nantaphop.pantipfanapp.utils.RESTUtils;
 import com.nantaphop.pantipfanapp.utils.ScrollDirectionListener;
 import com.nantaphop.pantipfanapp.view.*;
+import com.r0adkll.postoffice.model.Delivery;
+import com.r0adkll.postoffice.model.Design;
+import com.r0adkll.postoffice.styles.ListStyle;
 import com.squareup.otto.Subscribe;
-import de.keyboardsurfer.android.widget.crouton.Crouton;
-import de.keyboardsurfer.android.widget.crouton.Style;
 import org.androidannotations.annotations.*;
 import org.androidannotations.annotations.res.DimensionPixelSizeRes;
 import org.androidannotations.annotations.res.StringArrayRes;
@@ -83,6 +87,10 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
     String comment_sort_type_title;
     @StringArrayRes
     String[] comment_sort_type;
+    @StringRes(R.string.title_emo_dialog)
+    String emoTitle;
+    @StringArrayRes(R.array.emo_type)
+    String[] emoType;
 
 
     private CommentView waitUpdateCommentView;
@@ -101,7 +109,7 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
 
         @Override
         public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
-
+            toastAlert(getString(R.string.feedback_connection_failed));
         }
     };
     private float commentViewDefaultHeight;
@@ -112,19 +120,18 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
         public void onSuccess(int i, Header[] headers, String s, Object o) {
             Log.d("forum", "success");
             Comments newComments = (Comments) o;
-            if ( comments == null ) {
+            if (comments == null) {
                 comments = newComments;
-                if ( newComments.getComments() != null ) {
+                if (newComments.getComments() != null) {
                     tmpCommentsList = (ArrayList<Comment>) newComments.getComments().clone();
                 }
-                if ( comments.getComments() != null )
+                if (comments.getComments() != null)
                     comments.getComments().clear();
-            }
-            else {
-                if ( tmpCommentsList == null ) {
+            } else {
+                if (tmpCommentsList == null) {
                     tmpCommentsList = new ArrayList<Comment>();
                 }
-                if ( newComments.getComments() != null ) {
+                if (newComments.getComments() != null) {
                     tmpCommentsList.addAll(newComments.getComments());
                 }
                 comments.setPaging(newComments.getPaging());
@@ -136,7 +143,7 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
 
         @Override
         public void onFailure(int i, Header[] headers, Throwable throwable, String s, Object o) {
-
+            toastAlert(getString(R.string.feedback_connection_failed));
         }
 
         @Override
@@ -149,14 +156,14 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
         @Override
         public void onSuccess(int i, Header[] headers, String s, Object o) {
             tmpReplies = (Reply) o;
-            if ( tmpReplies != null ) {
+            if (tmpReplies != null) {
                 addReplies();
             }
         }
 
         @Override
         public void onFailure(int i, Header[] headers, Throwable throwable, String s, Object o) {
-
+            toastAlert(getString(R.string.feedback_connection_failed));
         }
 
         @Override
@@ -169,22 +176,16 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
         @Override
         public void onSuccess(int i, Header[] headers, String s, Object o) {
             CommentResponse response = (CommentResponse) o;
-            if ( !response.isError() ) {
+            if (!response.isError()) {
                 lastFirstVisibleItem = list.getAdapter().getCount() - 1; // Force scroll to last after doComment
                 comments = null;
                 currentCommentPage = 1;
                 loadNextComments();
                 list.requestFocus();
                 shortComment.setText("");
-                Crouton.makeText(
-                        getActivity(),
-                        getActivity().getString(R.string.feedback_comment_success),
-                        Style.CONFIRM
-                ).show();
-            }
-            else {
-                Crouton.makeText(getActivity(), getActivity().getString(R.string.feedback_comment_failed), Style.ALERT)
-                       .show();
+                toastInfo(getString(R.string.feedback_comment_success));
+            } else {
+               toastAlert(getString(R.string.feedback_comment_failed));
             }
             pullToRefreshLayout.setRefreshComplete();
 
@@ -192,7 +193,7 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
 
         @Override
         public void onFailure(int i, Header[] headers, Throwable throwable, String s, Object o) {
-
+            toastAlert(getString(R.string.feedback_connection_failed));
         }
 
         @Override
@@ -203,24 +204,25 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
 
     CommentView tmpCommentView;
     Comment tmpComment;
+    TopicPostView topicPostView;
+
     private BaseJsonHttpResponseHandler doVoteCallback = new BaseJsonHttpResponseHandler() {
         @Override
         public void onSuccess(int i, Header[] headers, String s, Object o) {
             VoteResponse response = (VoteResponse) o;
-            if ( !response.isError() ) {
-                Crouton.makeText(
-                        getActivity(),
-                        response.getVote_message(),
-                        Style.CONFIRM
-                ).show();
-                tmpCommentView.setVote(response.getPoint());
-                tmpComment.setPoint(response.getPoint());
-                tmpCommentView = null;
-                tmpComment = null;
-            }
-            else {
-                Crouton.makeText(getActivity(), response.getError_message(), Style.ALERT)
-                       .show();
+            if (!response.isError()) {
+                if (tmpCommentView!=null) {
+                    toastInfo(response.getVote_message());
+                    tmpCommentView.setVote(response.getPoint());
+                    tmpComment.setPoint(response.getPoint());
+                    tmpCommentView = null;
+                    tmpComment = null;
+                } else {
+                    toastInfo(response.getVote_message());
+                    topicPostView.setVote();
+                }
+            } else {
+                toastAlert(response.getError_message());
             }
             pullToRefreshLayout.setRefreshComplete();
 
@@ -228,7 +230,7 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
 
         @Override
         public void onFailure(int i, Header[] headers, Throwable throwable, String s, Object o) {
-
+            toastAlert(getString(R.string.feedback_connection_failed));
         }
 
         @Override
@@ -237,8 +239,41 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
         }
     };
 
+    private BaseJsonHttpResponseHandler doEmoCallback = new BaseJsonHttpResponseHandler() {
+        @Override
+        public void onSuccess(int i, Header[] headers, String s, Object o) {
+            EmoResponse response = (EmoResponse) o;
+            if (response.getStatus().equals("ok")) {
+                if (response.getEmotion().getType().equalsIgnoreCase("topic")) {
+                    toastInfo(getString(R.string.feedback_emo_success));
+                    topicPostView.setEmo();
+                } else {
+                    toastInfo(getString(R.string.feedback_emo_success));
+                    tmpCommentView.setEmo(response);
+                    tmpCommentView = null;
+                }
+            } else {
+                toastAlert(getString(R.string.feedback_emo_failed));
+            }
+            pullToRefreshLayout.setRefreshComplete();
+
+        }
+
+        @Override
+        public void onFailure(int i, Header[] headers, Throwable throwable, String s, Object o) {
+            toastAlert(getString(R.string.feedback_connection_failed));
+        }
+
+        @Override
+        protected Object parseResponse(String s, boolean b) throws Throwable {
+            return RESTUtils.parseEmoResp(s);
+        }
+    };
+
     private boolean fabIsHiding;
     private SimpleEmptyView emptyView;
+    private Delivery sortDialog;
+    private Delivery emoDialog;
 
     @Override
     public void onAttach(Activity activity) {
@@ -301,11 +336,10 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
                 )
         );
 
-        if ( topicPost == null && comments == null ) {
+        if (topicPost == null && comments == null) {
             loadTopicPost();
             loadNextComments();
-        }
-        else {
+        } else {
             prepareTopicPostDone = true;
             prepareComments();
         }
@@ -323,10 +357,9 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
     @FocusChange(R.id.shortComment)
     void commentFocused() {
 
-        if ( shortComment.isFocused() ) {
+        if (shortComment.isFocused()) {
             showCommentTools();
-        }
-        else {
+        } else {
             hideCommentTools();
         }
     }
@@ -344,14 +377,14 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
     public void prepareComments() {
         prepareCommentsDone = false;
         // Flatten Comment and Replies
-        if ( tmpCommentsList != null ) {
+        if (tmpCommentsList != null) {
             ArrayList<Comment> flattenComments = new ArrayList<Comment>();
-            for ( Comment c : tmpCommentsList ) {
+            for (Comment c : tmpCommentsList) {
                 RESTUtils.processComment(c);
                 ArrayList<Comment> replies = c.getReplies();
                 flattenComments.add(c);
                 Iterator<Comment> it = replies.iterator();
-                while ( it.hasNext() ) {
+                while (it.hasNext()) {
                     Comment r = it.next();
                     r.setReply(true);
                     r.setParent(c);
@@ -361,7 +394,7 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
                     c.setLastReply(r.getReply_no());
                 }
             }
-            if ( flattenComments != null ) {
+            if (flattenComments != null) {
                 comments.addComments(flattenComments);
             }
             tmpCommentsList.clear();
@@ -372,14 +405,14 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
 
     @UiThread
     public void joinTopic() {
-        if ( prepareCommentsDone && prepareTopicPostDone ) {
+        if (prepareCommentsDone && prepareTopicPostDone) {
 
-            TopicPostView topicPostView = TopicPostView_.build(getAttachedActivity());
+            topicPostView = TopicPostView_.build(getAttachedActivity());
             topicPostView.bind(topicPost);
-            if ( list.getHeaderViewsCount() == 0 )
+            if (list.getHeaderViewsCount() == 0)
                 list.addHeaderView(topicPostView);
             commentAdapter.notifyDataSetChanged();
-            if ( lastFirstVisibleItem != 0 ) {
+            if (lastFirstVisibleItem != 0) {
                 list.setSelection(lastFirstVisibleItem);
             }
             pullToRefreshLayout.setRefreshComplete();
@@ -396,7 +429,7 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
     }
 
     public void loadReplies(Comment c, CommentView waitUpdateCommentView, int newRepliesPosition) {
-        if ( !pullToRefreshLayout.isRefreshing() )
+        if (!pullToRefreshLayout.isRefreshing())
             pullToRefreshLayout.setRefreshing(true);
         this.waitUpdateCommentView = waitUpdateCommentView;
         this.newRepliesPosition = newRepliesPosition;
@@ -407,7 +440,7 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
     @UiThread
     void addReplies() {
         Comment parent = comments.getComments().get(newRepliesPosition).getParent();
-        for ( Comment comment : tmpReplies.getReplies() ) {
+        for (Comment comment : tmpReplies.getReplies()) {
             comment.setReply(true);
             comment.setParent(waitUpdateCommentView.getComment().getParent());
             parent.setLastReply(comment.getReply_no());
@@ -429,7 +462,7 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
     }
 
     public void loadTopicPost() {
-        if ( !pullToRefreshLayout.isRefreshing() )
+        if (!pullToRefreshLayout.isRefreshing())
             pullToRefreshLayout.setRefreshing(true);
         prepareTopicPostDone = false;
         client.getTopicPost(topic.getId() + "", topicPostCallback);
@@ -443,19 +476,18 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
     }
 
 
-
     @Click
     void comment() {
         String msg = shortComment.getText().toString();
         // Detect for reply or new comment
         boolean isReply = false;
-        if ( msg.startsWith("ตอบ คห.") ) {
+        if (msg.startsWith("ตอบ คห.")) {
             String commentNo = msg.substring(0, msg.indexOf(">")).split(" ")[2];
             msg = msg.split(">")[1].trim();
-            DoReplyEvent e = (DoReplyEvent)shortComment.getTag();
+            DoReplyEvent e = (DoReplyEvent) shortComment.getTag();
             client.reply(topic.getId(), e.commentRefId, e.commentNo, e.commentTimestamp, msg, doCommentCallback);
 
-        }else if ( msg.length() > 0 ) {
+        } else if (msg.length() > 0) {
             pullToRefreshLayout.setRefreshing(true);
             hideCommentTools();
             client.comment(topic.getId(), msg, doCommentCallback);
@@ -465,14 +497,41 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
 
 
     @OptionsItem(android.R.id.home)
-    void backHome(){
+    void backHome() {
         getAttachedActivity().onBackPressed();
     }
 
     @OptionsItem
     void action_sort_comment() {
         Log.d("menu", "sort comment");
-        app.getEventBus().post(new SortCommentEvent(comments, commentAdapter));
+        sortDialog = PostOfficeHelper.newSimpleListMailCancelable(
+                getAttachedActivity(),
+                comment_sort_type_title,
+                Design.MATERIAL_LIGHT,
+                comment_sort_type,
+                new ListStyle.OnItemAcceptedListener<CharSequence>() {
+                    @Override
+                    public void onItemAccepted(CharSequence charSequence, int i) {
+                        CommentComparator commentComparator;
+                        switch (i) {
+                            case 0:
+                                commentComparator = new CommentComparator(CommentComparator.SortType.Vote);
+                                break;
+                            case 1:
+                                commentComparator = new CommentComparator(CommentComparator.SortType.Emo);
+                                break;
+                            case 2:
+                                commentComparator = new CommentComparator(CommentComparator.SortType.Order);
+                                break;
+                            default:
+                                commentComparator = new CommentComparator(CommentComparator.SortType.Order);
+                                break;
+                        }
+                        Collections.sort(comments.getComments(), commentComparator);
+                        commentAdapter.notifyDataSetChanged();
+                    }
+                });
+        sortDialog.show(getFragmentManager());
     }
 
     @OptionsItem
@@ -516,43 +575,6 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
     }
 
     @Subscribe
-    public void sortComment(final SortCommentEvent e) {
-
-        final ArrayList<Comment> comments = e.getComments().getComments();
-        final ListDialog listDialog = ListDialog_.builder()
-                                                 .choices(comment_sort_type)
-                                                 .title(comment_sort_type_title)
-                                                 .listItemLayoutRes(android.R.layout.simple_list_item_1)
-                                                 .build();
-        listDialog.setOnItemClickListener(
-                new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                        CommentComparator commentComparator;
-                        switch (i) {
-                            case 0:
-                                commentComparator = new CommentComparator(CommentComparator.SortType.Vote);
-                                break;
-                            case 1:
-                                commentComparator = new CommentComparator(CommentComparator.SortType.Emo);
-                                break;
-                            case 2:
-                                commentComparator = new CommentComparator(CommentComparator.SortType.Order);
-                                break;
-                            default:
-                                commentComparator = new CommentComparator(CommentComparator.SortType.Order);
-                                break;
-                        }
-                        Collections.sort(comments, commentComparator);
-                        e.getAdapter().notifyDataSetChanged();
-                        listDialog.dismiss();
-                    }
-                }
-        );
-        listDialog.show(getAttachedActivity().getFragmentManager(), "sort_topic");
-    }
-
-    @Subscribe
     public void reply(DoReplyEvent e) {
         shortComment.setText(
                 Html.fromHtml(
@@ -569,27 +591,80 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
     }
 
     @Subscribe
-    public void vote(DoVoteEvent e){
+    public void vote(DoVoteEvent e) {
         tmpCommentView = e.view;
         tmpComment = e.comment;
 
-        if ( e.comment.isReply() ) {
-            client.voteReply(topic.getId(), e.comment.getParent().getId(), e.comment.getComment_no(), e.comment.getReply_id(), e.comment.getReply_no(), doVoteCallback);
-        }
-        else {
-            client.voteComment(topic.getId(), e.comment.getId(), e.comment.getComment_no(), doVoteCallback);
+        if (e.comment != null) {
+            if (e.comment.isReply()) {
+                client.voteReply(topic.getId(), e.comment.getParent().getId(), e.comment.getComment_no(), e.comment.getReply_id(), e.comment.getReply_no(), doVoteCallback);
+            } else {
+                client.voteComment(topic.getId(), e.comment.getId(), e.comment.getComment_no(), doVoteCallback);
+            }
+        } else {
+            client.voteTopic(topic.getId(), doVoteCallback);
         }
     }
 
+    @Subscribe
+    public void emo(final DoEmoEvent e) {
+        emoDialog = PostOfficeHelper.newSimpleListMailCancelable(
+                getAttachedActivity(),
+                emoTitle,
+                Design.MATERIAL_LIGHT,
+                emoType,
+                new ListStyle.OnItemAcceptedListener<CharSequence>() {
+                    @Override
+                    public void onItemAccepted(CharSequence charSequence, int i) {
+
+                        tmpCommentView = e.view;
+                        PantipRestClient.Emo emo = PantipRestClient.Emo.Like;
+                        switch (i) {
+                            case 0: emo = PantipRestClient.Emo.Like;
+                                break;
+                            case 1:  emo = PantipRestClient.Emo.Laugh;
+                                break;
+                            case 2: emo = PantipRestClient.Emo.Love;
+                                break;
+                            case 3: emo = PantipRestClient.Emo.Impress;
+                                break;
+                            case 4: emo = PantipRestClient.Emo.Scary;
+                                break;
+                            case 5: emo = PantipRestClient.Emo.Surprised;
+                                break;
+                        }
+                        if (e.comment != null) {
+                            if (e.comment.isReply()) {
+                                client.emoReply(
+                                        topic.getId(),
+                                        e.comment.getParent().getId(),
+                                        e.comment.getReply_id(),
+                                        e.comment.getComment_no(),
+                                        e.comment.getReply_no(),
+                                        emo,
+                                        doEmoCallback);
+                            }else{
+                                client.emoComment(topic.getId(), e.comment.getId(), emo, doEmoCallback);
+                            }
+                        } else {
+                            client.emoTopic(topic.getId(), emo, doEmoCallback);
+                        }
+                    }
+                }
+
+        );
+        emoDialog.show(getFragmentManager());
+    }
+
     private void loadNextComments() {
-        if ( !pullToRefreshLayout.isRefreshing() )
+        if (!pullToRefreshLayout.isRefreshing())
             pullToRefreshLayout.setRefreshing(true);
         prepareCommentsDone = false;
         client.getComments(topic.getId() + "", currentCommentPage, false, commentsCallback);
     }
 
     private void updateNewComment(int commentNo) {
-        if ( !pullToRefreshLayout.isRefreshing() )
+        if (!pullToRefreshLayout.isRefreshing())
             pullToRefreshLayout.setRefreshing(true);
         prepareCommentsDone = false;
         client.getComments(topic.getId() + "", currentCommentPage, false, commentsCallback);
@@ -597,63 +672,63 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
 
 
     private void hideCommentPane() {
-        if ( !fabIsHiding ) {
+        if (!fabIsHiding) {
             commentBarSeparator.animate()
-                               .translationY(commentPane.getHeight() * 3)
-                               .setInterpolator(new AccelerateDecelerateInterpolator())
-                               .start();
+                    .translationY(commentPane.getHeight() * 3)
+                    .setInterpolator(new AccelerateDecelerateInterpolator())
+                    .start();
             commentPane.animate()
-                       .translationY(commentPane.getHeight() * 3)
-                       .setInterpolator(new AccelerateDecelerateInterpolator())
-                       .start();
+                    .translationY(commentPane.getHeight() * 3)
+                    .setInterpolator(new AccelerateDecelerateInterpolator())
+                    .start();
             fabIsHiding = true;
         }
     }
 
     private void showCommentPane() {
-        if ( fabIsHiding ) {
+        if (fabIsHiding) {
             commentPane.animate()
-                       .translationY(commentViewDefaultHeight)
-                       .setInterpolator(new AccelerateDecelerateInterpolator())
-                       .start();
+                    .translationY(commentViewDefaultHeight)
+                    .setInterpolator(new AccelerateDecelerateInterpolator())
+                    .start();
             commentBarSeparator.animate()
-                               .translationY(commentViewDefaultHeight)
-                               .setInterpolator(new AccelerateDecelerateInterpolator())
-                               .start();
+                    .translationY(commentViewDefaultHeight)
+                    .setInterpolator(new AccelerateDecelerateInterpolator())
+                    .start();
             fabIsHiding = false;
         }
     }
 
     void showCommentTools() {
-//        commentTools.setVisibility(View.VISIBLE);
-//        commentTools.animate().alpha(1).setListener(null).setDuration(200).setInterpolator(new AccelerateDecelerateInterpolator()).start();
+        //        commentTools.setVisibility(View.VISIBLE);
+        //        commentTools.animate().alpha(1).setListener(null).setDuration(200).setInterpolator(new AccelerateDecelerateInterpolator()).start();
     }
 
     void hideCommentTools() {
-//        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-//        imm.hideSoftInputFromWindow(shortComment.getWindowToken(), 0);
-//        commentTools.animate().alpha(0).setDuration(200).setInterpolator(new AccelerateDecelerateInterpolator())
-//                .setListener(new Animator.AnimatorListener() {
-//                    @Override
-//                    public void onAnimationStart(Animator animator) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onAnimationEnd(Animator animator) {
-//                        commentTools.setVisibility(View.INVISIBLE);
-//                    }
-//
-//                    @Override
-//                    public void onAnimationCancel(Animator animator) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onAnimationRepeat(Animator animator) {
-//
-//                    }
-//                }).start();
+        //        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        //        imm.hideSoftInputFromWindow(shortComment.getWindowToken(), 0);
+        //        commentTools.animate().alpha(0).setDuration(200).setInterpolator(new AccelerateDecelerateInterpolator())
+        //                .setListener(new Animator.AnimatorListener() {
+        //                    @Override
+        //                    public void onAnimationStart(Animator animator) {
+        //
+        //                    }
+        //
+        //                    @Override
+        //                    public void onAnimationEnd(Animator animator) {
+        //                        commentTools.setVisibility(View.INVISIBLE);
+        //                    }
+        //
+        //                    @Override
+        //                    public void onAnimationCancel(Animator animator) {
+        //
+        //                    }
+        //
+        //                    @Override
+        //                    public void onAnimationRepeat(Animator animator) {
+        //
+        //                    }
+        //                }).start();
     }
 
     class CommentAdapter extends BaseAdapter {
@@ -664,17 +739,15 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
 
         @Override
         public int getCount() {
-            if ( comments != null ) {
-                if ( comments.getComments() != null ) {
+            if (comments != null) {
+                if (comments.getComments() != null) {
                     noComment = false;
                     return comments.getComments().size();
-                }
-                else {
+                } else {
                     noComment = true;
                     return 1;
                 }
-            }
-            else {
+            } else {
                 noComment = true;
                 return 0;
             }
@@ -693,24 +766,23 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
 
-            if ( noComment ) {
-//                NoCommentView noCommentView = NoCommentView_.build(getActivity());
-//                noCommentView.bind();
+            if (noComment) {
+                //                NoCommentView noCommentView = NoCommentView_.build(getActivity());
+                //                noCommentView.bind();
 
                 return new View(getActivity());
             }
             final CommentView commentView;
-            if ( position == getCount() - 5 ) {
-                if ( comments.getCount() > comments.getPaging().getLimit() * comments.getPaging().getPage() ) {
+            if (position == getCount() - 5) {
+                if (comments.getCount() > comments.getPaging().getLimit() * comments.getPaging().getPage()) {
                     Log.d("", "Do Loadmore");
                     loadNextComments();
                 }
             }
 
-            if ( convertView != null ) {
+            if (convertView != null) {
                 commentView = (CommentView) convertView;
-            }
-            else {
+            } else {
                 commentView = CommentView_.build(getAttachedActivity());
 
             }

@@ -36,6 +36,10 @@
                 android:name="com.nantaphop.pantipfanapp.TopicActivity_"
                 >
         </activity>
+        <activity
+                android:name="com.nantaphop.pantipfanapp.ForumActivity_"
+                >
+        </activity>
     </application>
 
 </manifest>

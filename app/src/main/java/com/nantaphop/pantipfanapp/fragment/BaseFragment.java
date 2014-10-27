@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import com.github.mrengineer13.snackbar.SnackBar;
 import com.nantaphop.pantipfanapp.BaseApplication;
 import com.nantaphop.pantipfanapp.service.PantipRestClient;
+import com.nantaphop.pantipfanapp.view.BaseActivity;
 import org.androidannotations.annotations.*;
 import org.jsoup.Connection;
 
@@ -18,11 +20,11 @@ public class BaseFragment extends Fragment {
     protected BaseApplication app;
     @Bean
     protected PantipRestClient client;
-    private ActionBarActivity activity;
+    private BaseActivity activity;
 
     @Override
     public void onAttach(Activity activity) {
-        this.activity = (ActionBarActivity)activity;
+        this.activity = (BaseActivity)activity;
         super.onAttach(activity);
     }
 
@@ -32,8 +34,19 @@ public class BaseFragment extends Fragment {
         getAttachedActivity().onBackPressed();
     }
 
-
     public ActionBarActivity getAttachedActivity() {
         return activity;
+    }
+
+    private void toast(String msg, short duration){
+        activity.getSnackBar().show(msg, duration);
+    }
+
+    void toastInfo(String msg){
+        toast(msg, SnackBar.SHORT_SNACK);
+    }
+
+    void toastAlert(String msg) {
+        toast(msg, SnackBar.LONG_SNACK);
     }
 }

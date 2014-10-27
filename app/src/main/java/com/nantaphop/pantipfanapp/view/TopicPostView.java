@@ -1,6 +1,7 @@
 package com.nantaphop.pantipfanapp.view;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.text.Html;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -8,14 +9,20 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.nantaphop.pantipfanapp.BaseApplication;
 import com.nantaphop.pantipfanapp.R;
+import com.nantaphop.pantipfanapp.event.DoEmoEvent;
+import com.nantaphop.pantipfanapp.event.DoVoteEvent;
+import com.nantaphop.pantipfanapp.response.EmoResponse;
 import com.nantaphop.pantipfanapp.response.TopicPost;
+import com.nantaphop.pantipfanapp.service.PantipRestClient;
 import com.nantaphop.pantipfanapp.utils.URLImageParser;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 import org.androidannotations.annotations.App;
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;
+import org.androidannotations.annotations.res.DrawableRes;
 
 /**
  * Created by nantaphop on 09-Aug-14.
@@ -39,6 +46,17 @@ public class TopicPostView extends RelativeLayout{
     @ViewById
     ImageView authorPic;
     private Context context;
+    private TopicPost topicPost;
+
+    @DrawableRes(R.drawable.ic_action_thumb_up_highlight)
+    Drawable thumbUpHighlight;
+    @DrawableRes(R.drawable.ic_action_thumb_up)
+    Drawable thumbsUp;
+    @DrawableRes(R.drawable.ic_action_mood_small)
+    Drawable emoNormal;
+    @DrawableRes(R.drawable.ic_action_mood_small_highlight)
+    Drawable emoHighlight;
+
 
 
 
@@ -57,6 +75,7 @@ public class TopicPostView extends RelativeLayout{
     }
 
     public void bind(TopicPost topicPost){
+        this.topicPost = topicPost;
         title.setText(topicPost.getTitle());
         date.setText(topicPost.getDateString());
         body.setText(Html.fromHtml(topicPost.getBody(), new URLImageParser(body, context), null));
@@ -65,6 +84,37 @@ public class TopicPostView extends RelativeLayout{
         author.setText(topicPost.getAuthor());
         app.getImageLoader().displayImage(topicPost.getAuthorPic(), authorPic, displayImageOptions);
 
+        if (topicPost.isVoted()) {
+            votes.setCompoundDrawablesWithIntrinsicBounds(thumbUpHighlight, null, null, null);
+        } else {
+            votes.setCompoundDrawablesWithIntrinsicBounds(thumbsUp, null, null, null);
+        }
+        if (topicPost.isEmoted()) {
+            emo.setCompoundDrawablesWithIntrinsicBounds(emoHighlight, null, null, null);
+        } else {
+            emo.setCompoundDrawablesWithIntrinsicBounds(emoNormal, null, null, null);
+        }
+    }
 
+    @Click
+    void emo(){
+        app.getEventBus().post(new DoEmoEvent(this, topicPost));
+    }
+
+    @Click
+    void votes(){
+        app.getEventBus().post(new DoVoteEvent(this, topicPost));
+    }
+
+    public void setEmo() {
+        topicPost.setEmotions(topicPost.getEmotions()+1);
+        topicPost.setEmoted(true);
+        bind(topicPost);
+    }
+
+    public void setVote() {
+        topicPost.setVotes(topicPost.getVotes()+1);
+        topicPost.setVoted(true);
+        bind(topicPost);
     }
 }

@@ -24,6 +24,8 @@ public class Comment implements Serializable {
     int id;
     int comment_id;
     int comment_parent_id;
+    @Expose
+    private Emotion emotion;
     Comment parent;
     int comment_no;
     int reply_no;
@@ -183,6 +185,14 @@ public class Comment implements Serializable {
         for ( Comment comment : getReplies() ) {
             comment.setReply(true);
         }
+    }
+
+    public Emotion getEmotion() {
+        return emotion;
+    }
+
+    public void setEmotion(Emotion emotion) {
+        this.emotion = emotion;
     }
 
     public GoodBadVote getGoodBadVote() {

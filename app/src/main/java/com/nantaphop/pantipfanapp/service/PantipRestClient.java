@@ -11,12 +11,15 @@ import org.androidannotations.annotations.sharedpreferences.Pref;
 import org.apache.http.Header;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.params.ClientPNames;
+import org.apache.http.client.utils.URLEncodedUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -144,8 +147,7 @@ public class PantipRestClient {
             public String toString() {
                 return "surprised";
             }
-        },
-
+        }
     }
 
     ;
@@ -263,19 +265,17 @@ public class PantipRestClient {
         int defaultType = topicType == TopicType.All_Except_Sell ? 1 : 0;
 
         String url;
-        if ( type == ForumType.Tag ) {
+        if (type == ForumType.Tag) {
             url = "forum/topic/ajax_json_all_topic_tag";
-        }
-        else if ( type == ForumType.Room ) {
+        } else if (type == ForumType.Room) {
             url = "forum/topic/ajax_json_all_topic_info_loadmore";
-        }
-        else {
+        } else {
             url = "forum/topic/ajax_json_all_topic_club";
             type = ForumType.Tag;
         }
 
         // ห้องไร้สังกัด
-        if ( forum == null ) {
+        if (forum == null) {
             forum = "undefined";
         }
 
@@ -296,8 +296,22 @@ public class PantipRestClient {
 
     @Trace
     @Background
-    public void getForumPart(String forumName, AsyncHttpResponseHandler cb) {
-        get("forum/" + forumName, null, cb);
+    public void getForumPart(String forumName, ForumType type, AsyncHttpResponseHandler cb){
+        try {
+            forumName = URLEncoder.encode(forumName, "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        String url;
+        if (type == ForumType.Tag) {
+            url = "tag/";
+        } else if (type == ForumType.Room) {
+            url = "forum/";
+        } else {
+            url = "club/";
+            type = ForumType.Club;
+        }
+        get(url + forumName, null, cb);
         Log.d(TAG, "get forum part - " + forumName);
 
     }
@@ -315,12 +329,11 @@ public class PantipRestClient {
     public void getComments(String topicId, int page, boolean justOwner, AsyncHttpResponseHandler cb) {
         String url;
 
-        if ( justOwner ) {
+        if (justOwner) {
 
             url = "forum/topic_mode/render_comments?tid=" + topicId + "&type=1&page=" + page + "&param=story" + page + "&_=" + new Date()
                     .getTime();
-        }
-        else {
+        } else {
             url = "forum/topic/render_comments?tid=" + topicId + "&type=1&page=" + page + "&param=page" + page + "&_=" + new Date()
                     .getTime();
         }
@@ -382,8 +395,8 @@ public class PantipRestClient {
     public void emoTopic(int topic_id, Emo emo, AsyncHttpResponseHandler cb) {
         client.addHeader("X-Requested-With", "XMLHttpRequest");
         RequestParams params = new RequestParams();
-        params.add("id", topic_id+"");
-        params.add("topic_id", topic_id+"");
+        params.add("id", topic_id + "");
+        params.add("topic_id", topic_id + "");
         params.add("type", "topic");
         params.add("emo", emo.toString());
 
@@ -392,11 +405,11 @@ public class PantipRestClient {
 
     @Trace
     @Background
-    public void emoComment(int topic_id,int comment_id, Emo emo, AsyncHttpResponseHandler cb) {
+    public void emoComment(int topic_id, int comment_id, Emo emo, AsyncHttpResponseHandler cb) {
         client.addHeader("X-Requested-With", "XMLHttpRequest");
         RequestParams params = new RequestParams();
-        params.add("id", comment_id+"");
-        params.add("topic_id", topic_id+"");
+        params.add("id", comment_id + "");
+        params.add("topic_id", topic_id + "");
         params.add("type", "comment");
         params.add("emo", emo.toString());
 
@@ -405,16 +418,16 @@ public class PantipRestClient {
 
     @Trace
     @Background
-    public void emoReply(int topic_id,int comment_id,int reply_id,int comment_no, int reply_no, Emo emo, AsyncHttpResponseHandler cb) {
+    public void emoReply(int topic_id, int comment_id, int reply_id, int comment_no, int reply_no, Emo emo, AsyncHttpResponseHandler cb) {
         client.addHeader("X-Requested-With", "XMLHttpRequest");
         RequestParams params = new RequestParams();
-        params.add("id", reply_id+"");
-        params.add("rid", comment_id+"");
-        params.add("topic_id", topic_id+"");
-        params.add("type", "comment");
+        params.add("id", reply_id + "");
+        params.add("rid", comment_id + "");
+        params.add("topic_id", topic_id + "");
+        params.add("type", "reply");
         params.add("emo", emo.toString());
-        params.add("comment_no", comment_no+"");
-        params.add("no", reply_no+"");
+        params.add("comment_no", comment_no + "");
+        params.add("no", reply_no + "");
 
         post("forum/topic/express_emotion", params, cb);
     }
@@ -432,10 +445,6 @@ public class PantipRestClient {
         RequestParams params = new RequestParams();
         post("forum/new_topic/save", params, cb);
     }
-
-
-
-
 
 
 }

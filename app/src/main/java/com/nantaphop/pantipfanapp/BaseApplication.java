@@ -59,6 +59,10 @@ public class BaseApplication extends Application {
         return eventBus;
     }
 
+    public void fireEvent(Object event){
+        eventBus.post(event);
+    }
+
     public static Gson getGson() {
         if (gson == null) {
             gson = new GsonBuilder().setDateFormat("MM/dd/yyyy HH:mm:ss").create();

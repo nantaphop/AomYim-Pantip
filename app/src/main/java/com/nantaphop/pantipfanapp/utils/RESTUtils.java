@@ -127,6 +127,8 @@ public class RESTUtils {
         topicPost.setVotes(Integer.parseInt(doc.select("span.like-score ").get(0).text()));
         topicPost.setEmotions(Integer.parseInt(doc.select("span.emotion-score").get(0).text()));
         topicPost.setAuthor(doc.select("a.display-post-name").get(0).text());
+        topicPost.setVoted(doc.select("a.icon-heart-like.i-vote").size() > 0);
+        topicPost.setEmoted(doc.select("a.emotion-choice-icon.i-vote").size()>0);
         String avatar = doc.select("div.display-post-avatar a img").get(0).attr("src");
         if(avatar.startsWith("/images"))
             avatar = "http://pantip.com" + avatar;
@@ -158,6 +160,11 @@ public class RESTUtils {
     public static VoteResponse parseVoteResp(String resp){
         Log.d("resp", resp);
         return BaseApplication.getGson().fromJson(resp, VoteResponse.class);
+    }
+
+    public static EmoResponse parseEmoResp(String resp){
+        Log.d("resp", resp);
+        return BaseApplication.getGson().fromJson(resp, EmoResponse.class);
     }
 
     public static void processComment(Comment c) {

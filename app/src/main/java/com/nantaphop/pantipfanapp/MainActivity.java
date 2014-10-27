@@ -26,13 +26,14 @@ import com.nantaphop.pantipfanapp.event.*;
 import com.nantaphop.pantipfanapp.fragment.*;
 import com.nantaphop.pantipfanapp.view.ActionBarView;
 import com.nantaphop.pantipfanapp.view.ActionBarView_;
+import com.nantaphop.pantipfanapp.view.BaseActivity;
 import com.squareup.otto.Subscribe;
 import org.androidannotations.annotations.*;
 import org.androidannotations.annotations.res.StringArrayRes;
 import org.androidannotations.annotations.res.StringRes;
 
 @EActivity(R.layout.activity_main)
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends BaseActivity {
 
     @App
     BaseApplication app;
@@ -77,6 +78,14 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onBackPressed() {
+        if (drawer_layout.isDrawerOpen(Gravity.START))
+            drawer_layout.closeDrawers();
+        else
+            super.onBackPressed();
+    }
+
     @AfterViews
     void init() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -84,7 +93,7 @@ public class MainActivity extends ActionBarActivity {
         mTitle = drawer_close;
         mDrawerTitle = drawer_open;
 
-        drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+//        drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
         mDrawerToggle = new ActionBarDrawerToggle(this, drawer_layout, toolbar, R.string.drawer_open, R.string.drawer_close) {
 
@@ -136,11 +145,23 @@ public class MainActivity extends ActionBarActivity {
         Intent i = new Intent(this, TopicActivity_.class);
         i.putExtra("topic", e.getTopic());
         startActivity(i);
-        overridePendingTransition(R.anim.fragment_enter_slide_from_bottom, R.anim.scale_to_bottom_center);
+        overrideAnimationBeforeStartActivity();
         Log.d("fragment", "open topic");
         drawer_layout.closeDrawers();
 
     }
+
+    @Subscribe
+    public void openForum(OpenForumEvent e) {
+        Intent i = new Intent(this, ForumActivity_.class);
+        i.putExtra("forumPagerItem", e.forumPagerItem);
+        i.putExtra("forumType", e.forumType);
+        startActivity(i);
+        overrideAnimationBeforeStartActivity();
+        Log.d("fragment", "open forum");
+        drawer_layout.closeDrawers();
+    }
+
 
     @Subscribe
     public void openForumRearrange(OpenForumRearrangeEvent e) {
@@ -202,4 +223,6 @@ public class MainActivity extends ActionBarActivity {
     public void setTitle(SetTitleEvent e) {
         getSupportActionBar().setTitle(e.title);
     }
+
+
 }

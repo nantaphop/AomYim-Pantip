@@ -67,5 +67,16 @@
         <item>กระทู้ข่าว</item>
         <item>กระทู้ขายของ</item>
     </array>
-
+    <string name="title_emo_dialog">แสดงอารมณ์</string>
+    <string name="feedback_emo_success">แสดงอารมณ์เรียบร้อยแล้ว</string>
+    <string name="feedback_emo_failed">ไม่สามารถทำการแสดงอารมณ์ได้ โปรดลองอีกครั้ง</string>
+    <string name="feecback_waiting_forumpart_load">กำลังโหลดข้อมูลห้อง กรุณาลองใหม่ภายหลัง</string>
+    <array name="emo_type">
+        <item>ถูกใจ</item>
+        <item>ขำกลิ้ง</item>
+        <item>หลงรัก</item>
+        <item>ซึ้ง</item>
+        <item>สยอง</item>
+        <item>ทึ่ง</item>
+    </array>
 </resources>

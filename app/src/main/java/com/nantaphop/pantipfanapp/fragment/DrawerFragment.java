@@ -70,12 +70,13 @@ public class DrawerFragment extends BaseFragment {
                     case 0:
                         app.getEventBus().post(new OpenForumRearrangeEvent());
                         break;
-                    case 1:
-                        Topic topic = new Topic();
-                        topic.setId(31049053);
-                        topic.setTitle("[SR]รีวิวสั้น Pantip Fan App - Dark Theme [Android]");
-                        app.getEventBus().post(new OpenTopicEvent(topic));
-                        break;
+//                    case 1:
+//                        Topic topic = new Topic();
+////                        topic.setId(31049053);
+//                        topic.setId(32772497);
+//                        topic.setTitle("[SR]รีวิวสั้น Pantip Fan App - Dark Theme [Android]");
+//                        app.getEventBus().post(new OpenTopicEvent(topic));
+//                        break;
 
                 }
             }

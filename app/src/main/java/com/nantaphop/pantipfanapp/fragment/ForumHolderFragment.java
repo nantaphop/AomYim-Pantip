@@ -14,6 +14,7 @@ import com.nantaphop.pantipfanapp.BaseApplication;
 import com.nantaphop.pantipfanapp.R;
 import com.nantaphop.pantipfanapp.event.*;
 import com.nantaphop.pantipfanapp.model.ForumPagerItem;
+import com.nantaphop.pantipfanapp.service.PantipRestClient;
 import com.nantaphop.pantipfanapp.view.RipplePagerSlidingTabStrip;
 import com.squareup.otto.Subscribe;
 import org.androidannotations.annotations.*;
@@ -98,7 +99,7 @@ public class ForumHolderFragment extends BaseFragment {
 
         @Override
         public Fragment getItem(int position) {
-            return ForumFragment_.builder().forumPagerItem(forumPagerItems.get(position)).build();
+            return ForumFragment_.builder().forumType(PantipRestClient.ForumType.Room).forumPagerItem(forumPagerItems.get(position)).build();
         }
 
         @Override

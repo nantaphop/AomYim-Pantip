@@ -21,6 +21,8 @@ public class TopicPost implements Serializable{
     int comments;
     boolean fav;
     String authorPic;
+    boolean voted;
+    boolean emoted;
 
     public String getAuthorPic() {
         return authorPic;
@@ -47,6 +49,22 @@ public class TopicPost implements Serializable{
     }
 
     int emotions;
+
+    public boolean isVoted() {
+        return voted;
+    }
+
+    public void setVoted(boolean voted) {
+        this.voted = voted;
+    }
+
+    public boolean isEmoted() {
+        return emoted;
+    }
+
+    public void setEmoted(boolean emoted) {
+        this.emoted = emoted;
+    }
 
     ArrayList<Tag> tags;
 

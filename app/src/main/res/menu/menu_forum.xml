@@ -1,38 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
             android:id="@+id/action_sort_topic"
             android:title="@string/action_sort_topic"
             android:icon="@drawable/ic_action_sort"
-            android:showAsAction="always"
+            app:showAsAction="always"
             />
     <item
             android:id="@+id/action_view_tag"
             android:title="@string/action_view_tag"
-            android:showAsAction="never"/>
+            app:showAsAction="never"/>
     <item
             android:id="@+id/action_view_club"
             android:title="@string/action_view_club"
-            android:showAsAction="never"/>
+            app:showAsAction="never"/>
     <item
             android:id="@+id/action_topic_type"
             android:title="@string/action_topic_type"
-            android:showAsAction="never"/>
-
-    <item
-            android:id="@+id/action_1"
-            android:title="action 1"
-            android:showAsAction="never"/>
-    <item
-            android:id="@+id/action_2"
-            android:title="action 2"
-            android:showAsAction="never"/>
-
-    <item
-            android:id="@+id/action_3"
-            android:title="action 3"
-            android:showAsAction="never"/>
-
+            app:showAsAction="never"/>
 
 </menu>

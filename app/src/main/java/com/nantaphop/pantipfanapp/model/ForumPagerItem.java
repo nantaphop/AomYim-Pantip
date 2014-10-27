@@ -25,6 +25,14 @@ public class ForumPagerItem extends Model implements Serializable {
     @Column
     public boolean enable;
 
+    public ForumPagerItem() {
+    }
+
+    public ForumPagerItem(String title, String url) {
+        this.title = title;
+        this.url = url;
+    }
+
     public static List<ForumPagerItem> getAll() {
         return getAll("");
     }
