@@ -2,15 +2,14 @@ package com.nantaphop.pantipfanapp.fragment;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
+import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import com.astuetz.PagerSlidingTabStrip;
-import com.nantaphop.pantipfanapp.BaseApplication;
+import android.widget.LinearLayout;
 import com.nantaphop.pantipfanapp.R;
 import com.nantaphop.pantipfanapp.event.*;
 import com.nantaphop.pantipfanapp.model.ForumPagerItem;
@@ -32,6 +31,10 @@ public class ForumHolderFragment extends BaseFragment {
     ViewPager viewPager;
     @ViewById
     RipplePagerSlidingTabStrip tabs;
+    @ViewById
+    Toolbar toolbar;
+    @ViewById
+    LinearLayout topPanel;
 
     private List<ForumPagerItem> forumPagerItems;
     private int tabsHeight;
@@ -39,14 +42,17 @@ public class ForumHolderFragment extends BaseFragment {
     private ForumSlidePagerAdapter pagerAdapter;
     private int currentPage;
     private ActionBar actionBar;
-    private boolean tabHiding = false;
-    private float tabsDefaultY;
+    private boolean topHidding = false;
+    private float topDefaultY;
 
     @AfterViews
     void init(){
+        getAttachedActivity().setSupportActionBar(toolbar);
+        getAttachedActivity().initNavDrawer(toolbar);
         forumPagerItems = ForumPagerItem.getAll("enable");
         pagerAdapter = new ForumSlidePagerAdapter(getFragmentManager());
         viewPager.setAdapter(pagerAdapter);
+        tabs.setTabBackground(android.R.color.transparent);
         tabs.setViewPager(viewPager);
         tabs.setOnPageChangeListener(
                 new ViewPager.SimpleOnPageChangeListener() {
@@ -54,7 +60,7 @@ public class ForumHolderFragment extends BaseFragment {
                     public void onPageSelected(int position) {
                         super.onPageSelected(position);
                         currentPage = position;
-                        showTabs();
+//                        showTop();
                     }
                 }
         );
@@ -63,7 +69,7 @@ public class ForumHolderFragment extends BaseFragment {
         tabs.setIndicatorHeight(getResources().getDimensionPixelOffset(R.dimen.tabs_indicator_height));
 
         actionBar = ((ActionBarActivity)getAttachedActivity()).getSupportActionBar();
-        tabsDefaultY = tabs.getY();
+        topDefaultY = topPanel.getY();
 
     }
 
@@ -110,33 +116,29 @@ public class ForumHolderFragment extends BaseFragment {
 
     @Subscribe
     public void hideTabs(ForumScrollDownEvent e){
-        hideTabs();
-    }
+        if (!topHidding) {
+            tabsHeight = toolbar.getHeight();
+            topPanel.animate().translationYBy(0 - tabsHeight).setInterpolator(new AccelerateDecelerateInterpolator()).start();
 
-    private void hideTabs() {
-        if (!tabHiding) {
-            tabsHeight = tabs.getHeight();
-            tabs.animate().translationYBy(0 - tabsHeight).setInterpolator(new AccelerateDecelerateInterpolator()).start();
-            actionBarTitle = actionBar.getTitle();
+//            actionBarTitle = actionBar.getTitle();
 //            actionBar.setTitle(pagerAdapter.getPageTitle(currentPage));
-            app.getEventBus().post(new SetTitleEvent(pagerAdapter.getPageTitle(currentPage).toString()));
-            tabHiding = true;
+//            app.getEventBus().post(new SetTitleEvent(pagerAdapter.getPageTitle(currentPage).toString()));
+            topHidding = true;
         }
     }
+
+
 
     @Subscribe
     public void showTabs(ForumScrollUpEvent e){
-        showTabs();
-    }
-
-    private void showTabs() {
-
-        if (tabHiding) {
-            tabs.animate().translationY(tabsDefaultY).setInterpolator(new AccelerateDecelerateInterpolator()).start();
-            app.getEventBus().post(new SetTitleEvent(getString(R.string.app_name)));
-            tabHiding = false;
+        if (topHidding) {
+            topPanel.animate().translationY(topDefaultY).setInterpolator(new AccelerateDecelerateInterpolator()).start();
+//            app.getEventBus().post(new SetTitleEvent(getString(R.string.app_name)));
+            topHidding = false;
         }
     }
+
+
 
 
 }

@@ -74,7 +74,7 @@ public class RipplePagerSlidingTabStrip extends HorizontalScrollView {
 
     private int scrollOffset = 52;
     private int indicatorHeight = 8;
-    private int underlineHeight = 2;
+    private int underlineHeight = 0;
     private int dividerPadding = 12;
     private int tabPadding = 24;
     private int dividerWidth = 1;

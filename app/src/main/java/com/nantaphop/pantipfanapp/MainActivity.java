@@ -42,11 +42,7 @@ public class MainActivity extends BaseActivity {
     FrameLayout content_frame;
     @ViewById
     DrawerLayout drawer_layout;
-    private Toolbar toolbar;
 
-    private ActionBarDrawerToggle mDrawerToggle;
-    private CharSequence mTitle;
-    private CharSequence mDrawerTitle;
     @StringRes
     String drawer_open;
     @StringRes
@@ -88,37 +84,13 @@ public class MainActivity extends BaseActivity {
 
     @AfterViews
     void init() {
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        mTitle = drawer_close;
-        mDrawerTitle = drawer_open;
-
-//        drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-
-        mDrawerToggle = new ActionBarDrawerToggle(this, drawer_layout, toolbar, R.string.drawer_open, R.string.drawer_close) {
-
-            /** Called when a drawer has settled in a completely closed state. */
-            public void onDrawerClosed(View view) {
-                super.onDrawerClosed(view);
-                mDrawerTitle = toolbar.getTitle();
-                toolbar.setTitle(mTitle);
-                supportInvalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-            }
-
-            /** Called when a drawer has settled in a completely open state. */
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-                mTitle = toolbar.getTitle();
-                toolbar.setTitle(mDrawerTitle);
-                supportInvalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-            }
-        };
-
+        setDrawerLayout(drawer_layout);
+        setDrawerCloseText(drawer_close);
+        setDrawerOpenText(drawer_open);
 
         // Set the drawer toggle as the DrawerListener
         drawer_layout.setDrawerListener(mDrawerToggle);
 
-        mDrawerToggle.syncState();
     }
 
     @Override

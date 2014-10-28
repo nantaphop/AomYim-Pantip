@@ -29,7 +29,7 @@
         <item name="windowActionBar">false</item>
 
         <item name="android:actionBarSize">56dp</item>
-        <item name="actionBarSize">56dp</item>
+        <item name="actionBarSize">@dimen/toolbar_size</item>
         <item name="actionBarStyle">@style/MyActionBarStyle</item>
 
         <item name="ptrHeaderStyle">@style/Widget.Custom.PtrHeader</item>

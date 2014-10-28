@@ -515,7 +515,7 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
         // Add Blank Margin on top height = Tab's height
         if (!noTabMargin) {
             View blankHeader = new View(getAttachedActivity());
-            blankHeader.setMinimumHeight(getResources().getDimensionPixelOffset(R.dimen.tabs_height));
+            blankHeader.setMinimumHeight(getResources().getDimensionPixelOffset(R.dimen.tabs_height)+getResources().getDimensionPixelOffset(R.dimen.toolbar_size));
             list.addHeaderView(blankHeader);
         }else{
             getAttachedActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);

@@ -34,7 +34,7 @@ public class BaseFragment extends Fragment {
         getAttachedActivity().onBackPressed();
     }
 
-    public ActionBarActivity getAttachedActivity() {
+    public BaseActivity getAttachedActivity() {
         return activity;
     }
 
