@@ -647,7 +647,7 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
         public Object getItem(int i) {
             if (forumType == ForumType.Room) {
                 if (recommendTopicTitle != null && recommendTopicTitle.length > 0)
-                    return forum.getTopics().get(i - 2 - recommendTopicTitle.length);
+                    return forum.getTopics().get(i -3);
                 else
                     return -1;
             } else {
@@ -670,9 +670,9 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
             if (recommendTopicTitle == null) {
                 return 0;
             }
-            if (forumType == ForumType.Room && (position == 0 || position == recommendTopicTitle.length + 1) ) {
+            if (forumType == ForumType.Room && (position == 0 || position == 2) ) {
                 return TYPE_SECTION;
-            } else if (forumType == ForumType.Room && (position > 0 && position <= recommendTopicTitle.length) ) {
+            } else if (forumType == ForumType.Room && (position == 1) ) {
                 return TYPE_RECOMMEND;
             } else {
                 Topic topic = null;
@@ -708,25 +708,24 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
             return view;
         }
 
-        private TopicRecommendView getViewTopicRecommend(int position, View convertView) {
-            final TopicRecommendView topicRecommendView;
+        private RecommendCardView getViewTopicRecommend(int position, View convertView) {
+            final RecommendCardView recommendCardView;
 
             if (convertView != null) {
-                topicRecommendView = (TopicRecommendView) convertView;
+                recommendCardView = (RecommendCardView) convertView;
             } else {
-                topicRecommendView = TopicRecommendView_.build(getAttachedActivity());
+                recommendCardView = RecommendCardView_.build(getAttachedActivity());
+                for(int i=0;i< recommendTopicTitle.length; i++) {
+                    recommendCardView.addItem(recommendTopicTitle[i], recommendTopicUrl[i]);
+                }
 
             }
-            Log.d(
-                    "recommend",
-                    "get recommend view [ total:" + recommendTopicTitle.length + "]" + " get at " + (position - 1) + " " + recommendTopicTitle[position - 1] + " " + recommendTopicUrl[position - 1]
-            );
-            try {
-                topicRecommendView.bind(recommendTopicTitle[position - 1], recommendTopicUrl[position - 1]);
-            } catch (NullPointerException e) {
-                e.printStackTrace();
-            }
-            return topicRecommendView;
+//            try {
+//                topicRecommendView.bind(recommendTopicTitle[position - 1], recommendTopicUrl[position - 1]);
+//            } catch (NullPointerException e) {
+//                e.printStackTrace();
+//            }
+            return recommendCardView;
         }
 
         private TopicSectionView getViewTopicSection(int position, View convertView) {
@@ -746,7 +745,7 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
                             }
                         }
                 );
-            } else if (position == recommendTopicTitle.length + 1) {
+            } else if (position == 2) {
                 topicSectionView.bind(getString(R.string.topic_in_forum));
             }
             return topicSectionView;

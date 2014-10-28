@@ -24,7 +24,7 @@
         <item name="colorPrimary">@color/base_color_bright</item>
         <!--<item name="textColorPrimary">@android:color/white</item>-->
         <item name="colorPrimaryDark">@color/base_color</item>
-        <item name="colorAccent">@color/base_color_highlight</item>
+        <item name="colorAccent">@color/base_color</item>
         <item name="android:windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
 
