@@ -99,6 +99,7 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
     String[] topic_type;
 
 
+    private ForumEmptyView forumEmptyView;
     BaseJsonHttpResponseHandler forumCallback = new BaseJsonHttpResponseHandler() {
         @Override
         public void onSuccess(int i, Header[] headers, String s, Object o) {
@@ -119,7 +120,9 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
         @Override
         public void onFailure(int i, Header[] headers, Throwable throwable, String s, Object o) {
             Log.d("forum", "failed load forum");
-            loadMore();
+            showErrorScreen();
+            prepareTopicDone = true;
+            joinForum();
         }
 
         @Override
@@ -138,7 +141,9 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
         @Override
         public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
             Log.d("forum", "failed load forum part");
-            loadForumPart();
+            showErrorScreen();
+            prepareRecommendDone = true;
+            joinForum();
         }
     };
     private ArrayList<Card> tmpRecommendCard;
@@ -267,6 +272,41 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
     void back() {
         app.getEventBus().post(new ToggleDrawerEvent());
     }
+
+    void showErrorScreen(){
+        if(emptyView != null && emptyView.getParent() != null){
+            root.removeView(emptyView);
+        }
+        if (forumEmptyView == null) {
+            forumEmptyView = ForumEmptyView_.build(getAttachedActivity());
+            forumEmptyView.setOnRetry(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    refresh();
+                }
+            });
+        }
+        if (forumEmptyView.getParent() == null) {
+            root.addView(forumEmptyView);
+        }
+        list.setEmptyView(forumEmptyView);
+
+    }
+
+    void showLoadingScreen(){
+        if(forumEmptyView!= null && forumEmptyView.getParent() != null){
+            root.removeView(forumEmptyView);
+        }
+        if (emptyView == null) {
+            emptyView = SimpleEmptyView_.build(getActivity());
+        }
+        if (emptyView.getParent() == null) {
+            root.addView(emptyView);
+        }
+        list.setEmptyView(emptyView);
+
+    }
+
 
     private void hideFab() {
         if (!fabIsHiding) {
@@ -497,8 +537,7 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
         topicAdapter = new TopicAdapter(getActivity());
         MyAnimationAdapter animationAdapter = new MyAnimationAdapter(topicAdapter);
         animationAdapter.setAbsListView(list);
-        emptyView = SimpleEmptyView_.build(getActivity());
-        root.addView(emptyView);
+        showLoadingScreen();
 
         list.setAdapter(animationAdapter);
         list.setEmptyView(emptyView);
@@ -587,6 +626,7 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
     }
 
     private void refresh() {
+        showLoadingScreen();
         prepareRecommendDone = false;
         prepareTopicDone = false;
         currentPage = 1;
@@ -640,7 +680,7 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
         public int getCount() {
             if (forum == null)
                 return 0;
-            else return forum.getTopics().size() + 2 + recommendTopicTitle.length;
+            else return forum.getTopics().size() + 3;
         }
 
         @Override

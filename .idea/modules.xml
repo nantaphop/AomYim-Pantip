@@ -5,7 +5,6 @@
       <module fileurl="file://$PROJECT_DIR$/libProjects/DynamicBox/DynamicBox.iml" filepath="$PROJECT_DIR$/libProjects/DynamicBox/DynamicBox.iml" />
       <module fileurl="file://$PROJECT_DIR$/PantipFanApp.iml" filepath="$PROJECT_DIR$/PantipFanApp.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/libProjects/libProjects.iml" filepath="$PROJECT_DIR$/libProjects/libProjects.iml" />
     </modules>
   </component>
 </project>

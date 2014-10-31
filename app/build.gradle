@@ -17,6 +17,9 @@ repositories {
     flatDir {
         dirs 'libs'
     }
+    maven {
+        url "https://oss.sonatype.org/content/repositories/snapshots/"
+    }
 }
 
 android {
@@ -71,6 +74,7 @@ dependencies {
 
     apt "org.androidannotations:androidannotations:$AAVersion"
     compile "org.androidannotations:androidannotations-api:$AAVersion"
+
 
 }
 

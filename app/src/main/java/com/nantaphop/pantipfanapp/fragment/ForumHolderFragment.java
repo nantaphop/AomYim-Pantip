@@ -60,7 +60,7 @@ public class ForumHolderFragment extends BaseFragment {
                     public void onPageSelected(int position) {
                         super.onPageSelected(position);
                         currentPage = position;
-//                        showTop();
+                        showTabs();
                     }
                 }
         );
@@ -131,14 +131,16 @@ public class ForumHolderFragment extends BaseFragment {
 
     @Subscribe
     public void showTabs(ForumScrollUpEvent e){
+        showTabs();
+    }
+
+    private void showTabs() {
         if (topHidding) {
             topPanel.animate().translationY(topDefaultY).setInterpolator(new AccelerateDecelerateInterpolator()).start();
 //            app.getEventBus().post(new SetTitleEvent(getString(R.string.app_name)));
             topHidding = false;
         }
     }
-
-
 
 
 }

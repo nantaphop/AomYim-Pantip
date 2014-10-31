@@ -71,6 +71,8 @@
     <string name="feedback_emo_success">แสดงอารมณ์เรียบร้อยแล้ว</string>
     <string name="feedback_emo_failed">ไม่สามารถทำการแสดงอารมณ์ได้ โปรดลองอีกครั้ง</string>
     <string name="feecback_waiting_forumpart_load">กำลังโหลดข้อมูลห้อง กรุณาลองใหม่ภายหลัง</string>
+    <string name="feedback_connection_failed_short">การเชื่อมต่อมีปัญหา</string>
+    <string name="retry">ลองใหม่</string>
     <array name="emo_type">
         <item>ถูกใจ</item>
         <item>ขำกลิ้ง</item>

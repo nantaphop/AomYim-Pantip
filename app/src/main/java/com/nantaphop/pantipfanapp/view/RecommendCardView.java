@@ -10,6 +10,8 @@ import com.nantaphop.pantipfanapp.BaseApplication;
 import com.nantaphop.pantipfanapp.R;
 import com.nantaphop.pantipfanapp.event.OpenTopicEvent;
 import com.nantaphop.pantipfanapp.response.Topic;
+import com.r0adkll.postoffice.widgets.RippleView;
+
 import org.androidannotations.annotations.App;
 import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;
@@ -34,6 +36,7 @@ public class RecommendCardView extends CardView {
     }
 
     public void addItem(final String title, final String url){
+
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View itemView = inflater.inflate(R.layout.card_item_recommend, this, false);
         final TextView text = (TextView) itemView.findViewById(android.R.id.text1);
