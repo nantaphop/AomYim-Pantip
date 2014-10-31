@@ -4,6 +4,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.FragmentManager;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -113,13 +114,30 @@ public class MainActivity extends BaseActivity {
     }
 
     @Subscribe
-    public void openTopic(OpenTopicEvent e) {
-        Intent i = new Intent(this, TopicActivity_.class);
+    public void openTopic(final OpenTopicEvent e) {
+        final Intent i = new Intent(MainActivity.this, TopicActivity_.class);
         i.putExtra("topic", e.getTopic());
-        startActivity(i);
-        overrideAnimationBeforeStartActivity();
-        Log.d("fragment", "open topic");
-        drawer_layout.closeDrawers();
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+                    Thread.sleep(150);
+                } catch (InterruptedException e1) {
+                    e1.printStackTrace();
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+
+                startActivity(i);
+                overrideAnimationBeforeStartActivity();
+                Log.d("fragment", "open topic");
+                drawer_layout.closeDrawers();
+            }
+        }.execute();
+
 
     }
 
