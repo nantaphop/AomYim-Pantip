@@ -156,24 +156,15 @@ public class MainActivity extends BaseActivity {
     @Subscribe
     public void openForumRearrange(OpenForumRearrangeEvent e) {
         Log.d("fragment", "rearrange");
-//        mDrawerToggle.setDrawerIndicatorEnabled(false);
-        getSupportFragmentManager().popBackStackImmediate(
-                ForumRearrangeFragment.TAG,
-                android.support.v4.app.FragmentManager.POP_BACK_STACK_INCLUSIVE
-        );
-        openFragment(ForumRearrangeFragment_.builder().build(), ForumRearrangeFragment.TAG);
+        Intent i = new Intent(this, RoomArrangementActivity_.class);
+        startActivity(i);
         drawer_layout.closeDrawers();
     }
 
     @Subscribe
     public void openLogin(OpenLoginScreenEvent e) {
-        Log.d("fragment", "login");
-        mDrawerToggle.setDrawerIndicatorEnabled(false);
-        getSupportFragmentManager().popBackStackImmediate(
-                LoginFragment.TAG,
-                android.support.v4.app.FragmentManager.POP_BACK_STACK_INCLUSIVE
-        );
-        openFragment(LoginFragment_.builder().build(), LoginFragment.TAG);
+        Intent i = new Intent(this, LoginActivity_.class);
+        startActivity(i);
         drawer_layout.closeDrawers();
 
     }

@@ -67,6 +67,7 @@ public class LoginFragment extends BaseFragment {
 
     @AfterViews
     void init(){
+        getAttachedActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         app.getEventBus().register(this);
     }
 

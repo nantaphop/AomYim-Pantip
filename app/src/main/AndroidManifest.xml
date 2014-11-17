@@ -40,6 +40,11 @@
                 android:name="com.nantaphop.pantipfanapp.ForumActivity_"
                 >
         </activity>
+        <activity
+            android:name="com.nantaphop.pantipfanapp.RoomArrangementActivity_"
+            >
+        </activity>
+        <activity android:name=".LoginActivity_"/>
     </application>
 
 </manifest>

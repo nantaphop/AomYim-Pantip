@@ -43,6 +43,7 @@ public class ForumRearrangeFragment extends BaseFragment {
 
     @AfterViews
     void init() {
+        getAttachedActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         List<ForumPagerItem> forumPagerItems = ForumPagerItem.getAll();
         cards = new ArrayList<Card>();
         HashMap<String, ForumPagerItem> pagerItemMap = new HashMap<String, ForumPagerItem>();

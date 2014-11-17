@@ -6,11 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import com.nantaphop.pantipfanapp.BaseApplication;
 import com.nantaphop.pantipfanapp.R;
 import com.nantaphop.pantipfanapp.event.OpenTopicEvent;
 import com.nantaphop.pantipfanapp.response.Topic;
-import com.r0adkll.postoffice.widgets.RippleView;
 
 import org.androidannotations.annotations.App;
 import org.androidannotations.annotations.EViewGroup;
@@ -28,6 +28,14 @@ public class RecommendCardView extends CardView {
     LinearLayout root;
     @ViewById
     CardView card;
+
+    @ViewById
+    TextView recommend1;
+    @ViewById
+    TextView recommend2;
+    @ViewById
+    TextView recommend3;
+
     @ColorRes(R.color.base_color_bright)
     int rippleColor;
 
@@ -35,23 +43,30 @@ public class RecommendCardView extends CardView {
         super(context);
     }
 
-    public void addItem(final String title, final String url){
+    public void addItem(final String title, final String url) {
 
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View itemView = inflater.inflate(R.layout.card_item_recommend, this, false);
-        final TextView text = (TextView) itemView.findViewById(android.R.id.text1);
-        text.setText(title);
-        final Topic topic = new Topic();
-        topic.setTitle(title);
-        topic.setId(Integer.parseInt(url.split("/")[4]));
-        text.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                app.fireEvent(new OpenTopicEvent(topic));
-            }
-        });
-        RippleDrawable.createRipple(itemView, rippleColor);
-        root.addView(itemView);
+        TextView text = null;
+        if(recommend1.getText().length() == 0){
+            text = recommend1;
+        }else if(recommend2.getText().length() == 0){
+            text = recommend2;
+        }else if(recommend3.getText().length() == 0){
+            text = recommend3;
+        }
+        if (text != null) {
+            RippleDrawable.createRipple(text, rippleColor);
+            text.setText(title);
+            final Topic topic = new Topic();
+            topic.setTitle(title);
+            topic.setId(Integer.parseInt(url.split("/")[4]));
+            text.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    app.fireEvent(new OpenTopicEvent(topic));
+                }
+            });
+        }
     }
 
 }
