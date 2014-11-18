@@ -1,138 +1,152 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-        >
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="New Text"
-            android:gravity="right|center_vertical"
-            android:id="@+id/author"
-            android:layout_marginLeft="72dp"
-            android:paddingTop="@dimen/padding_default"
-            android:layout_alignParentTop="true"
-            android:textStyle="bold"/>
+        android:id="@+id/author"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="72dp"
+        android:gravity="right|center_vertical"
+        android:paddingTop="@dimen/padding_default"
+        android:text="New Text"
+        android:textStyle="bold" />
 
     <View
-            android:id="@+id/replyIndicator"
-            android:layout_width="40dp"
-            android:layout_height="100dp"
-            android:background="@color/background"
-            android:layout_alignParentTop="true"
-            android:layout_alignBottom="@+id/emo"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"/>
+        android:id="@+id/replyIndicator"
+        android:layout_width="40dp"
+        android:layout_height="100dp"
+        android:layout_alignBottom="@+id/emo"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:background="@color/background" />
 
     <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="3 มกราคม เวลา 21:40 น."
-            android:textSize="@dimen/text_caption"
-            android:id="@+id/date"
-            android:layout_marginRight="@dimen/padding_extra"
-            android:layout_alignBottom="@+id/author"
-            android:layout_alignParentRight="true"/>
+        android:id="@+id/date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/author"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/padding_extra"
+        android:text="3 มกราคม เวลา 21:40 น."
+        android:textSize="@dimen/text_caption" />
 
     <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="เดี๋ยวเร็วๆ นี้ จะทำให้ดู Tag และ Club ของห้องต่างๆ ได้นะครับ คาดว่าจะเป็น วันพรุ่งนี้มืดๆ หรือไม่ก็วันเสาร์ ครับผม ขอบคุณที่ใช้งานนะครั"
-            android:id="@+id/body"
-            android:textSize="@dimen/text_body"
-            android:paddingRight="@dimen/padding_extra"
-            android:lineSpacingExtra="@dimen/line_space_extra_body"
-            android:layout_below="@+id/author"
-            android:layout_alignLeft="@+id/author"
-            android:layout_alignStart="@+id/author"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"/>
+        android:id="@+id/body"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/author"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignStart="@+id/author"
+        android:layout_below="@+id/author"
+        android:lineSpacingExtra="@dimen/line_space_extra_body"
+        android:paddingRight="@dimen/padding_extra"
+        android:text="เดี๋ยวเร็วๆ นี้ จะทำให้ดู Tag และ Club ของห้องต่างๆ ได้นะครับ คาดว่าจะเป็น วันพรุ่งนี้มืดๆ หรือไม่ก็วันเสาร์ ครับผม ขอบคุณที่ใช้งานนะครั"
+        android:textSize="@dimen/text_body" />
 
-    <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=""
-            android:drawablePadding="@dimen/padding_narrow"
-            android:drawableLeft="@drawable/ic_action_reply"
-            android:gravity="center_vertical"
-            android:textColor="@color/text_color_tag"
-            android:textSize="@dimen/text_caption"
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/date"
+        android:layout_alignLeft="@+id/body"
+        android:layout_alignRight="@+id/date"
+        android:layout_alignStart="@+id/body"
+        android:layout_below="@+id/body"
+        android:orientation="horizontal">
+
+        <Button
             android:id="@+id/reply"
-            android:layout_below="@+id/body"
             style="?android:borderlessButtonStyle"
-            android:layout_above="@+id/loadMore"
-            android:layout_toLeftOf="@+id/votes"/>
-
-    <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="1"
-            android:textSize="@dimen/text_caption"
+            android:layout_above="@+id/loadMore"
+            android:layout_below="@+id/body"
+            android:layout_toLeftOf="@+id/votes"
+            android:layout_weight="1"
+            android:drawableLeft="@drawable/ic_action_reply"
             android:drawablePadding="@dimen/padding_narrow"
-            android:textColor="@color/text_color_tag"
-            android:drawableLeft="@drawable/ic_action_thumbs_up_small"
             android:gravity="center_vertical"
+            android:text=""
+            android:textColor="@color/text_color_tag"
+            android:textSize="@dimen/text_caption" />
+
+        <Button
             android:id="@+id/votes"
             style="?android:borderlessButtonStyle"
-            android:layout_below="@+id/body"
-            android:layout_toLeftOf="@+id/emo"/>
-
-    <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="2"
-            android:drawableLeft="@drawable/ic_action_mood_small"
-            android:id="@+id/emo"
-            android:gravity="center_vertical"
-            android:textSize="@dimen/text_caption"
-            android:textColor="@color/text_color_tag"
+            android:layout_below="@+id/body"
+            android:layout_toLeftOf="@+id/emo"
+            android:layout_weight="1"
+            android:drawableLeft="@drawable/ic_action_thumbs_up_small"
             android:drawablePadding="@dimen/padding_narrow"
-            android:paddingRight="@dimen/padding_extra"
+            android:gravity="center_vertical"
+            android:text="1"
+            android:textColor="@color/text_color_tag"
+            android:textSize="@dimen/text_caption" />
+
+        <Button
+            android:id="@+id/emo"
             style="?android:borderlessButtonStyle"
-            android:layout_alignTop="@+id/votes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"/>
+            android:layout_alignTop="@+id/votes"
+            android:layout_weight="1"
+            android:drawableLeft="@drawable/ic_action_mood_small"
+            android:drawablePadding="@dimen/padding_narrow"
+            android:gravity="center_vertical"
+            android:paddingRight="@dimen/padding_extra"
+            android:text="2"
+            android:textColor="@color/text_color_tag"
+            android:textSize="@dimen/text_caption" />
+    </LinearLayout>
 
 
     <ImageView
-            android:layout_width="@dimen/author_pic_comment"
-            android:src="@drawable/ic_launcher_pantip"
-            android:layout_height="@dimen/author_pic_comment"
-            android:scaleType="fitCenter"
-            android:id="@+id/authorPic"
-            android:layout_marginTop="@dimen/padding_default"
-            android:layout_marginLeft="20dp"
-            android:layout_alignTop="@+id/date"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"/>
+        android:id="@+id/authorPic"
+        android:layout_width="@dimen/author_pic_comment"
+        android:layout_height="@dimen/author_pic_comment"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignTop="@+id/date"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="@dimen/padding_default"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_launcher_pantip" />
 
     <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="#100-20"
-            android:textSize="@dimen/text_caption"
-            android:paddingRight="@dimen/padding_default"
-            android:paddingLeft="@dimen/padding_default"
-            android:gravity="center_horizontal"
-            android:id="@+id/commentNo"
-            android:layout_below="@+id/authorPic"
-            android:layout_marginTop="8dp"
-            android:layout_toLeftOf="@+id/body"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"/>
+        android:id="@+id/commentNo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/authorPic"
+        android:layout_marginTop="8dp"
+        android:layout_toLeftOf="@+id/body"
+        android:gravity="center_horizontal"
+        android:paddingLeft="@dimen/padding_default"
+        android:paddingRight="@dimen/padding_default"
+        android:text="#100-20"
+        android:textSize="@dimen/text_caption" />
 
     <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="ดูความเห็นย่อย"
-            android:background="@color/background"
-            style="?android:borderlessButtonStyle"
-            android:id="@+id/loadMore"
-            android:layout_below="@+id/replyIndicator"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignRight="@+id/emo"
-            android:layout_alignEnd="@+id/emo"/>
+        android:id="@+id/loadMore"
+        style="?android:borderlessButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/linearLayout"
+        android:background="@color/background"
+        android:text="ดูความเห็นย่อย" />
 </RelativeLayout>

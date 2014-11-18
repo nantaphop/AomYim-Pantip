@@ -3,6 +3,7 @@ package com.nantaphop.pantipfanapp.fragment;
 import android.animation.Animator;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -32,11 +33,7 @@ import org.androidannotations.annotations.*;
 import org.androidannotations.annotations.res.StringArrayRes;
 import org.androidannotations.annotations.res.StringRes;
 import org.apache.http.Header;
-import uk.co.senab.actionbarpulltorefresh.library.ActionBarPullToRefresh;
-import uk.co.senab.actionbarpulltorefresh.extras.actionbarcompat.PullToRefreshLayout;
-import uk.co.senab.actionbarpulltorefresh.library.listeners.OnRefreshListener;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -47,7 +44,7 @@ import static com.nantaphop.pantipfanapp.service.PantipRestClient.TopicType;
  * Created by nantaphop on 27-Jul-14.
  */
 @EFragment(R.layout.fragment_forum)
-public class ForumFragment extends BaseFragment implements OnRefreshListener {
+public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
 
     @ViewById
     ListView list;
@@ -89,7 +86,7 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
     int lastFirstVisibleItem;
 
     @ViewById
-    PullToRefreshLayout pullToRefreshLayout;
+    SwipeRefreshLayout swipeRefreshLayout;
 
     @StringRes
     String topic_sort_type_title;
@@ -522,7 +519,8 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
 
     @UiThread
     void setRefreshComplete() {
-        pullToRefreshLayout.setRefreshComplete();
+        Log.d("refresh", "stop");
+        swipeRefreshLayout.setRefreshing(false);
     }
 
 
@@ -533,6 +531,9 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
 
         fabDefaultY = fab.getY();
         Log.d("forum", "init forum fragment " + forumPagerItem.title);
+        int toolbarAndNavSize = getResources().getDimensionPixelSize(R.dimen.tabs_height) + getResources().getDimensionPixelSize(R.dimen.toolbar_size);
+
+
 
         topicAdapter = new TopicAdapter(getActivity());
         MyAnimationAdapter animationAdapter = new MyAnimationAdapter(topicAdapter);
@@ -542,23 +543,21 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
         list.setAdapter(animationAdapter);
         list.setEmptyView(emptyView);
 
-        // Now setup the PullToRefreshLayout
-        ActionBarPullToRefresh.from(this.getAttachedActivity())
-                // Mark All Children as pullable
-                .allChildrenArePullable()
-                        // Set the OnRefreshListener
-                .listener(this)
-                        // Finally commit the setup to our PullToRefreshLayout
-                .setup(pullToRefreshLayout);
 
         // Add Blank Margin on top height = Tab's height
         if (!noTabMargin) {
             View blankHeader = new View(getAttachedActivity());
-            blankHeader.setMinimumHeight(getResources().getDimensionPixelOffset(R.dimen.tabs_height)+getResources().getDimensionPixelOffset(R.dimen.toolbar_size));
+            blankHeader.setMinimumHeight(toolbarAndNavSize);
             list.addHeaderView(blankHeader);
         }else{
             getAttachedActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+        swipeRefreshLayout.setProgressViewOffset(true, 0, toolbarAndNavSize+300);
+
+        // Now setup the PullToRefreshLayout
+        swipeRefreshLayout.setOnRefreshListener(this);
+        Log.d("refresh", toolbarAndNavSize+"");
+        swipeRefreshLayout.setColorSchemeResources(R.color.base_color);
 
         // Attach scroll listener
         Log.d("forum", "init : lastFirstVisibleItem -> " + lastFirstVisibleItem);
@@ -614,15 +613,10 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
     }
 
     private void loadForumPart() {
-        if (!pullToRefreshLayout.isRefreshing())
-            pullToRefreshLayout.setRefreshing(true);
+        if (!swipeRefreshLayout.isRefreshing())
+            swipeRefreshLayout.setRefreshing(true);
         prepareRecommendDone = false;
         client.getForumPart(forumPagerItem.url, forumType, forumPartCallback);
-    }
-
-    @Override
-    public void onRefreshStarted(View view) {
-        refresh();
     }
 
     private void refresh() {
@@ -642,8 +636,8 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
     }
 
     private void loadMore() {
-        if (!pullToRefreshLayout.isRefreshing())
-            pullToRefreshLayout.setRefreshing(true);
+        if (!swipeRefreshLayout.isRefreshing())
+            swipeRefreshLayout.setRefreshing(true);
         prepareTopicDone = false;
         client.getForum(
                 forumPagerItem.url,
@@ -663,6 +657,11 @@ public class ForumFragment extends BaseFragment implements OnRefreshListener {
             marginBottom = ((ViewGroup.MarginLayoutParams) layoutParams).bottomMargin;
         }
         return marginBottom;
+    }
+
+    @Override
+    public void onRefresh() {
+        refresh();
     }
 
     public class TopicAdapter extends BaseAdapter {

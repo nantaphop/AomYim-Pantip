@@ -2,27 +2,34 @@ package com.nantaphop.pantipfanapp.fragment;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.TextView;
+
 import com.nantaphop.pantipfanapp.BaseApplication;
 import com.nantaphop.pantipfanapp.R;
 import com.nantaphop.pantipfanapp.event.UpdateForumListEvent;
 import com.nantaphop.pantipfanapp.model.ForumPagerItem;
-import de.keyboardsurfer.android.widget.crouton.Crouton;
-import de.keyboardsurfer.android.widget.crouton.Style;
+
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.App;
+import org.androidannotations.annotations.EFragment;
+import org.androidannotations.annotations.OptionsItem;
+import org.androidannotations.annotations.OptionsMenu;
+import org.androidannotations.annotations.UiThread;
+import org.androidannotations.annotations.ViewById;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import it.gmariotti.cardslib.library.extra.dragdroplist.internal.CardDragDropArrayAdapter;
 import it.gmariotti.cardslib.library.extra.dragdroplist.view.CardListDragDropView;
 import it.gmariotti.cardslib.library.internal.Card;
-import org.androidannotations.annotations.*;
-
-import java.util.*;
 
 /**
  * Created by nantaphop on 11-Aug-14.
@@ -79,7 +86,7 @@ public class ForumRearrangeFragment extends BaseFragment {
 
     @OptionsItem
     void action_save() {
-        Crouton.makeText(getActivity(), R.string.feedback_save_arrange_inprogress, Style.CONFIRM).show();
+        toastInfo(R.string.feedback_save_arrange_inprogress);
         for (int i = 0; i < cardDragDropArrayAdapter.getCount(); i++) {
             PagerItemCard item = (PagerItemCard) cardDragDropArrayAdapter.getItem(i);
             ForumPagerItem forumPagerItem = item.getForumPagerItem();
@@ -87,7 +94,7 @@ public class ForumRearrangeFragment extends BaseFragment {
             forumPagerItem.save();
         }
         app.getEventBus().post(new UpdateForumListEvent());
-        Crouton.makeText(getActivity(), R.string.feedback_save_arrange_done, Style.CONFIRM).show();
+        toastInfo(R.string.feedback_save_arrange_done);
 
         doneSave();
     }

@@ -15,8 +15,6 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 import com.squareup.otto.Subscribe;
-import de.keyboardsurfer.android.widget.crouton.Crouton;
-import de.keyboardsurfer.android.widget.crouton.Style;
 import org.androidannotations.annotations.*;
 import org.androidannotations.annotations.sharedpreferences.Pref;
 import org.apache.http.Header;
@@ -108,7 +106,7 @@ public class LoginFragment extends BaseFragment {
                                 progressDialog.dismiss();
                             }
                         }else{
-                            Crouton.makeText(getActivity(), app.getString(R.string.feedback_login_failed), Style.ALERT).show();
+                            toastAlert(app.getString(R.string.feedback_login_failed));
                             progressDialog.dismiss();
                         }
 
@@ -116,7 +114,7 @@ public class LoginFragment extends BaseFragment {
 
                     @Override
                     public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
-                        Crouton.makeText(getActivity(), app.getString(R.string.feedback_connection_failed), Style.ALERT).show();
+                        toastAlert(app.getString(R.string.feedback_connection_failed));
                         progressDialog.dismiss();
                     }
                 });

@@ -46,7 +46,15 @@ public class BaseFragment extends Fragment {
         toast(msg, SnackBar.SHORT_SNACK);
     }
 
+    void toastInfo(int stringResId){
+        toastInfo(getString(stringResId));
+    }
+
     void toastAlert(String msg) {
         toast(msg, SnackBar.LONG_SNACK);
+    }
+
+    void toastAlert(int stringResId){
+        toastAlert(getString(stringResId));
     }
 }

@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import com.devddagnet.bright.lib.Bright;
 import com.nantaphop.pantipfanapp.BaseApplication;
 import com.nantaphop.pantipfanapp.R;
 import com.nantaphop.pantipfanapp.event.OpenTopicEvent;

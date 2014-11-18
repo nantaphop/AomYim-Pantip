@@ -2,25 +2,25 @@ package com.nantaphop.pantipfanapp.view;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.Typeface;
 import android.support.v7.widget.CardView;
 import android.text.Html;
 import android.text.format.DateUtils;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import com.devddagnet.bright.lib.Bright;
+
 import com.nantaphop.pantipfanapp.BaseApplication;
 import com.nantaphop.pantipfanapp.R;
 import com.nantaphop.pantipfanapp.event.OpenTopicEvent;
 import com.nantaphop.pantipfanapp.response.Tag;
 import com.nantaphop.pantipfanapp.response.Topic;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
-import org.androidannotations.annotations.*;
+
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.App;
+import org.androidannotations.annotations.EViewGroup;
+import org.androidannotations.annotations.Trace;
+import org.androidannotations.annotations.UiThread;
+import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.res.ColorRes;
 import org.androidannotations.annotations.res.DimensionPixelSizeRes;
 
@@ -131,13 +131,7 @@ public class TopicView extends RelativeLayout implements View.OnClickListener {
         }
     }
 
-    @Background
-    void calculateTitleColor(Bitmap loadedImage) {
-        boolean isBright = Bright.setup(Bright.Config.RELATIVE | Bright.Config.PERFORMANCE).isBright(loadedImage);
-        topic.setBrightCover(isBright);
-        updateTitleColor(isBright);
 
-    }
 
 
     @UiThread

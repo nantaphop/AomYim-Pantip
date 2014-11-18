@@ -5,39 +5,67 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Html;
 import android.util.Log;
-import android.view.*;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.widget.*;
+import android.widget.BaseAdapter;
+import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.BaseJsonHttpResponseHandler;
 import com.nantaphop.pantipfanapp.R;
 import com.nantaphop.pantipfanapp.event.DoEmoEvent;
 import com.nantaphop.pantipfanapp.event.DoReplyEvent;
 import com.nantaphop.pantipfanapp.event.DoVoteEvent;
-import com.nantaphop.pantipfanapp.event.SortCommentEvent;
-import com.nantaphop.pantipfanapp.fragment.dialog.ListDialog;
-import com.nantaphop.pantipfanapp.fragment.dialog.ListDialog_;
-import com.nantaphop.pantipfanapp.response.*;
+import com.nantaphop.pantipfanapp.response.Comment;
+import com.nantaphop.pantipfanapp.response.CommentResponse;
+import com.nantaphop.pantipfanapp.response.Comments;
+import com.nantaphop.pantipfanapp.response.EmoResponse;
+import com.nantaphop.pantipfanapp.response.Reply;
+import com.nantaphop.pantipfanapp.response.Topic;
+import com.nantaphop.pantipfanapp.response.TopicPost;
+import com.nantaphop.pantipfanapp.response.VoteResponse;
 import com.nantaphop.pantipfanapp.service.PantipRestClient;
 import com.nantaphop.pantipfanapp.utils.CommentComparator;
 import com.nantaphop.pantipfanapp.utils.PostOfficeHelper;
 import com.nantaphop.pantipfanapp.utils.RESTUtils;
 import com.nantaphop.pantipfanapp.utils.ScrollDirectionListener;
-import com.nantaphop.pantipfanapp.view.*;
+import com.nantaphop.pantipfanapp.view.CommentView;
+import com.nantaphop.pantipfanapp.view.CommentView_;
+import com.nantaphop.pantipfanapp.view.SimpleEmptyView;
+import com.nantaphop.pantipfanapp.view.SimpleEmptyView_;
+import com.nantaphop.pantipfanapp.view.TopicPostView;
+import com.nantaphop.pantipfanapp.view.TopicPostView_;
 import com.r0adkll.postoffice.model.Delivery;
 import com.r0adkll.postoffice.model.Design;
 import com.r0adkll.postoffice.styles.ListStyle;
 import com.squareup.otto.Subscribe;
-import org.androidannotations.annotations.*;
+
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Background;
+import org.androidannotations.annotations.Click;
+import org.androidannotations.annotations.EFragment;
+import org.androidannotations.annotations.FocusChange;
+import org.androidannotations.annotations.FragmentArg;
+import org.androidannotations.annotations.InstanceState;
+import org.androidannotations.annotations.OptionsItem;
+import org.androidannotations.annotations.OptionsMenu;
+import org.androidannotations.annotations.UiThread;
+import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.res.DimensionPixelSizeRes;
 import org.androidannotations.annotations.res.StringArrayRes;
 import org.androidannotations.annotations.res.StringRes;
 import org.apache.http.Header;
-import uk.co.senab.actionbarpulltorefresh.library.ActionBarPullToRefresh;
-import uk.co.senab.actionbarpulltorefresh.extras.actionbarcompat.PullToRefreshLayout;
-import uk.co.senab.actionbarpulltorefresh.library.listeners.OnRefreshListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -48,7 +76,7 @@ import java.util.Iterator;
  */
 @OptionsMenu(R.menu.menu_topic)
 @EFragment(R.layout.fragment_topic)
-public class TopicFragment extends BaseFragment implements OnRefreshListener {
+public class TopicFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
 
     @FragmentArg
     Topic topic;
@@ -65,7 +93,7 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
     @ViewById
     ListView list;
     @ViewById
-    PullToRefreshLayout pullToRefreshLayout;
+    SwipeRefreshLayout swipeRefreshLayout;
     @ViewById
     ImageButton expandMoreComment;
     @ViewById
@@ -187,7 +215,7 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
             } else {
                toastAlert(getString(R.string.feedback_comment_failed));
             }
-            pullToRefreshLayout.setRefreshComplete();
+            setRefreshComplete();
 
         }
 
@@ -224,7 +252,7 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
             } else {
                 toastAlert(response.getError_message());
             }
-            pullToRefreshLayout.setRefreshComplete();
+            setRefreshComplete();
 
         }
 
@@ -255,7 +283,7 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
             } else {
                 toastAlert(getString(R.string.feedback_emo_failed));
             }
-            pullToRefreshLayout.setRefreshComplete();
+            setRefreshComplete();
 
         }
 
@@ -303,14 +331,9 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
         footer.setMinimumHeight(footerHeight);
         list.addFooterView(footer);
         // Now setup the PullToRefreshLayout
-        ActionBarPullToRefresh.from(this.getAttachedActivity())
-                // Mark All Children as pullable
-                .allChildrenArePullable()
-                        // Set the OnRefreshListener
-                .listener(this)
-                        // Finally commit the setup to our PullToRefreshLayout
-                .setup(pullToRefreshLayout);
-        pullToRefreshLayout.setRefreshing(true);
+       swipeRefreshLayout.setOnRefreshListener(this);
+        swipeRefreshLayout.setColorSchemeResources(R.color.base_color);
+        swipeRefreshLayout.setProgressViewOffset(true, 0, getResources().getDimensionPixelSize(R.dimen.toolbar_size));
 
         // Attach scroll listener
         Log.d("forum", "init : lastFirstVisibleItem -> " + lastFirstVisibleItem);
@@ -415,8 +438,14 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
             if (lastFirstVisibleItem != 0) {
                 list.setSelection(lastFirstVisibleItem);
             }
-            pullToRefreshLayout.setRefreshComplete();
+            setRefreshComplete();
         }
+    }
+
+    @UiThread
+    void setRefreshComplete() {
+        Log.d("refresh", "stop");
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
@@ -429,8 +458,8 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
     }
 
     public void loadReplies(Comment c, CommentView waitUpdateCommentView, int newRepliesPosition) {
-        if (!pullToRefreshLayout.isRefreshing())
-            pullToRefreshLayout.setRefreshing(true);
+        if (!swipeRefreshLayout.isRefreshing())
+            swipeRefreshLayout.setRefreshing(true);
         this.waitUpdateCommentView = waitUpdateCommentView;
         this.newRepliesPosition = newRepliesPosition;
         Comment p = c.getParent();
@@ -449,21 +478,12 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
         waitUpdateCommentView.disableLoadMore();
         tmpReplies = null;
         prepareComments();
-        pullToRefreshLayout.setRefreshComplete();
-    }
-
-    @Override
-    public void onRefreshStarted(View view) {
-        topicPost = null;
-        comments = null;
-        currentCommentPage = 1;
-        loadNextComments();
-        loadTopicPost();
+        setRefreshComplete();
     }
 
     public void loadTopicPost() {
-        if (!pullToRefreshLayout.isRefreshing())
-            pullToRefreshLayout.setRefreshing(true);
+        if (!swipeRefreshLayout.isRefreshing())
+            swipeRefreshLayout.setRefreshing(true);
         prepareTopicPostDone = false;
         client.getTopicPost(topic.getId() + "", topicPostCallback);
     }
@@ -488,7 +508,7 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
             client.reply(topic.getId(), e.commentRefId, e.commentNo, e.commentTimestamp, msg, doCommentCallback);
 
         } else if (msg.length() > 0) {
-            pullToRefreshLayout.setRefreshing(true);
+            swipeRefreshLayout.setRefreshing(true);
             hideCommentTools();
             client.comment(topic.getId(), msg, doCommentCallback);
         }
@@ -657,15 +677,15 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
     }
 
     private void loadNextComments() {
-        if (!pullToRefreshLayout.isRefreshing())
-            pullToRefreshLayout.setRefreshing(true);
+        if (!swipeRefreshLayout.isRefreshing())
+            swipeRefreshLayout.setRefreshing(true);
         prepareCommentsDone = false;
         client.getComments(topic.getId() + "", currentCommentPage, false, commentsCallback);
     }
 
     private void updateNewComment(int commentNo) {
-        if (!pullToRefreshLayout.isRefreshing())
-            pullToRefreshLayout.setRefreshing(true);
+        if (!swipeRefreshLayout.isRefreshing())
+            swipeRefreshLayout.setRefreshing(true);
         prepareCommentsDone = false;
         client.getComments(topic.getId() + "", currentCommentPage, false, commentsCallback);
     }
@@ -729,6 +749,15 @@ public class TopicFragment extends BaseFragment implements OnRefreshListener {
         //
         //                    }
         //                }).start();
+    }
+
+    @Override
+    public void onRefresh() {
+        topicPost = null;
+        comments = null;
+        currentCommentPage = 1;
+        loadNextComments();
+        loadTopicPost();
     }
 
     class CommentAdapter extends BaseAdapter {

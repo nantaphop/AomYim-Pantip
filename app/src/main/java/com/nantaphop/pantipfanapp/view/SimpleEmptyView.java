@@ -14,8 +14,8 @@ import org.androidannotations.annotations.ViewById;
  */
 @EViewGroup(R.layout.simple_empty)
 public class SimpleEmptyView extends LinearLayout{
-    @ViewById
-    ProgressBar progressBar;
+//    @ViewById
+//    ProgressBar progressBar;
     @ViewById
     TextView text;
     @ViewById
@@ -34,6 +34,14 @@ public class SimpleEmptyView extends LinearLayout{
         this.text.setText(text);
         this.text.setVisibility(VISIBLE);
     }
+
+//    public void showProgress(){
+//        progressBar.setVisibility(VISIBLE);
+//    }
+//
+//    public void hideProgress(){
+//        progressBar.setVisibility(GONE);
+//    }
 
     public void clearText(){
         text.setText("");

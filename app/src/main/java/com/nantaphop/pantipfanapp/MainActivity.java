@@ -1,35 +1,32 @@
 package com.nantaphop.pantipfanapp;
 
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
-import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.PersistableBundle;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.Toast;
-import at.markushi.ui.action.Action;
-import at.markushi.ui.action.BackAction;
-import at.markushi.ui.action.CloseAction;
-import at.markushi.ui.action.DrawerAction;
-import com.easyandroidanimations.library.TransferAnimation;
-import com.nantaphop.pantipfanapp.event.*;
-import com.nantaphop.pantipfanapp.fragment.*;
-import com.nantaphop.pantipfanapp.view.ActionBarView;
-import com.nantaphop.pantipfanapp.view.ActionBarView_;
+
+import com.nantaphop.pantipfanapp.event.OpenForumEvent;
+import com.nantaphop.pantipfanapp.event.OpenForumRearrangeEvent;
+import com.nantaphop.pantipfanapp.event.OpenLoginScreenEvent;
+import com.nantaphop.pantipfanapp.event.OpenTopicEvent;
+import com.nantaphop.pantipfanapp.event.SetTitleEvent;
+import com.nantaphop.pantipfanapp.event.ToggleDrawerEvent;
+import com.nantaphop.pantipfanapp.event.UpdateForumListEvent;
+import com.nantaphop.pantipfanapp.fragment.ForumHolderFragment;
+import com.nantaphop.pantipfanapp.fragment.ForumHolderFragment_;
 import com.nantaphop.pantipfanapp.view.BaseActivity;
 import com.squareup.otto.Subscribe;
-import org.androidannotations.annotations.*;
+
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.App;
+import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.res.StringArrayRes;
 import org.androidannotations.annotations.res.StringRes;
 

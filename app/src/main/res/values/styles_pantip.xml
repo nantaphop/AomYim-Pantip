@@ -32,7 +32,6 @@
         <item name="actionBarSize">@dimen/toolbar_size</item>
         <item name="actionBarStyle">@style/MyActionBarStyle</item>
 
-        <item name="ptrHeaderStyle">@style/Widget.Custom.PtrHeader</item>
         <!--<item name="android:actionBarItemBackground">@drawable/selectable_background_pantip</item>-->
         <!--<item name="android:popupMenuStyle">@style/PopupMenu.Pantip</item>-->
         <!--<item name="android:dropDownListViewStyle">@style/DropDownListView.Pantip</item>-->
@@ -47,31 +46,6 @@
 
         <!--<item name="android:actionBarWidgetTheme">@style/Theme.Pantip.Widget</item>-->
 
-    </style>
-
-    <style name="Widget.Custom.PtrHeader" parent="android:Widget">
-        <!-- The background of the header view -->
-        <item name="ptrHeaderBackground">?attr/colorPrimaryDark</item>
-
-        <!-- The height of the header view. Please note, only set if in you really need to -->
-        <!--<item name="ptrHeaderHeight">...</item>-->
-
-         <!--TextAppearance of the header view's title text -->
-        <!--<item name="ptrHeaderTitleTextAppearance">...</item>-->
-
-        <!-- Color to tint the progress bar -->
-        <!--<item name="ptrProgressBarColor">...</item>-->
-
-        <!-- Radius of the progress bar corners -->
-        <!--<item name="ptrProgressBarCornerRadius">4dp</item>-->
-
-        <!-- Style of the Progress Bar. Values are either: inside or outside -->
-        <!--<item name="ptrProgressBarStyle">...</item>-->
-
-        <!-- The strings to be displayed at the various states -->
-        <!--<item name="ptrPullText">@string/empty_string</item>-->
-        <!--<item name="ptrRefreshingText">@string/empty_string</item>-->
-        <!--<item name="ptrReleaseText">@string/empty_string</item>-->
     </style>
 
     <style name="MyActionBarStyle" parent="@style/Widget.AppCompat.Light.ActionBar.Solid">

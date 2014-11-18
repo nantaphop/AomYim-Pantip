@@ -16,8 +16,8 @@
         <!--android:id="@+id/list"-->
         <!--android:layout_width="match_parent"-->
         <!--android:layout_height="match_parent"></ListView>-->
-        <uk.co.senab.actionbarpulltorefresh.extras.actionbarcompat.PullToRefreshLayout
-                android:id="@+id/pullToRefreshLayout"
+        <android.support.v4.widget.SwipeRefreshLayout
+                android:id="@+id/swipeRefreshLayout"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent">
 
@@ -35,7 +35,7 @@
                     android:dividerHeight="@dimen/padding_default"
                     android:id="@+id/list"
                     tools:listitem="@layout/listitem_topic"></ListView>
-        </uk.co.senab.actionbarpulltorefresh.extras.actionbarcompat.PullToRefreshLayout>
+        </android.support.v4.widget.SwipeRefreshLayout>
 
 
 

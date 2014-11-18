@@ -17,6 +17,7 @@
 
     <LinearLayout
             android:id="@+id/topPanel"
+
             android:orientation="vertical"
             android:background="?attr/colorPrimaryDark"
             android:layout_width="match_parent"
@@ -24,6 +25,7 @@
 
         <android.support.v7.widget.Toolbar
                 xmlns:android="http://schemas.android.com/apk/res/android"
+
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -33,7 +35,7 @@
 
         <com.nantaphop.pantipfanapp.view.RipplePagerSlidingTabStrip
                 android:id="@+id/tabs"
-                
+
                 android:layout_width="match_parent"
                 android:textColor="#ffffffff"
                 android:layout_height="@dimen/tabs_height"/>
