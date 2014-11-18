@@ -7,9 +7,13 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.LinearLayout;
+
+import com.astuetz.PagerSlidingTabStrip;
 import com.nantaphop.pantipfanapp.R;
 import com.nantaphop.pantipfanapp.event.*;
 import com.nantaphop.pantipfanapp.model.ForumPagerItem;
@@ -30,7 +34,7 @@ public class ForumHolderFragment extends BaseFragment {
     @ViewById
     ViewPager viewPager;
     @ViewById
-    RipplePagerSlidingTabStrip tabs;
+    PagerSlidingTabStrip tabs;
     @ViewById
     Toolbar toolbar;
     @ViewById
@@ -51,16 +55,35 @@ public class ForumHolderFragment extends BaseFragment {
         getAttachedActivity().initNavDrawer(toolbar);
         forumPagerItems = ForumPagerItem.getAll("enable");
         pagerAdapter = new ForumSlidePagerAdapter(getFragmentManager());
+        final DisplayMetrics displaymetrics = new DisplayMetrics();
+        getAttachedActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
         viewPager.setAdapter(pagerAdapter);
         tabs.setTabBackground(android.R.color.transparent);
         tabs.setViewPager(viewPager);
+
         tabs.setOnPageChangeListener(
-                new ViewPager.SimpleOnPageChangeListener() {
+                new ViewPager.OnPageChangeListener() {
+
+
+                    int sWidth = displaymetrics.widthPixels;
+
+                    @Override
+                    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+                    }
+
                     @Override
                     public void onPageSelected(int position) {
-                        super.onPageSelected(position);
                         currentPage = position;
                         showTabs();
+//                        View tab = tabs.getTab(position);
+//                        Log.d("tabs", "widht = "+tab.getWidth());
+//                        tabs.setScrollOffset((sWidth/2)-(tab.getWidth()/2), true);
+                    }
+
+                    @Override
+                    public void onPageScrollStateChanged(int i) {
+
                     }
                 }
         );

@@ -74,6 +74,7 @@ public class ForumRearrangeFragment extends BaseFragment {
             cards.add(card);
         }
         cardDragDropArrayAdapter = new CardDragDropArrayAdapter(getActivity(), cards);
+        cardList.setScrollSpeed(6f);
         cardList.setAdapter(cardDragDropArrayAdapter);
 
     }

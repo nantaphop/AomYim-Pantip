@@ -18,12 +18,12 @@
     <View
         android:id="@+id/replyIndicator"
         android:layout_width="40dp"
-        android:layout_height="100dp"
-        android:layout_alignBottom="@+id/emo"
+        android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:background="@color/background" />
+        android:background="@color/background"
+        android:layout_alignBottom="@+id/linearLayout" />
 
     <TextView
         android:id="@+id/date"

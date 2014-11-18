@@ -180,6 +180,7 @@ public class PantipRestClient {
         client = new AsyncHttpClient();
         PersistentCookieStore myCookieStore = new PersistentCookieStore(context);
         client.setCookieStore(myCookieStore);
+        client.setMaxRetriesAndTimeout(2, 10);
         client.addHeader("origin", "http://pantip.com");
         client.addHeader("Content-Type", "application/x-www-form-urlencoded");
         client.addHeader("Accept-Encoding", "gzip,deflate,sdch");

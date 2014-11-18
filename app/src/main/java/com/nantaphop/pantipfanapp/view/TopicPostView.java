@@ -14,10 +14,13 @@ import com.nantaphop.pantipfanapp.event.DoVoteEvent;
 import com.nantaphop.pantipfanapp.response.EmoResponse;
 import com.nantaphop.pantipfanapp.response.TopicPost;
 import com.nantaphop.pantipfanapp.service.PantipRestClient;
+import com.nantaphop.pantipfanapp.utils.CustomLinkMovementMethod;
 import com.nantaphop.pantipfanapp.utils.URLImageParser;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
+
+import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.App;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EViewGroup;
@@ -72,6 +75,12 @@ public class TopicPostView extends RelativeLayout{
     public TopicPostView(Context context) {
         super(context);
         this.context = context;
+    }
+
+    @AfterViews
+    void setLinkMovement(){
+        body.setMovementMethod(CustomLinkMovementMethod.getInstance(context));
+
     }
 
     public void bind(TopicPost topicPost){

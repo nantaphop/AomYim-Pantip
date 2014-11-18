@@ -21,6 +21,9 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import com.github.ksoichiro.android.observablescrollview.ObservableListView;
+import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
+import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.BaseJsonHttpResponseHandler;
 import com.nantaphop.pantipfanapp.R;
@@ -91,7 +94,7 @@ public class TopicFragment extends BaseFragment implements SwipeRefreshLayout.On
     @DimensionPixelSizeRes(R.dimen.list_footer_height)
     int footerHeight;
     @ViewById
-    ListView list;
+    ObservableListView list;
     @ViewById
     SwipeRefreshLayout swipeRefreshLayout;
     @ViewById
@@ -338,27 +341,26 @@ public class TopicFragment extends BaseFragment implements SwipeRefreshLayout.On
         // Attach scroll listener
         Log.d("forum", "init : lastFirstVisibleItem -> " + lastFirstVisibleItem);
 
-        list.setOnScrollListener(
-                new ScrollDirectionListener(
-                        lastFirstVisibleItem, new ScrollDirectionListener.OnScrollUp() {
-                    @Override
-                    public void onScrollUp() {
-                        showCommentPane();
-                    }
-                }, new ScrollDirectionListener.OnScrollDown() {
-                    @Override
-                    public void onScrollDown() {
-                        hideCommentPane();
-                    }
-                }, new ScrollDirectionListener.OnBottomReach() {
-                    @Override
-                    public void onBottomReach() {
-                        showCommentPane();
-                    }
-                }
-                )
-        );
+        list.setScrollViewCallbacks(new ObservableScrollViewCallbacks() {
+            @Override
+            public void onScrollChanged(int i, boolean b, boolean b2) {
 
+            }
+
+            @Override
+            public void onDownMotionEvent() {
+
+            }
+
+            @Override
+            public void onUpOrCancelMotionEvent(ScrollState scrollState) {
+                if(scrollState == ScrollState.UP){
+                    hideCommentPane();
+                }else if(scrollState == ScrollState.DOWN){
+                    showCommentPane();
+                }
+            }
+        });
         if (topicPost == null && comments == null) {
             loadTopicPost();
             loadNextComments();
@@ -628,6 +630,9 @@ public class TopicFragment extends BaseFragment implements SwipeRefreshLayout.On
 
     @Subscribe
     public void emo(final DoEmoEvent e) {
+        Log.d("emo", "receive event");
+        if(e.comment == null)
+            return;
         emoDialog = PostOfficeHelper.newSimpleListMailCancelable(
                 getAttachedActivity(),
                 emoTitle,
@@ -673,7 +678,9 @@ public class TopicFragment extends BaseFragment implements SwipeRefreshLayout.On
                 }
 
         );
+
         emoDialog.show(getFragmentManager());
+        e.comment = null;
     }
 
     private void loadNextComments() {

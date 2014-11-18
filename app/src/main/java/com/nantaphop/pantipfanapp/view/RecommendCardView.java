@@ -2,9 +2,11 @@ package com.nantaphop.pantipfanapp.view;
 
 import android.content.Context;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.nantaphop.pantipfanapp.BaseApplication;
@@ -35,16 +37,19 @@ public class RecommendCardView extends CardView {
     TextView recommend2;
     @ViewById
     TextView recommend3;
+    @ViewById
+    ProgressBar progressBar;
 
     @ColorRes(R.color.base_color_bright)
     int rippleColor;
+
 
     public RecommendCardView(Context context) {
         super(context);
     }
 
     public void addItem(final String title, final String url) {
-
+        progressBar.setVisibility(GONE);
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         TextView text = null;
         if(recommend1.getText().length() == 0){
@@ -59,7 +64,12 @@ public class RecommendCardView extends CardView {
             text.setText(title);
             final Topic topic = new Topic();
             topic.setTitle(title);
-            topic.setId(Integer.parseInt(url.split("/")[4]));
+            try {
+                topic.setId(Integer.parseInt(url.split("/")[4]));
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.e("recommend", "Exception on set Recommend Item > "+title+""+url);
+            }
             text.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {

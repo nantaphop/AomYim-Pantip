@@ -10,32 +10,70 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
+import android.widget.FrameLayout;
+
+import com.github.ksoichiro.android.observablescrollview.ObservableListView;
+import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
+import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.BaseJsonHttpResponseHandler;
 import com.melnykov.fab.FloatingActionButton;
 import com.nantaphop.pantipfanapp.R;
-import com.nantaphop.pantipfanapp.event.*;
+import com.nantaphop.pantipfanapp.event.ForumScrollDownEvent;
+import com.nantaphop.pantipfanapp.event.ForumScrollUpEvent;
+import com.nantaphop.pantipfanapp.event.OpenForumEvent;
+import com.nantaphop.pantipfanapp.event.OpenTopicEvent;
+import com.nantaphop.pantipfanapp.event.ShowRecommendEvent;
+import com.nantaphop.pantipfanapp.event.SortForumEvent;
+import com.nantaphop.pantipfanapp.event.ToggleDrawerEvent;
 import com.nantaphop.pantipfanapp.fragment.dialog.ListDialog;
 import com.nantaphop.pantipfanapp.fragment.dialog.ListDialog_;
 import com.nantaphop.pantipfanapp.model.ForumPagerItem;
 import com.nantaphop.pantipfanapp.response.Forum;
 import com.nantaphop.pantipfanapp.response.ForumPart;
 import com.nantaphop.pantipfanapp.response.Topic;
-import com.nantaphop.pantipfanapp.utils.*;
-import com.nantaphop.pantipfanapp.view.*;
+import com.nantaphop.pantipfanapp.utils.PostOfficeHelper;
+import com.nantaphop.pantipfanapp.utils.RESTUtils;
+import com.nantaphop.pantipfanapp.utils.ScrollDirectionListener;
+import com.nantaphop.pantipfanapp.utils.TopicComparator;
+import com.nantaphop.pantipfanapp.utils.Utils;
+import com.nantaphop.pantipfanapp.view.ForumEmptyView;
+import com.nantaphop.pantipfanapp.view.ForumEmptyView_;
+import com.nantaphop.pantipfanapp.view.MyAnimationAdapter;
+import com.nantaphop.pantipfanapp.view.RecommendCardView;
+import com.nantaphop.pantipfanapp.view.RecommendCardView_;
+import com.nantaphop.pantipfanapp.view.SimpleEmptyView;
+import com.nantaphop.pantipfanapp.view.SimpleEmptyView_;
+import com.nantaphop.pantipfanapp.view.TopicSectionView;
+import com.nantaphop.pantipfanapp.view.TopicSectionView_;
+import com.nantaphop.pantipfanapp.view.TopicThumbnailView;
+import com.nantaphop.pantipfanapp.view.TopicThumbnailView_;
+import com.nantaphop.pantipfanapp.view.TopicView;
+import com.nantaphop.pantipfanapp.view.TopicView_;
 import com.r0adkll.postoffice.model.Delivery;
 import com.r0adkll.postoffice.model.Design;
 import com.r0adkll.postoffice.styles.ListStyle;
 import com.squareup.otto.Subscribe;
-import it.gmariotti.cardslib.library.internal.Card;
-import org.androidannotations.annotations.*;
+
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Background;
+import org.androidannotations.annotations.EFragment;
+import org.androidannotations.annotations.FragmentArg;
+import org.androidannotations.annotations.InstanceState;
+import org.androidannotations.annotations.OptionsItem;
+import org.androidannotations.annotations.Trace;
+import org.androidannotations.annotations.UiThread;
+import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.res.StringArrayRes;
 import org.androidannotations.annotations.res.StringRes;
 import org.apache.http.Header;
 
 import java.util.ArrayList;
 import java.util.Collections;
+
+import it.gmariotti.cardslib.library.internal.Card;
 
 import static com.nantaphop.pantipfanapp.service.PantipRestClient.ForumType;
 import static com.nantaphop.pantipfanapp.service.PantipRestClient.TopicType;
@@ -47,7 +85,7 @@ import static com.nantaphop.pantipfanapp.service.PantipRestClient.TopicType;
 public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
 
     @ViewById
-    ListView list;
+    ObservableListView list;
     //    @ViewById
 //    CardListView cardList;
     @ViewById
@@ -69,7 +107,7 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
     @InstanceState
     String lastIdCurrentPage = "0";
     @InstanceState
-    int currentPage = 1;
+    int currentPage = 0;
     @InstanceState
     int cardRenderCount = 0;
 
@@ -102,14 +140,14 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
         public void onSuccess(int i, Header[] headers, String s, Object o) {
             Log.d("forum", "success");
             Forum newForum = (Forum) o;
-            if (currentPage == 1) {
+//            if (currentPage == 1f) {
+            if (forum == null) {
                 forum = newForum;
                 lastIdCurrentPage = forum.getLastIdCurrentPage();
             } else {
                 forum.getTopics().addAll(newForum.getTopics());
                 lastIdCurrentPage = newForum.getLastIdCurrentPage();
             }
-            currentPage++;
 
             prepareTopic();
         }
@@ -118,8 +156,9 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
         public void onFailure(int i, Header[] headers, Throwable throwable, String s, Object o) {
             Log.d("forum", "failed load forum");
             showErrorScreen();
-            prepareTopicDone = true;
-            joinForum();
+            currentPage--;
+//            prepareTopicDone = true;
+//            joinForum();
         }
 
         @Override
@@ -139,8 +178,8 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
         public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
             Log.d("forum", "failed load forum part");
             showErrorScreen();
-            prepareRecommendDone = true;
-            joinForum();
+//            prepareRecommendDone = true;
+//            joinForum();
         }
     };
     private ArrayList<Card> tmpRecommendCard;
@@ -168,6 +207,9 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
     @Background
     void prepareForumPart() {
         forumPart = RESTUtils.parseForumPart(new String(tmpForumPartBytes));
+        if(forumType == ForumType.Room && forumPart.getRecommendTopic().get(0) == null){
+            Log.e("forumPath", "CANT PARSE FORUMPATH\n"+new String(tmpForumPartBytes));
+        }
         Log.d(
                 "forumPart",
                 "prepareForumPart recommend size : " + forumPart.getRecommendUrl()
@@ -184,9 +226,10 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
     @Background
     public void prepareRecommendCard() {
         int numPreview = forumPart.getRecommendTopic().size() > 3 ? 3 : forumPart.getRecommendTopic().size();
-        recommendTopicTitle = new String[numPreview];
-        recommendTopicUrl = new String[numPreview];
-        if (currentPage == 2) { // Do just first load
+
+        if (recommendTopicTitle == null) { // Do just first load
+            recommendTopicTitle = new String[numPreview];
+            recommendTopicUrl = new String[numPreview];
 //            // Add Recommend Topic
             for (int i = 0; i < numPreview; i++) {
                 Log.d("recommend", "prepareRecommendCard " + i + " : " + forumPart.getRecommendTopic().get(i));
@@ -252,6 +295,10 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
     @Trace(tag = "joinForum")
     @UiThread
     void joinForum() {
+        if(recommendTopicTitle==null){
+            showErrorScreen();
+            return;
+        }
         // Join Thread
         if (prepareRecommendDone && prepareTopicDone) {
             // Update List
@@ -271,6 +318,7 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
     }
 
     void showErrorScreen(){
+        setRefreshComplete();
         if(emptyView != null && emptyView.getParent() != null){
             root.removeView(emptyView);
         }
@@ -561,24 +609,28 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
 
         // Attach scroll listener
         Log.d("forum", "init : lastFirstVisibleItem -> " + lastFirstVisibleItem);
+        list.setScrollViewCallbacks(new ObservableScrollViewCallbacks() {
+            @Override
+            public void onScrollChanged(int i, boolean b, boolean b2) {
 
-        list.setOnScrollListener(
-                new ScrollDirectionListener(
-                        lastFirstVisibleItem, new ScrollDirectionListener.OnScrollUp() {
-                    @Override
-                    public void onScrollUp() {
-                        app.getEventBus().post(new ForumScrollUpEvent());
-                        showFab();
-                    }
-                }, new ScrollDirectionListener.OnScrollDown() {
-                    @Override
-                    public void onScrollDown() {
-                        app.getEventBus().post(new ForumScrollDownEvent());
-                        hideFab();
-                    }
+            }
+
+            @Override
+            public void onDownMotionEvent() {
+
+            }
+
+            @Override
+            public void onUpOrCancelMotionEvent(ScrollState scrollState) {
+                if(scrollState == ScrollState.UP){
+                    app.getEventBus().post(new ForumScrollDownEvent());
+                    hideFab();
+                }else if (scrollState == ScrollState.DOWN){
+                    app.getEventBus().post(new ForumScrollUpEvent());
+                    showFab();
                 }
-                )
-        );
+            }
+        });
 
         // If from saved
         if (forum != null && forumPart != null) {
@@ -623,7 +675,7 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
         showLoadingScreen();
         prepareRecommendDone = false;
         prepareTopicDone = false;
-        currentPage = 1;
+        currentPage = 0;
         lastIdCurrentPage = "0";
         lastFirstVisibleItem = 0;
         cardRenderCount = 0;
@@ -636,6 +688,7 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
     }
 
     private void loadMore() {
+        currentPage++;
         if (!swipeRefreshLayout.isRefreshing())
             swipeRefreshLayout.setRefreshing(true);
         prepareTopicDone = false;
@@ -688,7 +741,7 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
                 if (recommendTopicTitle != null && recommendTopicTitle.length > 0)
                     return forum.getTopics().get(i -3);
                 else
-                    return -1;
+                    return forum.getTopics().get(i);
             } else {
                 return forum.getTopics().get(i);
             }
@@ -706,9 +759,9 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
 
         @Override
         public int getItemViewType(int position) {
-            if (recommendTopicTitle == null) {
-                return 0;
-            }
+//            if (recommendTopicTitle == null) {
+//                return 0;
+//            }
             if (forumType == ForumType.Room && (position == 0 || position == 2) ) {
                 return TYPE_SECTION;
             } else if (forumType == ForumType.Room && (position == 1) ) {
@@ -754,11 +807,15 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
                 recommendCardView = (RecommendCardView) convertView;
             } else {
                 recommendCardView = RecommendCardView_.build(getAttachedActivity());
+            }
+            if (recommendTopicTitle!=null) {
                 for(int i=0;i< recommendTopicTitle.length; i++) {
                     recommendCardView.addItem(recommendTopicTitle[i], recommendTopicUrl[i]);
                 }
-
+            }else{
+                Log.e("recommend", "getViewTopicRecommend called even recommendTopicTitle is null");
             }
+
 //            try {
 //                topicRecommendView.bind(recommendTopicTitle[position - 1], recommendTopicUrl[position - 1]);
 //            } catch (NullPointerException e) {

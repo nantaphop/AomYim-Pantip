@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.text.Html;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -17,10 +18,13 @@ import com.nantaphop.pantipfanapp.event.DoVoteEvent;
 import com.nantaphop.pantipfanapp.response.Comment;
 import com.nantaphop.pantipfanapp.response.EmoResponse;
 import com.nantaphop.pantipfanapp.service.PantipRestClient;
+import com.nantaphop.pantipfanapp.utils.CustomLinkMovementMethod;
 import com.nantaphop.pantipfanapp.utils.URLImageParser;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
+
+import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.App;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EViewGroup;
@@ -89,6 +93,13 @@ public class CommentView extends RelativeLayout {
         super(context);
         this.context = context;
     }
+
+    @AfterViews
+    void setLinkMovement(){
+        body.setMovementMethod(CustomLinkMovementMethod.getInstance(context));
+
+    }
+
 
     public void bind(Comment comment) {
         this.comment = comment;
@@ -169,6 +180,7 @@ public class CommentView extends RelativeLayout {
 
     @Click
     public void emo() {
+        Log.d("emo", "send event");
         app.getEventBus().post(new DoEmoEvent(this, comment));
     }
 

@@ -1,44 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:app="http://schemas.android.com/apk/res-auto"
-             android:background="@color/background"
-             android:layout_height="match_parent"
-             android:layout_width="match_parent">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background">
 
     <android.support.v4.view.ViewPager
-            android:id="@+id/viewPager"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            >
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
     </android.support.v4.view.ViewPager>
 
 
     <LinearLayout
-            android:id="@+id/topPanel"
+        android:id="@+id/topPanel"
 
-            android:orientation="vertical"
-            android:background="?attr/colorPrimaryDark"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimaryDark"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
 
-        <android.support.v7.widget.Toolbar
-                xmlns:android="http://schemas.android.com/apk/res/android"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+        <com.astuetz.PagerSlidingTabStrip
+            android:id="@+id/tabs"
 
-                app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/tabs_height"
+            android:textColor="#ffffffff"
+            />
 
-        <com.nantaphop.pantipfanapp.view.RipplePagerSlidingTabStrip
-                android:id="@+id/tabs"
-
-                android:layout_width="match_parent"
-                android:textColor="#ffffffff"
-                android:layout_height="@dimen/tabs_height"/>
     </LinearLayout>
 
 

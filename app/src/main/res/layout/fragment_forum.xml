@@ -26,7 +26,7 @@
                     <!--android:layout_height="match_parent"-->
                     <!--card:list_card_layout_resourceID="@layout/card_topic"-->
                     <!--android:id="@+id/cardList"/>-->
-            <ListView
+            <com.github.ksoichiro.android.observablescrollview.ObservableListView
                     android:paddingLeft="@dimen/padding_default"
                     android:paddingRight="@dimen/padding_default"
                     android:layout_width="match_parent"
@@ -34,13 +34,14 @@
                     android:divider="@null"
                     android:dividerHeight="@dimen/padding_default"
                     android:id="@+id/list"
-                    tools:listitem="@layout/listitem_topic"></ListView>
+                    tools:listitem="@layout/listitem_topic"/>
         </android.support.v4.widget.SwipeRefreshLayout>
 
 
 
     </LinearLayout>
     <com.melnykov.fab.FloatingActionButton
+        android:visibility="gone"
             android:id="@+id/fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

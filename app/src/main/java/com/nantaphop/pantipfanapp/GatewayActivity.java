@@ -4,6 +4,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
+
+import com.nantaphop.pantipfanapp.model.ForumPagerItem;
+import com.nantaphop.pantipfanapp.response.Topic;
+import com.nantaphop.pantipfanapp.service.PantipRestClient;
+import com.nantaphop.pantipfanapp.utils.Utils;
+
 import org.androidannotations.annotations.App;
 import org.androidannotations.annotations.EActivity;
 
@@ -54,15 +61,24 @@ public class GatewayActivity extends Activity {
         String detail = pathSegments.get(1);
 
         if(view.equals("topic")){
-//            Intent i = new Intent(this, TopicActivity_.class);
-//            i.putExtra(TopicActivity.EXTRA_URL, uri.toString());
-//            startActivity(i);
+            final Intent i = new Intent(this, TopicActivity_.class);
+            Topic topic = new Topic();
+            topic.setId(Integer.parseInt(uri.toString().split("/")[4]));
+            topic.setTitle(uri.toString());
+            i.putExtra("topic", topic);
+            startActivity(i);
+            Log.d("fragment", "open topic");
             return;
         }
         else if(view.equals("forum") || view.equals("tag")){
-//            Intent i = new Intent(this, MainActivity_.class);
-//            i.putExtra(TopicActivity.EXTRA_URL, uri.toString());
-//            startActivity(i);
+           Intent i = new Intent(this, ForumActivity_.class);
+            ForumPagerItem forumPagerItem = new ForumPagerItem(uri.toString(), Utils.getForumPath(uri.toString()));
+            i.putExtra("forumPagerItem", forumPagerItem);
+            if(view.equals("forum"))
+                i.putExtra("forumType", PantipRestClient.ForumType.Room);
+            else if(view.equals("tag"))
+                i.putExtra("forumType", PantipRestClient.ForumType.Tag);
+            startActivity(i);
             return;
         }
 

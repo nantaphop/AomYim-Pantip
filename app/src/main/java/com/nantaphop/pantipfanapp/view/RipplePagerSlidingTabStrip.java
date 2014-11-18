@@ -249,6 +249,10 @@ public class RipplePagerSlidingTabStrip extends HorizontalScrollView {
         tabsContainer.addView(tab, position, shouldExpand ? expandedTabLayoutParams : defaultTabLayoutParams);
     }
 
+    public View getTab(int position){
+        return tabsContainer.getChildAt(position);
+    }
+
     private void updateTabStyles() {
 
         for (int i = 0; i < tabCount; i++) {
@@ -449,9 +453,13 @@ public class RipplePagerSlidingTabStrip extends HorizontalScrollView {
         return dividerPadding;
     }
 
-    public void setScrollOffset(int scrollOffsetPx) {
+
+
+    public void setScrollOffset(int scrollOffsetPx, boolean dontInvalidate) {
         this.scrollOffset = scrollOffsetPx;
-        invalidate();
+        if (!dontInvalidate) {
+            invalidate();
+        }
     }
 
     public int getScrollOffset() {

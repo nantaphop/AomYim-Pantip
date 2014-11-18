@@ -114,26 +114,10 @@ public class MainActivity extends BaseActivity {
     public void openTopic(final OpenTopicEvent e) {
         final Intent i = new Intent(MainActivity.this, TopicActivity_.class);
         i.putExtra("topic", e.getTopic());
-        new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... params) {
-                try {
-                    Thread.sleep(150);
-                } catch (InterruptedException e1) {
-                    e1.printStackTrace();
-                }
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-
-                startActivity(i);
-                overrideAnimationBeforeStartActivity();
-                Log.d("fragment", "open topic");
-                drawer_layout.closeDrawers();
-            }
-        }.execute();
+        startActivity(i);
+        overrideAnimationBeforeStartActivity();
+        Log.d("fragment", "open topic");
+        drawer_layout.closeDrawers();
 
 
     }

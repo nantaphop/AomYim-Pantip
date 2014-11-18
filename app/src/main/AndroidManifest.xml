@@ -45,6 +45,22 @@
             >
         </activity>
         <activity android:name=".LoginActivity_"/>
+        <activity android:name=".GatewayActivity_"
+            android:noHistory="true"
+            android:clearTaskOnLaunch="true"
+            android:windowSoftInputMode="adjustResize">
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:scheme="http" android:host="pantip.com"/>
+                <data android:scheme="http" android:host="m.pantip.com"/>
+
+            </intent-filter>
+
+        </activity>
+
     </application>
 
 </manifest>
