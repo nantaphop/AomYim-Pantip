@@ -84,7 +84,7 @@ public class TopicView extends RelativeLayout implements View.OnClickListener {
 
     @AfterViews
     void init(){
-        RippleDrawable.createRipple(root, rippleColor);
+//        RippleDrawable.createRipple(root, rippleColor);
         root.setOnClickListener(this);
     }
 

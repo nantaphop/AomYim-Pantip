@@ -4,14 +4,15 @@
      android:duration="@integer/activity_anim_duration"
      android:interpolator="@android:interpolator/decelerate_cubic">
     <scale
-            android:fromXScale="0.8"
-            android:toXScale="1"
-            android:fromYScale="0.8"
-            android:toYScale="1"
+            android:fromXScale="1"
+            android:toXScale="0.8"
+            android:fromYScale="1"
+            android:toYScale="0.8"
             android:pivotX="50%"/>
     <translate
-            android:fromYDelta="20%"
-            android:toYDelta="0%"
+            android:fromYDelta="0%"
+            android:toYDelta="20%"
             />
+    <alpha android:fromAlpha="1" android:toAlpha="0.8"/>
 
 </set>

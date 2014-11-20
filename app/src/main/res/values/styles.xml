@@ -10,4 +10,13 @@
         <item name="android:windowExitAnimation">@anim/dialog_exit_to_right</item>
     </style>
 
+    <style name="style_topic_stat">
+        <item name="android:textAppearance">?android:attr/textAppearanceButton</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
+    <style name="style_topic_card">
+        <item name="android:background">?android:attr/listChoiceBackgroundIndicator</item>
+    </style>
+
 </resources>

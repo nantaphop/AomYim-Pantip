@@ -50,7 +50,6 @@ public class BaseApplication extends Application {
     LruCache<String, BitmapDrawable> imageCache;
     private Bitmap tmpDrawingCache;
     ArrayList<String> loadingList;
-    private ImageLoader imageLoader;
 
     public static Bus getEventBus() {
         if (eventBus == null) {
@@ -74,31 +73,6 @@ public class BaseApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-    }
-
-    public ImageLoader getImageLoader(){
-        if (imageLoader == null) {
-            imageLoader = ImageLoader.getInstance();
-            imageLoader.init(new ImageLoaderConfiguration.Builder(this)
-                    .memoryCacheExtraOptions(480, 800) // default = device screen dimensions
-                    .tasksProcessingOrder(QueueProcessingType.FIFO) // default
-                    .denyCacheImageMultipleSizesInMemory()
-                    .memoryCache(new LruMemoryCache(10 * 1024 * 1024))
-                    .memoryCacheSize(10 * 1024 * 1024)
-                    .diskCacheSize(50 * 1024 * 1024)
-                    .diskCacheFileCount(100)
-                    .writeDebugLogs()
-                    .build());
-        }
-        return imageLoader;
-    }
-
-    public Bitmap getTmpDrawingCache() {
-        return tmpDrawingCache;
-    }
-
-    public void setTmpDrawingCache(Bitmap tmpDrawingCache) {
-        this.tmpDrawingCache = tmpDrawingCache;
     }
 
     public boolean isNetworkAvailable() {

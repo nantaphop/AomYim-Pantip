@@ -15,6 +15,7 @@ import com.nantaphop.pantipfanapp.R;
 import com.nantaphop.pantipfanapp.event.DoEmoEvent;
 import com.nantaphop.pantipfanapp.event.DoReplyEvent;
 import com.nantaphop.pantipfanapp.event.DoVoteEvent;
+import com.nantaphop.pantipfanapp.pref.UserPref_;
 import com.nantaphop.pantipfanapp.response.Comment;
 import com.nantaphop.pantipfanapp.response.EmoResponse;
 import com.nantaphop.pantipfanapp.service.PantipRestClient;
@@ -31,6 +32,7 @@ import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.res.ColorRes;
 import org.androidannotations.annotations.res.DrawableRes;
+import org.androidannotations.annotations.sharedpreferences.Pref;
 
 import java.util.Date;
 
@@ -39,6 +41,8 @@ import java.util.Date;
  */
 @EViewGroup(R.layout.listitem_comment)
 public class CommentView extends RelativeLayout {
+
+
     @App
     BaseApplication app;
     @ViewById

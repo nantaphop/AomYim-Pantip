@@ -1,7 +1,6 @@
 package com.nantaphop.pantipfanapp;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.v4.app.FragmentTransaction;
@@ -60,7 +59,7 @@ public class MainActivity extends BaseActivity {
                     R.anim.enter_slide_from_bottom,
                     0,
                     0,
-                    R.anim.scale_to_bottom_center
+                    R.anim.activity_scale_out_to_bottom_center
             );
             fragmentTransaction.commit();
         }
@@ -94,7 +93,7 @@ public class MainActivity extends BaseActivity {
     @Override
     public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
         super.onCreate(savedInstanceState, persistentState);
-        overridePendingTransition(R.anim.fragment_enter_slide_from_bottom, R.anim.fragment_exit_slide_to_bottom);
+        overridePendingTransition(R.anim.activity_enter_slide_from_bottom, R.anim.activity_exit_slide_to_bottom);
 
     }
 
@@ -154,10 +153,10 @@ public class MainActivity extends BaseActivity {
         mDrawerToggle.setDrawerIndicatorEnabled(false);
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.setCustomAnimations(
-                R.anim.fragment_enter_slide_from_bottom,
+                R.anim.activity_enter_slide_from_bottom,
                 0,
                 0,
-                R.anim.fragment_exit_slide_to_bottom
+                R.anim.activity_exit_slide_to_bottom
         );
         fragmentTransaction.add(R.id.content_frame, f, tag);
         fragmentTransaction.addToBackStack(tag);
@@ -168,7 +167,7 @@ public class MainActivity extends BaseActivity {
     public void updateForumList(UpdateForumListEvent e) {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content_frame, new ForumHolderFragment_(), ForumHolderFragment.TAG);
-        fragmentTransaction.setCustomAnimations(R.anim.enter_slide_from_bottom, 0, 0, R.anim.scale_to_bottom_center);
+        fragmentTransaction.setCustomAnimations(R.anim.enter_slide_from_bottom, 0, 0, R.anim.activity_scale_out_to_bottom_center);
         fragmentTransaction.commit();
     }
 

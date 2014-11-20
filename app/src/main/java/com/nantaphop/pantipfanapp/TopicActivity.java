@@ -54,12 +54,14 @@ public class TopicActivity extends BaseActivity {
     void init() {
         if (topicFragment == null) {
             topicFragment = TopicFragment_.builder().topic(topic).build();
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.content_frame, topicFragment, null)
+                    .commit();
         }
         setSupportActionBar(toolbar);
-        getSupportFragmentManager()
-                .beginTransaction()
-                .add(R.id.content_frame, topicFragment, null)
-                .commit();
+
+
     }
 
     @Override

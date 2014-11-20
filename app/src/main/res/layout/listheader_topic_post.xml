@@ -9,7 +9,7 @@
             android:layout_height="wrap_content"
             android:paddingRight="@dimen/padding_extra"
             android:paddingLeft="@dimen/padding_extra"
-            android:paddingTop="@dimen/padding_extra"
+            android:paddingTop="@dimen/toolbar_size_extra"
             android:paddingBottom="@dimen/padding_default"
             android:text="ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
             android:id="@+id/title"

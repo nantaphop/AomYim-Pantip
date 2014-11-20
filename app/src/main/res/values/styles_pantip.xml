@@ -19,7 +19,9 @@
 
 <resources>
 
-    <style name="Theme.Pantip" parent="Theme.AppCompat.Light">
+    <style name="Theme.Pantip" parent="Theme.Pantip.Base">
+    </style>
+    <style name="Theme.Pantip.Base" parent="Theme.AppCompat.Light">
 
         <item name="colorPrimary">@color/base_color_bright</item>
         <!--<item name="textColorPrimary">@android:color/white</item>-->

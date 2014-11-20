@@ -17,6 +17,8 @@ import com.nantaphop.pantipfanapp.response.Tag;
 import com.nantaphop.pantipfanapp.response.Topic;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+import com.squareup.picasso.Picasso;
+
 import org.androidannotations.annotations.*;
 import org.androidannotations.annotations.res.ColorRes;
 import org.androidannotations.annotations.res.DimensionPixelSizeRes;
@@ -60,13 +62,7 @@ public class TopicThumbnailView extends RelativeLayout implements View.OnClickLi
     int rippleColor;
 
 
-    private static DisplayImageOptions displayImageOptions = new DisplayImageOptions.Builder()
-            .resetViewBeforeLoading(true)
-            .cacheInMemory(true)
-            .cacheOnDisk(true)
-//            .imageScaleType(ImageScaleType.EXACTLY_STRETCHED)
-            .showImageOnLoading(R.drawable.ic_image)
-            .build();
+
     private Topic topic;
 
     public TopicThumbnailView(Context context) {
@@ -78,7 +74,7 @@ public class TopicThumbnailView extends RelativeLayout implements View.OnClickLi
     @AfterViews
     void init() {
         thumbnail.setDrawingCacheEnabled(true);
-        RippleDrawable.createRipple(root, rippleColor);
+//        RippleDrawable.createRipple(root, rippleColor);
         root.setOnClickListener(this);
 
     }
@@ -91,7 +87,8 @@ public class TopicThumbnailView extends RelativeLayout implements View.OnClickLi
 //        title.setTextColor(textDark);
 //        title.setBackgroundColor(headerBgTransparent);
 
-        app.getImageLoader().displayImage(topic.getCoverImg(), thumbnail, displayImageOptions);
+//        app.getImageLoader().displayImage(topic.getCoverImg(), thumbnail, displayImageOptions);
+        Picasso.with(context).load(topic.getCoverImg()).placeholder(R.drawable.ic_image).resize(400,300).centerCrop().into(thumbnail);
 
 
         author.setText(Html.fromHtml(topic.getAuthor()));

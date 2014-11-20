@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
@@ -19,7 +21,6 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 
 import com.github.ksoichiro.android.observablescrollview.ObservableListView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
@@ -30,6 +31,7 @@ import com.nantaphop.pantipfanapp.R;
 import com.nantaphop.pantipfanapp.event.DoEmoEvent;
 import com.nantaphop.pantipfanapp.event.DoReplyEvent;
 import com.nantaphop.pantipfanapp.event.DoVoteEvent;
+import com.nantaphop.pantipfanapp.pref.UserPref_;
 import com.nantaphop.pantipfanapp.response.Comment;
 import com.nantaphop.pantipfanapp.response.CommentResponse;
 import com.nantaphop.pantipfanapp.response.Comments;
@@ -42,7 +44,6 @@ import com.nantaphop.pantipfanapp.service.PantipRestClient;
 import com.nantaphop.pantipfanapp.utils.CommentComparator;
 import com.nantaphop.pantipfanapp.utils.PostOfficeHelper;
 import com.nantaphop.pantipfanapp.utils.RESTUtils;
-import com.nantaphop.pantipfanapp.utils.ScrollDirectionListener;
 import com.nantaphop.pantipfanapp.view.CommentView;
 import com.nantaphop.pantipfanapp.view.CommentView_;
 import com.nantaphop.pantipfanapp.view.SimpleEmptyView;
@@ -68,6 +69,7 @@ import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.res.DimensionPixelSizeRes;
 import org.androidannotations.annotations.res.StringArrayRes;
 import org.androidannotations.annotations.res.StringRes;
+import org.androidannotations.annotations.sharedpreferences.Pref;
 import org.apache.http.Header;
 
 import java.util.ArrayList;
@@ -83,6 +85,9 @@ public class TopicFragment extends BaseFragment implements SwipeRefreshLayout.On
 
     @FragmentArg
     Topic topic;
+
+    @Pref
+    UserPref_ userPref;
 
     @InstanceState
     int lastFirstVisibleItem;
@@ -216,7 +221,7 @@ public class TopicFragment extends BaseFragment implements SwipeRefreshLayout.On
                 shortComment.setText("");
                 toastInfo(getString(R.string.feedback_comment_success));
             } else {
-               toastAlert(getString(R.string.feedback_comment_failed));
+                toastAlert(getString(R.string.feedback_comment_failed));
             }
             setRefreshComplete();
 
@@ -242,7 +247,7 @@ public class TopicFragment extends BaseFragment implements SwipeRefreshLayout.On
         public void onSuccess(int i, Header[] headers, String s, Object o) {
             VoteResponse response = (VoteResponse) o;
             if (!response.isError()) {
-                if (tmpCommentView!=null) {
+                if (tmpCommentView != null) {
                     toastInfo(response.getVote_message());
                     tmpCommentView.setVote(response.getPoint());
                     tmpComment.setPoint(response.getPoint());
@@ -305,6 +310,9 @@ public class TopicFragment extends BaseFragment implements SwipeRefreshLayout.On
     private SimpleEmptyView emptyView;
     private Delivery sortDialog;
     private Delivery emoDialog;
+    private DoEmoEvent emoEvent;
+    private int toolbarHeight;
+    private boolean toolbarHiding;
 
     @Override
     public void onAttach(Activity activity) {
@@ -334,9 +342,9 @@ public class TopicFragment extends BaseFragment implements SwipeRefreshLayout.On
         footer.setMinimumHeight(footerHeight);
         list.addFooterView(footer);
         // Now setup the PullToRefreshLayout
-       swipeRefreshLayout.setOnRefreshListener(this);
+        swipeRefreshLayout.setOnRefreshListener(this);
         swipeRefreshLayout.setColorSchemeResources(R.color.base_color);
-        swipeRefreshLayout.setProgressViewOffset(true, 0, getResources().getDimensionPixelSize(R.dimen.toolbar_size));
+        swipeRefreshLayout.setProgressViewOffset(false, 0, 500);
 
         // Attach scroll listener
         Log.d("forum", "init : lastFirstVisibleItem -> " + lastFirstVisibleItem);
@@ -354,10 +362,13 @@ public class TopicFragment extends BaseFragment implements SwipeRefreshLayout.On
 
             @Override
             public void onUpOrCancelMotionEvent(ScrollState scrollState) {
-                if(scrollState == ScrollState.UP){
+                if (scrollState == ScrollState.UP) {
                     hideCommentPane();
-                }else if(scrollState == ScrollState.DOWN){
+                    hideToolbar();
+
+                } else if (scrollState == ScrollState.DOWN) {
                     showCommentPane();
+                    showToolbar();
                 }
             }
         });
@@ -377,6 +388,23 @@ public class TopicFragment extends BaseFragment implements SwipeRefreshLayout.On
                     }
                 }
         );
+    }
+
+    private void hideToolbar() {
+        if (!toolbarHiding) {
+            Toolbar toolbar = getAttachedActivity().getToolbar();
+            toolbarHeight = toolbar.getHeight();
+            toolbar.animate().translationYBy(0 - toolbarHeight).setInterpolator(new AccelerateDecelerateInterpolator()).start();
+            toolbarHiding = true;
+        }
+    }
+
+    private void showToolbar() {
+        if (toolbarHiding) {
+            Toolbar toolbar = getAttachedActivity().getToolbar();
+            toolbar.animate().translationY(0).setInterpolator(new AccelerateDecelerateInterpolator()).start();
+            toolbarHiding = false;
+        }
     }
 
     @FocusChange(R.id.shortComment)
@@ -631,8 +659,12 @@ public class TopicFragment extends BaseFragment implements SwipeRefreshLayout.On
     @Subscribe
     public void emo(final DoEmoEvent e) {
         Log.d("emo", "receive event");
-        if(e.comment == null)
+        if (!e.equals(emoEvent)) {
+            emoEvent = e;
+        } else {
             return;
+        }
+
         emoDialog = PostOfficeHelper.newSimpleListMailCancelable(
                 getAttachedActivity(),
                 emoTitle,
@@ -642,45 +674,48 @@ public class TopicFragment extends BaseFragment implements SwipeRefreshLayout.On
                     @Override
                     public void onItemAccepted(CharSequence charSequence, int i) {
 
-                        tmpCommentView = e.view;
+                        tmpCommentView = emoEvent.view;
                         PantipRestClient.Emo emo = PantipRestClient.Emo.Like;
                         switch (i) {
-                            case 0: emo = PantipRestClient.Emo.Like;
+                            case 0:
+                                emo = PantipRestClient.Emo.Like;
                                 break;
-                            case 1:  emo = PantipRestClient.Emo.Laugh;
+                            case 1:
+                                emo = PantipRestClient.Emo.Laugh;
                                 break;
-                            case 2: emo = PantipRestClient.Emo.Love;
+                            case 2:
+                                emo = PantipRestClient.Emo.Love;
                                 break;
-                            case 3: emo = PantipRestClient.Emo.Impress;
+                            case 3:
+                                emo = PantipRestClient.Emo.Impress;
                                 break;
-                            case 4: emo = PantipRestClient.Emo.Scary;
+                            case 4:
+                                emo = PantipRestClient.Emo.Scary;
                                 break;
-                            case 5: emo = PantipRestClient.Emo.Surprised;
+                            case 5:
+                                emo = PantipRestClient.Emo.Surprised;
                                 break;
                         }
-                        if (e.comment != null) {
-                            if (e.comment.isReply()) {
+                        if (emoEvent.comment != null) {
+                            if (emoEvent.comment.isReply()) {
                                 client.emoReply(
                                         topic.getId(),
-                                        e.comment.getParent().getId(),
-                                        e.comment.getReply_id(),
-                                        e.comment.getComment_no(),
-                                        e.comment.getReply_no(),
+                                        emoEvent.comment.getParent().getId(),
+                                        emoEvent.comment.getReply_id(),
+                                        emoEvent.comment.getComment_no(),
+                                        emoEvent.comment.getReply_no(),
                                         emo,
                                         doEmoCallback);
-                            }else{
-                                client.emoComment(topic.getId(), e.comment.getId(), emo, doEmoCallback);
+                            } else {
+                                client.emoComment(topic.getId(), emoEvent.comment.getId(), emo, doEmoCallback);
                             }
                         } else {
                             client.emoTopic(topic.getId(), emo, doEmoCallback);
                         }
+                        emoEvent = null;
                     }
-                }
-
-        );
-
+                });
         emoDialog.show(getFragmentManager());
-        e.comment = null;
     }
 
     private void loadNextComments() {

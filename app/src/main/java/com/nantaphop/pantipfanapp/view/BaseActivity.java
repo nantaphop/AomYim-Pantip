@@ -8,6 +8,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+
 import com.github.mrengineer13.snackbar.SnackBar;
 import com.nantaphop.pantipfanapp.R;
 
@@ -24,12 +25,13 @@ public class BaseActivity extends ActionBarActivity {
     private DrawerLayout drawerLayout;
     private String openTxt;
     private String closeTxt;
+    private Toolbar toolbar;
 
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        overridePendingTransition(R.anim.scale_from_bottom_center, R.anim.fragment_exit_slide_to_bottom);
+        overridePendingTransition(R.anim.activity_scale_in_from_bottom_center, R.anim.activity_exit_slide_to_bottom);
     }
 
     protected void setDrawerLayout(DrawerLayout drawerLayout) {
@@ -71,6 +73,9 @@ public class BaseActivity extends ActionBarActivity {
     @Override
     public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
         super.onCreate(savedInstanceState, persistentState);
+
+
+
     }
 
     @Override
@@ -88,7 +93,7 @@ public class BaseActivity extends ActionBarActivity {
     }
 
     protected void overrideAnimationBeforeStartActivity() {
-        overridePendingTransition(R.anim.fragment_enter_slide_from_bottom, R.anim.scale_to_bottom_center);
+        overridePendingTransition(R.anim.activity_enter_slide_from_bottom, R.anim.activity_scale_out_to_bottom_center);
     }
 
     public SnackBar getSnackBar() {
@@ -98,5 +103,17 @@ public class BaseActivity extends ActionBarActivity {
         return mSnackBar;
     }
 
+    void setToolbar(Toolbar toolbar) {
+        this.toolbar = toolbar;
+    }
 
+    public Toolbar getToolbar() {
+        return toolbar;
+    }
+
+    @Override
+    public void setSupportActionBar(@Nullable Toolbar toolbar) {
+        setToolbar(toolbar);
+        super.setSupportActionBar(toolbar);
+    }
 }

@@ -8,8 +8,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.LinearLayout;
 
@@ -18,7 +16,6 @@ import com.nantaphop.pantipfanapp.R;
 import com.nantaphop.pantipfanapp.event.*;
 import com.nantaphop.pantipfanapp.model.ForumPagerItem;
 import com.nantaphop.pantipfanapp.service.PantipRestClient;
-import com.nantaphop.pantipfanapp.view.RipplePagerSlidingTabStrip;
 import com.squareup.otto.Subscribe;
 import org.androidannotations.annotations.*;
 
@@ -46,7 +43,8 @@ public class ForumHolderFragment extends BaseFragment {
     private ForumSlidePagerAdapter pagerAdapter;
     private int currentPage;
     private ActionBar actionBar;
-    private boolean topHidding = false;
+    private boolean toolbarHiding = false;
+    private boolean navbarHiding = false;
     private float topDefaultY;
 
     @AfterViews
@@ -139,14 +137,18 @@ public class ForumHolderFragment extends BaseFragment {
 
     @Subscribe
     public void hideTabs(ForumScrollDownEvent e){
-        if (!topHidding) {
+        if (!toolbarHiding) {
             tabsHeight = toolbar.getHeight();
             topPanel.animate().translationYBy(0 - tabsHeight).setInterpolator(new AccelerateDecelerateInterpolator()).start();
 
 //            actionBarTitle = actionBar.getTitle();
 //            actionBar.setTitle(pagerAdapter.getPageTitle(currentPage));
 //            app.getEventBus().post(new SetTitleEvent(pagerAdapter.getPageTitle(currentPage).toString()));
-            topHidding = true;
+            toolbarHiding = true;
+        }else if(!navbarHiding){
+            tabsHeight = tabs.getHeight();
+            topPanel.animate().translationYBy(0 - tabsHeight).setInterpolator(new AccelerateDecelerateInterpolator()).start();
+
         }
     }
 
@@ -158,10 +160,10 @@ public class ForumHolderFragment extends BaseFragment {
     }
 
     private void showTabs() {
-        if (topHidding) {
+        if (toolbarHiding) {
             topPanel.animate().translationY(topDefaultY).setInterpolator(new AccelerateDecelerateInterpolator()).start();
 //            app.getEventBus().post(new SetTitleEvent(getString(R.string.app_name)));
-            topHidding = false;
+            toolbarHiding = false;
         }
     }
 
