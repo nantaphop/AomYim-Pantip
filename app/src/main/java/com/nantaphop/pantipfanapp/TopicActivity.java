@@ -2,33 +2,28 @@ package com.nantaphop.pantipfanapp;
 
 import android.os.Bundle;
 import android.os.PersistableBundle;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.FrameLayout;
-import com.nantaphop.pantipfanapp.event.SortCommentEvent;
+
 import com.nantaphop.pantipfanapp.fragment.TopicFragment;
 import com.nantaphop.pantipfanapp.fragment.TopicFragment_;
-import com.nantaphop.pantipfanapp.fragment.dialog.ListDialog;
-import com.nantaphop.pantipfanapp.fragment.dialog.ListDialog_;
-import com.nantaphop.pantipfanapp.response.Comment;
 import com.nantaphop.pantipfanapp.response.Topic;
-import com.nantaphop.pantipfanapp.utils.CommentComparator;
 import com.nantaphop.pantipfanapp.view.BaseActivity;
-import com.squareup.otto.Subscribe;
-import org.androidannotations.annotations.*;
-import org.androidannotations.annotations.res.StringArrayRes;
-import org.androidannotations.annotations.res.StringRes;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.App;
+import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.Extra;
+import org.androidannotations.annotations.NonConfigurationInstance;
+import org.androidannotations.annotations.ViewById;
 
 /**
  * Created by nantaphop on 24-Oct-14.
  */
 @EActivity(R.layout.activity_fragment)
 public class TopicActivity extends BaseActivity {
+
 
     @ViewById
     Toolbar toolbar;
@@ -42,7 +37,8 @@ public class TopicActivity extends BaseActivity {
 
     @NonConfigurationInstance
     TopicFragment topicFragment;
-
+    @ViewById
+    View toolbarPadding;
 
 
     @Override
@@ -52,6 +48,7 @@ public class TopicActivity extends BaseActivity {
 
     @AfterViews
     void init() {
+        toolbarPadding.setVisibility(View.GONE);
         if (topicFragment == null) {
             topicFragment = TopicFragment_.builder().topic(topic).build();
             getSupportFragmentManager()
@@ -60,7 +57,6 @@ public class TopicActivity extends BaseActivity {
                     .commit();
         }
         setSupportActionBar(toolbar);
-
 
     }
 

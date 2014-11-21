@@ -20,7 +20,7 @@ public class MyAnimationAdapter extends AnimationAdapter {
 
     @Override
     public Animator[] getAnimators(ViewGroup parent, View view) {
-        Animator bottomInAnimator = ObjectAnimator.ofFloat(view, "translationY", 1000, 0);
+        Animator bottomInAnimator = ObjectAnimator.ofFloat(view, "translationY", 500, 0);
 //        Animator rotateIn = ObjectAnimator.ofFloat(view, "rotationX", 30, 0);
         bottomInAnimator.setInterpolator(new DecelerateInterpolator());
 //        rotateIn.setInterpolator(new DecelerateInterpolator());

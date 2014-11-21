@@ -25,6 +25,7 @@ import android.widget.LinearLayout;
 import com.github.ksoichiro.android.observablescrollview.ObservableListView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
+import com.google.android.gms.ads.AdView;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.BaseJsonHttpResponseHandler;
 import com.nantaphop.pantipfanapp.R;
@@ -98,6 +99,8 @@ public class TopicFragment extends BaseFragment implements SwipeRefreshLayout.On
 
     @DimensionPixelSizeRes(R.dimen.list_footer_height)
     int footerHeight;
+    @ViewById
+    AdView ads;
     @ViewById
     ObservableListView list;
     @ViewById
@@ -329,6 +332,7 @@ public class TopicFragment extends BaseFragment implements SwipeRefreshLayout.On
 
     @AfterViews
     void init() {
+        getAttachedActivity().loadAd(ads);
         getAttachedActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         commentViewDefaultHeight = commentPane.getY();
         Log.d("topic", "init topic fragment " + topic.getId());

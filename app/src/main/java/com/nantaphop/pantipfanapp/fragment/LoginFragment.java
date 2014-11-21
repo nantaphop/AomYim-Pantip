@@ -10,11 +10,14 @@ import com.nantaphop.pantipfanapp.R;
 import com.nantaphop.pantipfanapp.event.OpenLoginScreenEvent;
 import com.nantaphop.pantipfanapp.event.UpdateLoginStateEvent;
 import com.nantaphop.pantipfanapp.pref.UserPref_;
+import com.nantaphop.pantipfanapp.utils.CircleTransform;
 import com.nantaphop.pantipfanapp.utils.RESTUtils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 import com.squareup.otto.Subscribe;
+import com.squareup.picasso.Picasso;
+
 import org.androidannotations.annotations.*;
 import org.androidannotations.annotations.sharedpreferences.Pref;
 import org.apache.http.Header;
@@ -75,7 +78,7 @@ public class LoginFragment extends BaseFragment {
             loginPane.setVisibility(View.GONE);
             userPane.setVisibility(View.VISIBLE);
             usernameTxt.setText(userPref.username().get());
-            app.getImageLoader().displayImage(userPref.avatar().get(), avatar, displayImageOptions);
+            Picasso.with(getAttachedActivity()).load(userPref.avatar().get()).transform(new CircleTransform()).into(avatar);
         }else{
             loginPane.setVisibility(View.VISIBLE);
             userPane.setVisibility(View.GONE);
@@ -100,7 +103,7 @@ public class LoginFragment extends BaseFragment {
                         if(RESTUtils.isLogin(headers)){
                             if(RESTUtils.parseUserInfo(bytes, userPref)){
                                 usernameTxt.setText(userPref.username().get());
-                                app.getImageLoader().displayImage(userPref.avatar().get(), avatar, displayImageOptions);
+                                Picasso.with(getAttachedActivity()).load(userPref.avatar().get()).transform(new CircleTransform()).into(avatar);
                                 updateScreen();
                                 app.getEventBus().post(new UpdateLoginStateEvent());
                                 progressDialog.dismiss();

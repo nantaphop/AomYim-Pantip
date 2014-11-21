@@ -67,51 +67,37 @@
             android:text="จุฬาลงกรณ์มหาวิทยาลัย วิศวกรรมศาสตร์ แอดมิชชั่น การศึกษา วิชาการ"
             android:textAppearance="?android:attr/textAppearanceListItemSmall"
             android:textSize="@dimen/text_caption" />
+        <View
+            android:id="@+id/center"
+            android:layout_width="1dp"
+            android:layout_height="1dp"
+            android:layout_centerInParent="true"
+            android:layout_margin="16dp" />
 
-        <LinearLayout
-            android:layout_width="fill_parent"
+        <TextView
+            android:id="@+id/votes"
+            style="@style/style_topic_stat"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignEnd="@+id/date"
-            android:layout_alignLeft="@+id/tags"
-            android:layout_alignRight="@+id/date"
-            android:layout_alignStart="@+id/tags"
+            android:layout_alignTop="@+id/comments"
+            android:layout_toLeftOf="@id/center"
+            android:layout_weight="1"
+            android:drawableLeft="@drawable/ic_action_thumbs_up_small"
+            android:text="10" />
+
+
+
+        <TextView
+            android:id="@+id/comments"
+            style="@style/style_topic_stat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/tags"
-            android:layout_gravity="center_vertical"
-            android:layout_marginBottom="@dimen/padding_default"
-            android:layout_marginTop="@dimen/padding_default"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/ic_vote"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:src="@drawable/ic_action_thumbs_up_small" />
-
-            <TextView
-                android:id="@+id/votes"
-                style="@style/style_topic_stat"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="10" />
-
-            <ImageView
-                android:id="@+id/ic_comment"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:src="@drawable/ic_action_comment_small" />
-
-            <TextView
-                android:id="@+id/comments"
-                style="@style/style_topic_stat"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="23" />
-        </LinearLayout>
-
+            android:layout_toRightOf="@id/center"
+            android:layout_weight="1"
+            android:drawableLeft="@drawable/ic_action_comment_small"
+            android:text="23" />
     </RelativeLayout>
+
 
 </android.support.v7.widget.CardView>

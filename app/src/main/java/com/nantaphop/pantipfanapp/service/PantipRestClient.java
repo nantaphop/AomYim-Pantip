@@ -183,6 +183,8 @@ public class PantipRestClient {
         client.setMaxRetriesAndTimeout(2, 10);
         client.addHeader("origin", "http://pantip.com");
         client.addHeader("Content-Type", "application/x-www-form-urlencoded");
+        client.addHeader("X-Requested-With", "XMLHttpRequest");
+        client.addHeader("Accept", "application/json, text/javascript, */*; q=0.01");
         client.addHeader("Accept-Encoding", "gzip,deflate,sdch");
         client.addHeader(
                 "User-Agent",
@@ -288,8 +290,7 @@ public class PantipRestClient {
         params.put("current_page", currentPage);
         params.put("last_id_current_page", lastTopicId);
 
-        client.addHeader("X-Requested-With", "XMLHttpRequest");
-        client.addHeader("Accept", "application/json, text/javascript, */*; q=0.01");
+
         post(url, params, cb);
         Log.d(TAG, "get forum - " + params.toString());
 

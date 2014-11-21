@@ -5,24 +5,34 @@ import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
 import android.widget.FrameLayout;
+
+import com.google.android.gms.ads.AdView;
 import com.nantaphop.pantipfanapp.event.OpenTopicEvent;
 import com.nantaphop.pantipfanapp.fragment.ForumFragment;
 import com.nantaphop.pantipfanapp.fragment.ForumFragment_;
-import com.nantaphop.pantipfanapp.fragment.TopicFragment;
-import com.nantaphop.pantipfanapp.fragment.TopicFragment_;
 import com.nantaphop.pantipfanapp.model.ForumPagerItem;
-import com.nantaphop.pantipfanapp.response.Topic;
 import com.nantaphop.pantipfanapp.service.PantipRestClient;
 import com.nantaphop.pantipfanapp.view.BaseActivity;
 import com.squareup.otto.Subscribe;
-import org.androidannotations.annotations.*;
+
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.App;
+import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.Extra;
+import org.androidannotations.annotations.NonConfigurationInstance;
+import org.androidannotations.annotations.OptionsItem;
+import org.androidannotations.annotations.ViewById;
 
 /**
  * Created by nantaphop on 24-Oct-14.
  */
 @EActivity(R.layout.activity_fragment)
 public class ForumActivity extends BaseActivity {
+
+    @ViewById
+    AdView ads;
 
     @ViewById
     Toolbar toolbar;
@@ -38,7 +48,8 @@ public class ForumActivity extends BaseActivity {
 
     @NonConfigurationInstance
     ForumFragment forumFragment;
-
+    @ViewById
+    View toolbarPadding;
 
 
     @Override
@@ -49,7 +60,7 @@ public class ForumActivity extends BaseActivity {
 
     @AfterViews
     void init() {
-
+        loadAd(ads);
         if (forumFragment == null) {
             forumFragment = ForumFragment_.builder().forumPagerItem(forumPagerItem).forumType(forumType).noTabMargin(true).build();
         }
@@ -58,6 +69,7 @@ public class ForumActivity extends BaseActivity {
                 .beginTransaction()
                 .add(R.id.content_frame, forumFragment, null)
                 .commit();
+
     }
 
     @OptionsItem(android.R.id.home)

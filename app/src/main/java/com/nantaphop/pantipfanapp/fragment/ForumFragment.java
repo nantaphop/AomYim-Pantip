@@ -17,6 +17,7 @@ import android.widget.FrameLayout;
 import com.github.ksoichiro.android.observablescrollview.ObservableListView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
+import com.google.android.gms.ads.AdView;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.BaseJsonHttpResponseHandler;
 import com.melnykov.fab.FloatingActionButton;
@@ -645,6 +646,7 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
                 }
             }
         });
+
 
         // If from saved
         if (forum != null && forumPart != null) {

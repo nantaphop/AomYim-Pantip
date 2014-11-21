@@ -27,7 +27,9 @@
                     <!--card:list_card_layout_resourceID="@layout/card_topic"-->
                     <!--android:id="@+id/cardList"/>-->
             <com.github.ksoichiro.android.observablescrollview.ObservableListView
-                    android:paddingLeft="@dimen/padding_default"
+                android:scrollingCache="false"
+                android:animationCache="false"
+                android:paddingLeft="@dimen/padding_default"
                     android:paddingRight="@dimen/padding_default"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -40,6 +42,7 @@
 
 
     </LinearLayout>
+    <include layout="@layout/ads"/>
     <com.melnykov.fab.FloatingActionButton
         android:visibility="gone"
             android:id="@+id/fab"
@@ -50,4 +53,5 @@
             android:src="@drawable/ic_content_new"
             fab:fab_colorNormal="@color/base_color"
             fab:fab_colorPressed="@color/base_color_bright"/>
+
 </FrameLayout>

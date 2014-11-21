@@ -30,7 +30,6 @@ public class TopicSectionView extends LinearLayout{
 
     @AfterViews
     void init(){
-        RippleDrawable.createRipple(root, rippleColor);
     }
 
     public void bind(String title){

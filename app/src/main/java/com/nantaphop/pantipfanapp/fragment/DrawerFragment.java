@@ -9,10 +9,13 @@ import com.nantaphop.pantipfanapp.event.OpenForumRearrangeEvent;
 import com.nantaphop.pantipfanapp.event.OpenLoginScreenEvent;
 import com.nantaphop.pantipfanapp.pref.UserPref_;
 import com.nantaphop.pantipfanapp.response.Topic;
+import com.nantaphop.pantipfanapp.utils.CircleTransform;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 import com.squareup.otto.Subscribe;
+import com.squareup.picasso.Picasso;
+
 import org.androidannotations.annotations.*;
 import org.androidannotations.annotations.res.StringArrayRes;
 import org.androidannotations.annotations.sharedpreferences.Pref;
@@ -56,7 +59,8 @@ public class DrawerFragment extends BaseFragment {
             login.setVisibility(View.GONE);
             userPane.setVisibility(View.VISIBLE);
             usernameTxt.setText(userPref.username().get());
-            app.getImageLoader().displayImage(userPref.avatar().get(), avatar, displayImageOptions);
+            Picasso.with(getAttachedActivity()).load(userPref.avatar().get()).transform(new CircleTransform()).into(avatar);
+
         }else{
             login.setVisibility(View.VISIBLE);
             userPane.setVisibility(View.GONE);

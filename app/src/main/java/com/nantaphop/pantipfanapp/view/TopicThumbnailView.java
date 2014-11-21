@@ -88,6 +88,7 @@ public class TopicThumbnailView extends RelativeLayout implements View.OnClickLi
 //        title.setBackgroundColor(headerBgTransparent);
 
 //        app.getImageLoader().displayImage(topic.getCoverImg(), thumbnail, displayImageOptions);
+
         Picasso.with(context).load(topic.getCoverImg()).placeholder(R.drawable.ic_image).resize(400,300).centerCrop().into(thumbnail);
 
 

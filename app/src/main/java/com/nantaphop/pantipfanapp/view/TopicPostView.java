@@ -14,11 +14,13 @@ import com.nantaphop.pantipfanapp.event.DoVoteEvent;
 import com.nantaphop.pantipfanapp.response.EmoResponse;
 import com.nantaphop.pantipfanapp.response.TopicPost;
 import com.nantaphop.pantipfanapp.service.PantipRestClient;
+import com.nantaphop.pantipfanapp.utils.CircleTransform;
 import com.nantaphop.pantipfanapp.utils.CustomLinkMovementMethod;
 import com.nantaphop.pantipfanapp.utils.URLImageParser;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
+import com.squareup.picasso.Picasso;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.App;
@@ -91,7 +93,8 @@ public class TopicPostView extends RelativeLayout{
         votes.setText(topicPost.getVotes()+"");
         emo.setText(topicPost.getEmotions()+"");
         author.setText(topicPost.getAuthor());
-        app.getImageLoader().displayImage(topicPost.getAuthorPic(), authorPic, displayImageOptions);
+        Picasso.with(context).load(topicPost.getAuthorPic()).transform(new CircleTransform()).into(authorPic);
+
 
         if (topicPost.isVoted()) {
             votes.setCompoundDrawablesWithIntrinsicBounds(thumbUpHighlight, null, null, null);

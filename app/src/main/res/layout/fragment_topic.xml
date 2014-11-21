@@ -105,7 +105,8 @@
                     style="?android:borderlessButtonStyle"
                     android:layout_gravity="bottom"/>
         </LinearLayout>
-    </LinearLayout>
+        <include layout="@layout/ads" />
 
+    </LinearLayout>
 
 </FrameLayout>

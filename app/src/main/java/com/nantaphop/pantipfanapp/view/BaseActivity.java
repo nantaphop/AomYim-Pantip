@@ -10,6 +10,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.github.mrengineer13.snackbar.SnackBar;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.nantaphop.pantipfanapp.R;
 
 /**
@@ -73,9 +75,6 @@ public class BaseActivity extends ActionBarActivity {
     @Override
     public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
         super.onCreate(savedInstanceState, persistentState);
-
-
-
     }
 
     @Override
@@ -115,5 +114,10 @@ public class BaseActivity extends ActionBarActivity {
     public void setSupportActionBar(@Nullable Toolbar toolbar) {
         setToolbar(toolbar);
         super.setSupportActionBar(toolbar);
+    }
+
+    public void loadAd(AdView ads){
+        AdRequest adRequest = new AdRequest.Builder().build();
+        ads.loadAd(adRequest);
     }
 }

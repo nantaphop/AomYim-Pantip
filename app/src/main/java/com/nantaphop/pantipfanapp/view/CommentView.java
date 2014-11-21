@@ -19,11 +19,13 @@ import com.nantaphop.pantipfanapp.pref.UserPref_;
 import com.nantaphop.pantipfanapp.response.Comment;
 import com.nantaphop.pantipfanapp.response.EmoResponse;
 import com.nantaphop.pantipfanapp.service.PantipRestClient;
+import com.nantaphop.pantipfanapp.utils.CircleTransform;
 import com.nantaphop.pantipfanapp.utils.CustomLinkMovementMethod;
 import com.nantaphop.pantipfanapp.utils.URLImageParser;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
+import com.squareup.picasso.Picasso;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.App;
@@ -149,7 +151,8 @@ public class CommentView extends RelativeLayout {
             replyIndicator.setVisibility(GONE);
             loadMore.setVisibility(GONE);
         }
-        app.getImageLoader().displayImage(comment.getUser().getAvatar().getLarge(), authorPic, displayImageOptions);
+        Picasso.with(context).load(comment.getUser().getAvatar().getLarge()).transform(new CircleTransform()).into(authorPic);
+
 
     }
 

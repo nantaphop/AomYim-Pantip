@@ -10,6 +10,8 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.nantaphop.pantipfanapp.event.OpenForumEvent;
 import com.nantaphop.pantipfanapp.event.OpenForumRearrangeEvent;
 import com.nantaphop.pantipfanapp.event.OpenLoginScreenEvent;
@@ -34,6 +36,7 @@ public class MainActivity extends BaseActivity {
 
     @App
     BaseApplication app;
+
 
     @ViewById
     FrameLayout content_frame;
@@ -87,7 +90,7 @@ public class MainActivity extends BaseActivity {
 
         // Set the drawer toggle as the DrawerListener
         drawer_layout.setDrawerListener(mDrawerToggle);
-
+        AdRequest adRequest = new AdRequest.Builder().build();
     }
 
     @Override
