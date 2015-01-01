@@ -3,12 +3,13 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/card"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
 
     <RelativeLayout
         android:id="@+id/root"
         style="@style/style_topic_card"
+        android:paddingBottom="@dimen/padding_default"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -67,6 +68,7 @@
             android:text="จุฬาลงกรณ์มหาวิทยาลัย วิศวกรรมศาสตร์ แอดมิชชั่น การศึกษา วิชาการ"
             android:textAppearance="?android:attr/textAppearanceListItemSmall"
             android:textSize="@dimen/text_caption" />
+
         <View
             android:id="@+id/center"
             android:layout_width="1dp"
@@ -83,8 +85,10 @@
             android:layout_toLeftOf="@id/center"
             android:layout_weight="1"
             android:drawableLeft="@drawable/ic_action_thumbs_up_small"
-            android:text="10" />
-
+            android:gravity="center_horizontal|center_vertical"
+            android:text="10"
+            android:layout_alignLeft="@+id/tags"
+            android:layout_alignStart="@+id/tags" />
 
 
         <TextView
@@ -96,7 +100,10 @@
             android:layout_toRightOf="@id/center"
             android:layout_weight="1"
             android:drawableLeft="@drawable/ic_action_comment_small"
-            android:text="23" />
+            android:gravity="center_horizontal|center_vertical"
+            android:text="23"
+            android:layout_alignRight="@+id/tags"
+            android:layout_alignEnd="@+id/tags" />
     </RelativeLayout>
 
 

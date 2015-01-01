@@ -60,7 +60,7 @@ public class RecommendCardView extends CardView {
             text = recommend3;
         }
         if (text != null) {
-            RippleDrawable.createRipple(text, rippleColor);
+//            RippleDrawable.createRipple(text, rippleColor);
             text.setText(title);
             final Topic topic = new Topic();
             topic.setTitle(title);

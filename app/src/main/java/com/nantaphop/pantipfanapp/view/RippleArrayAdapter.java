@@ -4,10 +4,9 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import com.nantaphop.pantipfanapp.R;
+
 import com.r0adkll.postoffice.model.Delivery;
 import com.r0adkll.postoffice.styles.ListStyle;
-import com.r0adkll.postoffice.ui.Mail;
 
 import java.util.List;
 
@@ -53,17 +52,17 @@ public class RippleArrayAdapter extends ArrayAdapter{
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        View view = super.getView(position, convertView, parent);
-        RippleDrawable.createRipple(view, getContext().getResources().getColor(R.color.base_color_bright));
-        view.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        listener.onItemAccepted("", position);
-                                        if(delivery != null){
-                                            delivery.dismiss();
-                                        }
-                                    }
-                                });
-        return view;
+//        View view = super.getView(position, convertView, parent);
+//        RippleDrawable.createRipple(view, getContext().getResources().getColor(R.color.base_color_bright));
+//        view.setOnClickListener(new View.OnClickListener() {
+//                                    @Override
+//                                    public void onClick(View view) {
+//                                        listener.onItemAccepted("", position);
+//                                        if(delivery != null){
+//                                            delivery.dismiss();
+//                                        }
+//                                    }
+//                                });
+        return super.getView(position, convertView, parent);
     }
 }

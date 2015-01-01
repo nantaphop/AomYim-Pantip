@@ -79,7 +79,6 @@ public class TopicView extends RelativeLayout implements View.OnClickListener {
         super(context);
         this.context = context;
 
-
     }
 
     @AfterViews

@@ -29,9 +29,10 @@
             android:layout_alignParentTop="true"
             android:layout_toEndOf="@+id/thumbnail"
             android:layout_toRightOf="@+id/thumbnail"
+            android:layout_marginLeft="@dimen/padding_default"
             android:ellipsize="end"
             android:maxLines="2"
-            android:paddingLeft="@dimen/padding_extra"
+            android:paddingLeft="@dimen/padding_default"
             android:paddingRight="@dimen/padding_extra"
             android:paddingTop="@dimen/padding_default"
             android:text="หน้าตาคนไทยส่วนใหญ่สมัยก่อนคือหน้ารูปกราม เเบน จมูกใหญ่ ไม่มีดั้ง มีโหนกเเก้ม ตาสองชั้น คิ้วโค้ง ปากบาง ผิวคล้ำ ถูกไหมคะ"
@@ -44,11 +45,12 @@
             android:layout_below="@+id/title"
             android:layout_marginTop="@dimen/padding_default"
             android:layout_toEndOf="@+id/thumbnail"
-            android:layout_toRightOf="@+id/thumbnail"
-            android:paddingLeft="@dimen/padding_extra"
+            android:paddingLeft="@dimen/padding_default"
             android:text="สมาชิกหมายเลข 1341999"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:layout_alignLeft="@+id/title"
+            android:layout_alignStart="@+id/title" />
 
         <TextView
             android:id="@+id/date"
@@ -70,7 +72,7 @@
             android:layout_alignRight="@+id/date"
             android:layout_alignStart="@+id/author"
             android:layout_below="@+id/author"
-            android:paddingLeft="@dimen/padding_extra"
+            android:paddingLeft="@dimen/padding_default"
             android:singleLine="true"
             android:text="จุฬาลงกรณ์มหาวิทยาลัย วิศวกรรมศาสตร์ แอดมิชชั่น การศึกษา วิชาการ"
             android:textAppearance="?android:attr/textAppearanceSmall"
@@ -79,46 +81,45 @@
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_alignEnd="@+id/date"
             android:layout_alignLeft="@+id/tags"
-            android:layout_alignRight="@+id/date"
-            android:layout_alignStart="@+id/tags"
+            android:layout_alignRight="@+id/tags"
             android:layout_below="@+id/tags"
             android:layout_gravity="center_vertical"
             android:layout_marginBottom="@dimen/padding_default"
             android:layout_marginTop="@dimen/padding_default"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/ic_vote"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:src="@drawable/ic_action_thumbs_up_small" />
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/padding_default"
+            android:layout_toEndOf="@+id/thumbnail">
 
             <TextView
                 android:id="@+id/votes"
                 style="@style/style_topic_stat"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/comments"
+                android:layout_toLeftOf="@id/center"
                 android:layout_weight="1"
-                android:text="10" />
+                android:gravity="center_horizontal|center_vertical"
+                android:drawableLeft="@drawable/ic_action_thumbs_up_small"
+                android:text="10"
+                android:layout_alignLeft="@+id/tags"
+                android:layout_alignStart="@+id/tags" />
 
-            <ImageView
-                android:id="@+id/ic_comment"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:src="@drawable/ic_action_comment_small" />
+
 
             <TextView
                 android:id="@+id/comments"
                 style="@style/style_topic_stat"
-
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tags"
+                android:layout_toRightOf="@id/center"
                 android:layout_weight="1"
-                android:text="23" />
+                android:drawableLeft="@drawable/ic_action_comment_small"
+                android:gravity="center_horizontal|center_vertical"
+                android:text="23"
+                android:layout_alignRight="@+id/tags"
+                android:layout_alignEnd="@+id/tags" />
         </LinearLayout>
 
 
