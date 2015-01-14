@@ -7,6 +7,5 @@
     ads:adUnitId="@string/banner_ad_unit_id"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_centerHorizontal="true"
     android:layout_gravity="bottom"
     tools:showIn="@layout/activity_fragment"></com.google.android.gms.ads.AdView>

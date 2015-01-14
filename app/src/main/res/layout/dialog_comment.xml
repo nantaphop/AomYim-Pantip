@@ -13,7 +13,7 @@
         <EditText
             android:id="@+id/shortComment"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_gravity="bottom"
             android:layout_weight="1"
             android:gravity="bottom"

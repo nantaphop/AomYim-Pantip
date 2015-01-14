@@ -97,14 +97,10 @@
                 style="@style/style_topic_stat"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/comments"
-                android:layout_toLeftOf="@id/center"
                 android:layout_weight="1"
                 android:gravity="center_horizontal|center_vertical"
                 android:drawableLeft="@drawable/ic_action_thumbs_up_small"
-                android:text="10"
-                android:layout_alignLeft="@+id/tags"
-                android:layout_alignStart="@+id/tags" />
+                android:text="10" />
 
 
 
@@ -113,14 +109,10 @@
                 style="@style/style_topic_stat"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/tags"
-                android:layout_toRightOf="@id/center"
                 android:layout_weight="1"
                 android:drawableLeft="@drawable/ic_action_comment_small"
                 android:gravity="center_horizontal|center_vertical"
-                android:text="23"
-                android:layout_alignRight="@+id/tags"
-                android:layout_alignEnd="@+id/tags" />
+                android:text="23" />
         </LinearLayout>
 
 

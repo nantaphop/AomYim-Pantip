@@ -94,7 +94,6 @@
             android:layout_alignStart="@+id/tags"
             android:layout_alignTop="@+id/comments"
             android:layout_toLeftOf="@id/center"
-            android:layout_weight="1"
             android:drawableLeft="@drawable/ic_action_thumbs_up_small"
             android:gravity="center_horizontal|center_vertical"
             android:text="10" />
@@ -109,7 +108,6 @@
             android:layout_alignRight="@+id/tags"
             android:layout_below="@+id/tags"
             android:layout_toRightOf="@id/center"
-            android:layout_weight="1"
             android:drawableLeft="@drawable/ic_action_comment_small"
             android:gravity="center_horizontal|center_vertical"
             android:text="23" />

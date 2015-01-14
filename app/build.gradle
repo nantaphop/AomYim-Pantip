@@ -9,7 +9,7 @@ buildscript {
     }
 
 }
-apply plugin: 'android'
+apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
 
 
@@ -32,8 +32,8 @@ android {
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 21
-        versionCode 16
-        versionName "2"
+        versionCode 21
+        versionName "3"
     }
     dexOptions {
         preDexLibraries = false
@@ -53,7 +53,7 @@ android {
     }
 }
 
-def AAVersion = '3.0.1'
+def AAVersion = '3.2'
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])

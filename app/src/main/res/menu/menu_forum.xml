@@ -6,7 +6,7 @@
             android:id="@+id/action_sort_topic"
             android:title="@string/action_sort_topic"
             android:icon="@drawable/ic_action_sort"
-            app:showAsAction="always"
+            app:showAsAction="ifRoom"
             />
     <item
             android:id="@+id/action_view_tag"

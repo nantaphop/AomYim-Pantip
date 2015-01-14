@@ -71,9 +71,7 @@
                 android:textColor="@color/text_color_tag"
                 android:textSize="@dimen/text_caption"
                 android:layout_marginLeft="@dimen/padding_extra"
-                style="?android:borderlessButtonStyle"
-                android:layout_alignLeft="@+id/commentNo"
-                android:layout_below="@+id/separator"/>
+                style="?android:borderlessButtonStyle" />
 
         <Button
                 android:layout_width="wrap_content"
@@ -85,32 +83,22 @@
                 android:textSize="@dimen/text_caption"
                 android:gravity="center_vertical"
                 android:drawablePadding="@dimen/padding_default"
-                style="?android:borderlessButtonStyle"
-                android:layout_toRightOf="@+id/votes"
-                android:layout_alignTop="@+id/votes"/>
+                style="?android:borderlessButtonStyle" />
 
         <TextView
-                android:layout_width="100dp"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:text="New Text"
                 android:gravity="right|center_vertical"
                 android:id="@+id/author"
                 android:layout_marginRight="@dimen/padding_default"
-                android:layout_toLeftOf="@+id/authorPic"
-                android:layout_toRightOf="@+id/emo"
-                android:layout_alignBottom="@id/emo"
-                android:layout_alignTop="@+id/emo"
-                android:layout_weight="1"/>
+            android:layout_weight="1"/>
 
         <ImageView
                 android:layout_width="@dimen/author_pic_comment"
                 android:src="@drawable/ic_launcher_pantip"
                 android:layout_height="@dimen/author_pic_comment"
                 android:id="@+id/authorPic"
-                android:layout_alignRight="@+id/separator"
-                android:layout_marginRight="@dimen/padding_extra"
-                android:layout_alignEnd="@+id/separator"
-                android:layout_alignTop="@+id/author"
-                android:layout_alignBottom="@+id/emo"/>
+            android:layout_marginRight="@dimen/padding_extra" />
     </LinearLayout>
 </RelativeLayout>
