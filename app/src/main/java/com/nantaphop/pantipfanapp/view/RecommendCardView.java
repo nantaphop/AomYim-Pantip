@@ -1,6 +1,7 @@
 package com.nantaphop.pantipfanapp.view;
 
 import android.content.Context;
+import android.os.Build;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import com.nantaphop.pantipfanapp.R;
 import com.nantaphop.pantipfanapp.event.OpenTopicEvent;
 import com.nantaphop.pantipfanapp.response.Topic;
 
+import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.App;
 import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;
@@ -23,7 +25,7 @@ import org.androidannotations.annotations.res.ColorRes;
  * Created by nantaphop on 28-Oct-14.
  */
 @EViewGroup(R.layout.card_recommend)
-public class RecommendCardView extends CardView {
+public class RecommendCardView extends LinearLayout {
     @App
     BaseApplication app;
     @ViewById
@@ -42,10 +44,19 @@ public class RecommendCardView extends CardView {
 
     @ColorRes(R.color.base_color_bright)
     int rippleColor;
+    private Context context;
 
 
     public RecommendCardView(Context context) {
         super(context);
+        this.context = context;
+    }
+
+    @AfterViews
+    void init(){
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            card.setElevation(context.getResources().getDimensionPixelSize(R.dimen.card_topic_elevation));
+        }
     }
 
     public void addItem(final String title, final String url) {

@@ -22,6 +22,7 @@ import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.nantaphop.pantipfanapp.pref.UserPref_;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -30,6 +31,7 @@ import com.nostra13.universalimageloader.utils.StorageUtils;
 import com.squareup.otto.Bus;
 import com.squareup.otto.ThreadEnforcer;
 import org.androidannotations.annotations.EApplication;
+import org.androidannotations.annotations.sharedpreferences.Pref;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -43,6 +45,9 @@ import java.util.ArrayList;
  */
 @EApplication
 public class BaseApplication extends Application {
+
+    @Pref
+    UserPref_ userPref;
 
     static private Bus eventBus = null;
     static private Gson gson = null;
@@ -121,6 +126,10 @@ public class BaseApplication extends Application {
                 }
             };
         }
+    }
+
+    public boolean isUserLogin(){
+        return userPref.username().exists();
     }
 
     public boolean isLoading(String url) {

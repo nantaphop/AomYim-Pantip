@@ -65,6 +65,7 @@ public class ForumHolderFragment extends BaseFragment {
         final DisplayMetrics displaymetrics = new DisplayMetrics();
         getAttachedActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
         viewPager.setAdapter(pagerAdapter);
+        viewPager.setPageMargin(getResources().getDimensionPixelSize(R.dimen.padding_default));
         tabs.setTabBackground(android.R.color.transparent);
         tabs.setViewPager(viewPager);
 
@@ -164,17 +165,18 @@ public class ForumHolderFragment extends BaseFragment {
 
     @Subscribe
     public void showTabs(ForumScrollUpEvent e){
-        showTabs();
+        if (toolbarHiding) {
+            showTabs();
+        }
     }
 
     private void showTabs() {
         Log.d("event", "showTabs");
 
-        if (toolbarHiding) {
+
             topPanel.animate().translationY(topDefaultY).setInterpolator(new AccelerateDecelerateInterpolator()).start();
 //            app.getEventBus().post(new SetTitleEvent(getString(R.string.app_name)));
             toolbarHiding = false;
-        }
     }
 
 

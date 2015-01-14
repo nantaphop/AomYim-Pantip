@@ -111,8 +111,9 @@ public class RESTUtils {
         // Add Image Link
         Elements imgs = body.select("img.img-in-post");
         for(Element img: imgs){
-            img.before("<br/>");
-            img.after("<br/><a href=\""+ img.attr("src") +"\">ดูภาพใหญ่</a>");
+            img.before("<a href=\""+img.attr("src") +"\">ดูภาพใหญ่<br/>");
+            img.after("</a>");
+
         }
 
         // Add Youtube Link

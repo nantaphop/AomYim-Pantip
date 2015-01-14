@@ -1,59 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/root"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/card"
+    style="@style/listitem_topic"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:divider="@drawable/recommend_divider"
-    android:dividerPadding="8dp"
-    android:gravity="center_vertical"
-    android:orientation="vertical"
-    android:showDividers="middle">
+    android:layout_height="wrap_content">
 
-
-    <ProgressBar
-        android:id="@+id/progressBar"
-        style="?android:attr/progressBarStyleSmall"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/root"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1" />
-
-    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/recommend1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:divider="@drawable/recommend_divider"
+        android:dividerPadding="@dimen/padding_extra"
         android:gravity="center_vertical"
-        android:minHeight="?android:attr/listPreferredItemHeightSmall"
-        android:paddingBottom="4dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:paddingTop="8dp"
-        android:text="" />
-
-    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/recommend2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:minHeight="?android:attr/listPreferredItemHeightSmall"
-        android:paddingBottom="4dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:paddingTop="4dp"
-        android:text="" />
-
-    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/recommend3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:minHeight="?android:attr/listPreferredItemHeightSmall"
-        android:paddingBottom="8dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:paddingTop="4dp"
-        android:text="" />
+        android:orientation="vertical"
+        android:showDividers="middle">
 
 
-</LinearLayout>
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyleSmall"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
 
+        <TextView
+            android:id="@+id/recommend1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:minHeight="?android:attr/listPreferredItemHeightSmall"
+            android:paddingBottom="@dimen/padding_default"
+            android:paddingLeft="@dimen/padding_extra"
+            android:paddingRight="@dimen/padding_extra"
+            android:paddingTop="@dimen/padding_default"
+            android:text="" />
+
+        <TextView
+            android:id="@+id/recommend2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:minHeight="?android:attr/listPreferredItemHeightSmall"
+            android:paddingBottom="@dimen/padding_default"
+            android:paddingLeft="@dimen/padding_extra"
+            android:paddingRight="@dimen/padding_extra"
+            android:paddingTop="@dimen/padding_default"
+            android:text="" />
+
+        <TextView
+            android:id="@+id/recommend3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:minHeight="?android:attr/listPreferredItemHeightSmall"
+            android:paddingBottom="@dimen/padding_default"
+            android:paddingLeft="@dimen/padding_extra"
+            android:paddingRight="@dimen/padding_extra"
+            android:paddingTop="@dimen/padding_default"
+            android:text="" />
+
+
+    </LinearLayout>
+</android.support.v7.widget.CardView>

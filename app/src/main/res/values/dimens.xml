@@ -14,6 +14,7 @@
     <!--Padding-->
     <dimen name="padding_default">8dp</dimen>
     <dimen name="padding_narrow">4dp</dimen>
+    <dimen name="padding_extra_narrow">2dp</dimen>
     <dimen name="padding_extra">16dp</dimen>
 
     <dimen name="screen_width_padding">8dp</dimen>
@@ -27,16 +28,11 @@
     <dimen name="tabs_indicator_height">4dp</dimen>
 
     <!-- GPlay sectioned list-->
-    <dimen name="carddemo_section_textmore_text">13sp</dimen>
-    <dimen name="carddemo_section_textmore_padding_left">8dp</dimen>
-    <dimen name="carddemo_section_textmore_padding_right">8dp</dimen>
-    <dimen name="carddemo_section_textmore_padding_top">5dp</dimen>
-    <dimen name="carddemo_section_textmore_padding_bottom">5dp</dimen>
-    <dimen name="carddemo_section_textmore_margin_left">10dp</dimen>
     <dimen name="tabs_height">48dp</dimen>
     <dimen name="card_topic_thumbnail_portrait_height">200dp</dimen>
     <dimen name="card_topic_thumbnail_land_height">150dp</dimen>
     <dimen name="card_topic_thumbnail_land_width">250dp</dimen>
+    <dimen name="card_topic_elevation">1dp</dimen>
     <dimen name="text_title">20sp</dimen>
     <dimen name="text_caption">12sp</dimen>
     <dimen name="text_body">14sp</dimen>

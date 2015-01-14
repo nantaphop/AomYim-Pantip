@@ -3,6 +3,7 @@ package com.nantaphop.pantipfanapp.view;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.support.v7.widget.CardView;
 import android.text.Html;
 import android.text.format.DateUtils;
@@ -76,6 +77,9 @@ public class TopicThumbnailView extends RelativeLayout implements View.OnClickLi
         thumbnail.setDrawingCacheEnabled(true);
 //        RippleDrawable.createRipple(root, rippleColor);
         root.setOnClickListener(this);
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            card.setElevation(context.getResources().getDimensionPixelSize(R.dimen.card_topic_elevation));
+        }
 
     }
 

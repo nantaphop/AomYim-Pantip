@@ -29,12 +29,9 @@
             <com.github.ksoichiro.android.observablescrollview.ObservableListView
                 android:scrollingCache="false"
                 android:animationCache="false"
-                android:paddingLeft="@dimen/padding_default"
-                    android:paddingRight="@dimen/padding_default"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:divider="@null"
-                    android:dividerHeight="@dimen/padding_default"
                     android:id="@+id/list"
                     tools:listitem="@layout/listitem_topic"/>
         </android.support.v4.widget.SwipeRefreshLayout>

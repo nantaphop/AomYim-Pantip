@@ -2,18 +2,24 @@ package com.nantaphop.pantipfanapp.fragment;
 
 import android.animation.Animator;
 import android.content.Context;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.ksoichiro.android.observablescrollview.ObservableListView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
@@ -35,13 +41,15 @@ import com.nantaphop.pantipfanapp.model.ForumPagerItem;
 import com.nantaphop.pantipfanapp.response.Forum;
 import com.nantaphop.pantipfanapp.response.ForumPart;
 import com.nantaphop.pantipfanapp.response.Topic;
-import com.nantaphop.pantipfanapp.utils.PostOfficeHelper;
+import com.nantaphop.pantipfanapp.utils.DeviceUtils;
 import com.nantaphop.pantipfanapp.utils.RESTUtils;
 import com.nantaphop.pantipfanapp.utils.ScrollDirectionListener;
 import com.nantaphop.pantipfanapp.utils.TopicComparator;
 import com.nantaphop.pantipfanapp.utils.Utils;
 import com.nantaphop.pantipfanapp.view.ForumEmptyView;
 import com.nantaphop.pantipfanapp.view.ForumEmptyView_;
+import com.nantaphop.pantipfanapp.view.LoadingItemView;
+import com.nantaphop.pantipfanapp.view.LoadingItemView_;
 import com.nantaphop.pantipfanapp.view.MyAnimationAdapter;
 import com.nantaphop.pantipfanapp.view.RecommendCardView;
 import com.nantaphop.pantipfanapp.view.RecommendCardView_;
@@ -53,9 +61,6 @@ import com.nantaphop.pantipfanapp.view.TopicThumbnailView;
 import com.nantaphop.pantipfanapp.view.TopicThumbnailView_;
 import com.nantaphop.pantipfanapp.view.TopicView;
 import com.nantaphop.pantipfanapp.view.TopicView_;
-import com.r0adkll.postoffice.model.Delivery;
-import com.r0adkll.postoffice.model.Design;
-import com.r0adkll.postoffice.styles.ListStyle;
 import com.squareup.otto.Subscribe;
 
 import org.androidannotations.annotations.AfterViews;
@@ -71,6 +76,7 @@ import org.androidannotations.annotations.res.StringArrayRes;
 import org.androidannotations.annotations.res.StringRes;
 import org.apache.http.Header;
 
+import java.text.FieldPosition;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -205,9 +211,8 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
     @InstanceState
     public String[] recommendTopicUrl;
     private SimpleEmptyView emptyView;
-    private Delivery recommendDialog;
     private TopicType topicType;
-    private Delivery sortDialog;
+    private LoadingItemView loadingItemView;
 
     @Trace
     @Background
@@ -252,23 +257,45 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
     }
 
     private void showRecommendDialog() {
-        recommendDialog = PostOfficeHelper.newSimpleListMailCancelable(
-                getAttachedActivity()
-                , getString(R.string.recomend_topic)
-                , Design.MATERIAL_LIGHT
-                , forumPart.getRecommendTopic().toArray(new String[forumPart.getRecommendTopic().size()])
-                , new ListStyle.OnItemAcceptedListener<CharSequence>() {
+
+        MaterialDialog dialog = new MaterialDialog.Builder(getAttachedActivity())
+                .title(R.string.recomend_topic)
+                .adapter(new ArrayAdapter<String>(getAttachedActivity(), R.layout.listitem_recommend_dialog, forumPart.getRecommendTopic()))
+//                .items(forumPart.getRecommendTopic().toArray(new String[forumPart.getRecommendTopic().size()]))
+                .itemsCallback(new MaterialDialog.ListCallback() {
                     @Override
-                    public void onItemAccepted(CharSequence charSequence, int i) {
-                        final Topic topic = new Topic();
-                        topic.setTitle(forumPart.getRecommendTopic().get(i));
-                        topic.setId(Integer.parseInt(forumPart.getRecommendUrl().get(i).split("/")[4]));
-                        app.getEventBus().post(new OpenTopicEvent(topic));
+                    public void onSelection(MaterialDialog dialog, View view, int i, CharSequence text) {
 
                     }
-                }
-        );
-        recommendDialog.show(getFragmentManager());
+                }).build();
+        dialog.getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int i, long id) {
+                final Topic topic = new Topic();
+                topic.setTitle(forumPart.getRecommendTopic().get(i));
+                topic.setId(Integer.parseInt(forumPart.getRecommendUrl().get(i).split("/")[4]));
+                app.getEventBus().post(new OpenTopicEvent(topic));
+            }
+        });
+        dialog.show();
+
+//        recommendDialog = PostOfficeHelper.newSimpleListMailCancelable(
+//                getAttachedActivity()
+//                , getString(R.string.recomend_topic)
+//                , Design.MATERIAL_LIGHT
+//                , forumPart.getRecommendTopic().toArray(new String[forumPart.getRecommendTopic().size()])
+//                , new ListStyle.OnItemAcceptedListener<CharSequence>() {
+//                    @Override
+//                    public void onItemAccepted(CharSequence charSequence, int i) {
+//                        final Topic topic = new Topic();
+//                        topic.setTitle(forumPart.getRecommendTopic().get(i));
+//                        topic.setId(Integer.parseInt(forumPart.getRecommendUrl().get(i).split("/")[4]));
+//                        app.getEventBus().post(new OpenTopicEvent(topic));
+//
+//                    }
+//                }
+//        );
+//        recommendDialog.show(getFragmentManager());
     }
 
     @Override
@@ -388,55 +415,30 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
 
     @Override
     public void onPause() {
-        if (recommendDialog != null) {
-            recommendDialog.dismiss();
-        }
-        if (sortDialog != null) {
-            sortDialog.dismiss();
-        }
+//        if (recommendDialog != null) {
+//            recommendDialog.dismiss();
+//        }
+//        if (sortDialog != null) {
+//            sortDialog.dismiss();
+//        }
         app.getEventBus().unregister(this);
         super.onPause();
 
     }
 
-    @Subscribe
-    public void showRecommend(final ShowRecommendEvent e) {
-//        RecommendDialog recommendDialog = RecommendDialog_.builder().topics(e.getRecommendTopics()).urls(e.getRecommendUrls()).build();
-//        recommendDialog.show(getFragmentManager(), "recommend");
-        final ListDialog listDialog = ListDialog_.builder()
-                .choicesArrayList(e.getRecommendTopics())
-                .title(getString(R.string.recomend_topic))
-                .listItemLayoutRes(R.layout.listitem_recommend_dialog)
-                .build();
-        listDialog.setOnItemClickListener(
-                new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                        final Topic topic = new Topic();
-                        topic.setTitle(e.getRecommendTopics().get(i));
-                        topic.setId(Integer.parseInt(e.getRecommendUrls().get(i).split("/")[4]));
-                        app.getEventBus().post(new OpenTopicEvent(topic));
-                        listDialog.dismiss();
 
-                    }
-                }
-        );
-        listDialog.show(getAttachedActivity().getFragmentManager(), null);
-    }
 
     @Subscribe
     public void sortForum(final SortForumEvent e) {
 
         final ArrayList<Topic> topics = e.getTopics();
-        final ListDialog listDialog = ListDialog_.builder()
-                .choices(topic_sort_type)
+
+        new MaterialDialog.Builder(getAttachedActivity())
                 .title(topic_sort_type_title)
-                .listItemLayoutRes(android.R.layout.simple_list_item_1)
-                .build();
-        listDialog.setOnItemClickListener(
-                new AdapterView.OnItemClickListener() {
+                .items(topic_sort_type)
+                .itemsCallback(new MaterialDialog.ListCallback() {
                     @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    public void onSelection(MaterialDialog dialog, View view, int i, CharSequence text) {
                         TopicComparator topicComparator;
                         switch (i) {
                             case 0:
@@ -454,25 +456,57 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
                         }
                         Collections.sort(topics, topicComparator);
                         e.getAdapter().notifyDataSetChanged();
-                        listDialog.dismiss();
+                        dialog.dismiss();
                     }
-                }
-        );
-        listDialog.show(getAttachedActivity().getFragmentManager(), "sort_topic");
+                })
+                .show();
+
+
+
+//        final ListDialog listDialog = ListDialog_.builder()
+//                .choices(topic_sort_type)
+//                .title(topic_sort_type_title)
+//                .listItemLayoutRes(android.R.layout.simple_list_item_1)
+//                .build();
+//        listDialog.setOnItemClickListener(
+//                new AdapterView.OnItemClickListener() {
+//                    @Override
+//                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+//                        TopicComparator topicComparator;
+//                        switch (i) {
+//                            case 0:
+//                                topicComparator = new TopicComparator(TopicComparator.SortType.Comment);
+//                                break;
+//                            case 1:
+//                                topicComparator = new TopicComparator(TopicComparator.SortType.Vote);
+//                                break;
+//                            case 2:
+//                                topicComparator = new TopicComparator(TopicComparator.SortType.Time);
+//                                break;
+//                            default:
+//                                topicComparator = new TopicComparator(TopicComparator.SortType.Time);
+//                                break;
+//                        }
+//                        Collections.sort(topics, topicComparator);
+//                        e.getAdapter().notifyDataSetChanged();
+//                        listDialog.dismiss();
+//                    }
+//                }
+//        );
+//        listDialog.show(getAttachedActivity().getFragmentManager(), "sort_topic");
     }
 
     @OptionsItem
     void action_sort_topic() {
         Log.d("menu", "sort - " + forumPagerItem.title);
 //        app.getEventBus().post(new SortForumEvent(forum.getTopics(), topicAdapter));
-        sortDialog = PostOfficeHelper.newSimpleListMailCancelable(
-                getAttachedActivity()
-                , topic_sort_type_title
-                , Design.MATERIAL_LIGHT
-                , topic_sort_type
-                , new ListStyle.OnItemAcceptedListener<CharSequence>() {
+
+        new MaterialDialog.Builder(getAttachedActivity())
+                .title(topic_sort_type_title)
+                .items(topic_sort_type)
+                .itemsCallback(new MaterialDialog.ListCallback() {
                     @Override
-                    public void onItemAccepted(CharSequence charSequence, int i) {
+                    public void onSelection(MaterialDialog dialog, View view, int i, CharSequence text) {
                         TopicComparator topicComparator;
                         switch (i) {
                             case 0:
@@ -490,24 +524,53 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
                         }
                         Collections.sort(forum.getTopics(), topicComparator);
                         topicAdapter.notifyDataSetChanged();
-//                        listDialog.dismiss();
+                        dialog.dismiss();
                     }
-                }
-        );
-        sortDialog.show(getFragmentManager());
+                })
+                .show();
+
+//        sortDialog = PostOfficeHelper.newSimpleListMailCancelable(
+//                getAttachedActivity()
+//                , topic_sort_type_title
+//                , Design.MATERIAL_LIGHT
+//                , topic_sort_type
+//                , new ListStyle.OnItemAcceptedListener<CharSequence>() {
+//                    @Override
+//                    public void onItemAccepted(CharSequence charSequence, int i) {
+//                        TopicComparator topicComparator;
+//                        switch (i) {
+//                            case 0:
+//                                topicComparator = new TopicComparator(TopicComparator.SortType.Comment);
+//                                break;
+//                            case 1:
+//                                topicComparator = new TopicComparator(TopicComparator.SortType.Vote);
+//                                break;
+//                            case 2:
+//                                topicComparator = new TopicComparator(TopicComparator.SortType.Time);
+//                                break;
+//                            default:
+//                                topicComparator = new TopicComparator(TopicComparator.SortType.Time);
+//                                break;
+//                        }
+//                        Collections.sort(forum.getTopics(), topicComparator);
+//                        topicAdapter.notifyDataSetChanged();
+////                        listDialog.dismiss();
+//                    }
+//                }
+//        );
+//        sortDialog.show(getFragmentManager());
     }
 
     @OptionsItem
     void action_topic_type() {
 //        app.getEventBus().post(new ChooseTopicType());
-        PostOfficeHelper.newSimpleListMailCancelable(
-                getAttachedActivity()
-                , app.getString(R.string.title_topic_type_dialog)
-                , Design.MATERIAL_LIGHT
-                , topic_type
-                , new ListStyle.OnItemAcceptedListener<CharSequence>() {
+
+        new MaterialDialog.Builder(getAttachedActivity())
+                .title(R.string.title_topic_type_dialog)
+                .items(topic_type)
+                .itemsCallback(new MaterialDialog.ListCallback() {
                     @Override
-                    public void onItemAccepted(CharSequence charSequence, int i) {
+                    public void onSelection(MaterialDialog dialog, View view, int i, CharSequence text) {
                         switch (i) {
                             case 0:
                                 topicType = TopicType.All_Except_Sell;
@@ -533,26 +596,75 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
                         }
                         refresh();
                     }
-                }
-        ).show(getFragmentManager());
+                })
+                .show();
+
+//        PostOfficeHelper.newSimpleListMailCancelable(
+//                getAttachedActivity()
+//                , app.getString(R.string.title_topic_type_dialog)
+//                , Design.MATERIAL_LIGHT
+//                , topic_type
+//                , new ListStyle.OnItemAcceptedListener<CharSequence>() {
+//                    @Override
+//                    public void onItemAccepted(CharSequence charSequence, int i) {
+//                        switch (i) {
+//                            case 0:
+//                                topicType = TopicType.All_Except_Sell;
+//                                break;
+//                            case 1:
+//                                topicType = TopicType.Question;
+//                                break;
+//                            case 2:
+//                                topicType = TopicType.Chat;
+//                                break;
+//                            case 3:
+//                                topicType = TopicType.Poll;
+//                                break;
+//                            case 4:
+//                                topicType = TopicType.Review;
+//                                break;
+//                            case 5:
+//                                topicType = TopicType.News;
+//                                break;
+//                            case 6:
+//                                topicType = TopicType.Sell;
+//                                break;
+//                        }
+//                        refresh();
+//                    }
+//                }
+//        ).show(getFragmentManager());
     }
 
     @OptionsItem
     void action_view_tag() {
         if (forumPart!=null) {
-            PostOfficeHelper.newSimpleListMailCancelable(
-                    getAttachedActivity()
-                    , app.getString(R.string.title_tags_dialog)
-                    , Design.MATERIAL_LIGHT
-                    , forumPart.getTag().toArray(new String[forumPart.getTag().size()])
-                    , new ListStyle.OnItemAcceptedListener<CharSequence>() {
+
+            new MaterialDialog.Builder(getAttachedActivity())
+                    .title(R.string.title_tags_dialog)
+                    .items(forumPart.getTag().toArray(new String[forumPart.getTag().size()]))
+                    .itemsCallback(new MaterialDialog.ListCallback() {
                         @Override
-                        public void onItemAccepted(CharSequence charSequence, int i) {
+                        public void onSelection(MaterialDialog dialog, View view, int i, CharSequence text) {
                             ForumPagerItem forumPagerItem = new ForumPagerItem(forumPart.getTag().get(i), Utils.getForumPath(forumPart.getTagUrl().get(i)));
                             app.fireEvent(new OpenForumEvent(forumPagerItem, ForumType.Tag));
                         }
-                    }
-            ).show(getFragmentManager());
+                    })
+                    .show();
+
+//            PostOfficeHelper.newSimpleListMailCancelable(
+//                    getAttachedActivity()
+//                    , app.getString(R.string.title_tags_dialog)
+//                    , Design.MATERIAL_LIGHT
+//                    , forumPart.getTag().toArray(new String[forumPart.getTag().size()])
+//                    , new ListStyle.OnItemAcceptedListener<CharSequence>() {
+//                        @Override
+//                        public void onItemAccepted(CharSequence charSequence, int i) {
+//                            ForumPagerItem forumPagerItem = new ForumPagerItem(forumPart.getTag().get(i), Utils.getForumPath(forumPart.getTagUrl().get(i)));
+//                            app.fireEvent(new OpenForumEvent(forumPagerItem, ForumType.Tag));
+//                        }
+//                    }
+//            ).show(getFragmentManager());
         } else {
             toastAlert(app.getString(R.string.feecback_waiting_forumpart_load));
         }
@@ -561,19 +673,32 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
     @OptionsItem
     void action_view_club() {
         if (forumPart!=null) {
-            PostOfficeHelper.newSimpleListMailCancelable(
-                    getAttachedActivity()
-                    , app.getString(R.string.title_club_dialog)
-                    , Design.MATERIAL_LIGHT
-                    , forumPart.getClub().toArray(new String[forumPart.getClub().size()])
-                    , new ListStyle.OnItemAcceptedListener<CharSequence>() {
+
+            new MaterialDialog.Builder(getAttachedActivity())
+                    .title(R.string.title_club_dialog)
+                    .items(forumPart.getClub().toArray(new String[forumPart.getClub().size()]))
+                    .itemsCallback(new MaterialDialog.ListCallback() {
                         @Override
-                        public void onItemAccepted(CharSequence charSequence, int i) {
+                        public void onSelection(MaterialDialog dialog, View view, int i, CharSequence text) {
                             ForumPagerItem forumPagerItem = new ForumPagerItem(forumPart.getClub().get(i), Utils.getForumPath(forumPart.getClubUrl().get(i)));
                             app.fireEvent(new OpenForumEvent(forumPagerItem, ForumType.Club));
                         }
-                    }
-            ).show(getFragmentManager());
+                    })
+                    .show();
+
+//            PostOfficeHelper.newSimpleListMailCancelable(
+//                    getAttachedActivity()
+//                    , app.getString(R.string.title_club_dialog)
+//                    , Design.MATERIAL_LIGHT
+//                    , forumPart.getClub().toArray(new String[forumPart.getClub().size()])
+//                    , new ListStyle.OnItemAcceptedListener<CharSequence>() {
+//                        @Override
+//                        public void onItemAccepted(CharSequence charSequence, int i) {
+//                            ForumPagerItem forumPagerItem = new ForumPagerItem(forumPart.getClub().get(i), Utils.getForumPath(forumPart.getClubUrl().get(i)));
+//                            app.fireEvent(new OpenForumEvent(forumPagerItem, ForumType.Club));
+//                        }
+//                    }
+//            ).show(getFragmentManager());
         } else {
             toastAlert(app.getString(R.string.feecback_waiting_forumpart_load));
         }
@@ -584,7 +709,11 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
     void setRefreshComplete() {
         Log.d("refresh", "stop");
         swipeRefreshLayout.setRefreshing(false);
+        if(loadingItemView != null){
+            loadingItemView.setVisibility(View.GONE);
+        }
     }
+
 
 
     @AfterViews
@@ -598,7 +727,7 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
 
 
 
-        topicAdapter = new TopicAdapter(getActivity());
+        topicAdapter = new TopicAdapter();
         MyAnimationAdapter animationAdapter = new MyAnimationAdapter(topicAdapter);
         animationAdapter.setAbsListView(list);
         showLoadingScreen();
@@ -615,7 +744,9 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
         }else{
             getAttachedActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-        swipeRefreshLayout.setProgressViewOffset(false, 0, 500);
+        swipeRefreshLayout.setProgressViewOffset(false
+                , getResources().getDimensionPixelSize(R.dimen.toolbar_size)
+                , DeviceUtils.getDisplayCenterPixel(getAttachedActivity()));
 
         // Now setup the PullToRefreshLayout
         swipeRefreshLayout.setOnRefreshListener(this);
@@ -704,9 +835,16 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
     }
 
     private void loadMore() {
+        loadMore(true);
+    }
+
+    private void loadMore(boolean showSwipeRefresh) {
         currentPage++;
-        if (!swipeRefreshLayout.isRefreshing())
-            swipeRefreshLayout.setRefreshing(true);
+        if(loadingItemView!= null){
+            loadingItemView.setVisibility(View.VISIBLE);
+        }
+//        if (!swipeRefreshLayout.isRefreshing())
+//            swipeRefreshLayout.setRefreshing(showSwipeRefresh);
         prepareTopicDone = false;
         client.getForum(
                 forumPagerItem.url,
@@ -739,9 +877,7 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
         final int TYPE_RECOMMEND = 1;
         final int TYPE_TOPIC = 0;
         final int TYPE_TOPIC_THUMBNAIL = 3;
-
-        public TopicAdapter(Context context) {
-        }
+        final int TYPE_TOPIC_LOADING = 4;
 
 
         @Override
@@ -776,7 +912,7 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
 
         @Override
         public int getViewTypeCount() {
-            return 4;
+            return 5;
         }
 
         @Override
@@ -784,7 +920,9 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
 //            if (recommendTopicTitle == null) {
 //                return 0;
 //            }
-            if (forumType == ForumType.Room && (position == 0 || position == 2) ) {
+            if(getCount()>3 && position == (getCount()-1)){
+                return TYPE_TOPIC_LOADING;
+            }else if (forumType == ForumType.Room && (position == 0 || position == 2) ) {
                 return TYPE_SECTION;
             } else if (forumType == ForumType.Room && (position == 1) ) {
                 return TYPE_RECOMMEND;
@@ -818,8 +956,21 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
                 case TYPE_TOPIC_THUMBNAIL:
                     view = getViewTopicThumbnail(position, convertView);
                     break;
+                case TYPE_TOPIC_LOADING:
+                    view = getViewLoading(position, convertView);
             }
             return view;
+        }
+
+        private LoadingItemView getViewLoading(int position, View convertView) {
+
+            if (convertView != null) {
+                loadingItemView = (LoadingItemView) convertView;
+            } else {
+                loadingItemView = LoadingItemView_.build(getAttachedActivity());
+            }
+
+            return loadingItemView;
         }
 
         private RecommendCardView getViewTopicRecommend(int position, View convertView) {
@@ -837,12 +988,6 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
             }else{
                 Log.e("recommend", "getViewTopicRecommend called even recommendTopicTitle is null");
             }
-
-//            try {
-//                topicRecommendView.bind(recommendTopicTitle[position - 1], recommendTopicUrl[position - 1]);
-//            } catch (NullPointerException e) {
-//                e.printStackTrace();
-//            }
             return recommendCardView;
         }
 
@@ -888,7 +1033,7 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
         private TopicThumbnailView getViewTopicThumbnail(int position, View convertView) {
             final TopicThumbnailView topicView;
             if (position == getCount() - 5) {
-                loadMore();
+                loadMore(false);
             }
 
             if (convertView != null) {

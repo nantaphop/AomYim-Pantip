@@ -19,4 +19,11 @@
         <item name="android:background">?android:attr/listChoiceBackgroundIndicator</item>
     </style>
 
+    <style name="listitem_topic">
+        <item name="android:layout_marginLeft">@dimen/padding_default</item>
+        <item name="android:layout_marginRight">@dimen/padding_default</item>
+        <item name="android:layout_marginTop">@dimen/padding_narrow</item>
+        <item name="android:layout_marginBottom">@dimen/padding_narrow</item>
+    </style>
+
 </resources>

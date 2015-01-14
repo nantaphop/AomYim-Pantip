@@ -10,12 +10,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import com.nantaphop.pantipfanapp.BaseApplication;
 import com.nantaphop.pantipfanapp.R;
 import com.nantaphop.pantipfanapp.event.DoEmoEvent;
 import com.nantaphop.pantipfanapp.event.DoReplyEvent;
 import com.nantaphop.pantipfanapp.event.DoVoteEvent;
-import com.nantaphop.pantipfanapp.pref.UserPref_;
 import com.nantaphop.pantipfanapp.response.Comment;
 import com.nantaphop.pantipfanapp.response.EmoResponse;
 import com.nantaphop.pantipfanapp.service.PantipRestClient;
@@ -34,7 +34,6 @@ import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.res.ColorRes;
 import org.androidannotations.annotations.res.DrawableRes;
-import org.androidannotations.annotations.sharedpreferences.Pref;
 
 import java.util.Date;
 
@@ -43,7 +42,6 @@ import java.util.Date;
  */
 @EViewGroup(R.layout.listitem_comment)
 public class CommentView extends RelativeLayout {
-
 
     @App
     BaseApplication app;
@@ -101,9 +99,16 @@ public class CommentView extends RelativeLayout {
     }
 
     @AfterViews
-    void setLinkMovement(){
+    void setLinkMovement() {
         body.setMovementMethod(CustomLinkMovementMethod.getInstance(context));
 
+    }
+
+    @AfterViews
+    void disableNonLoginUser() {
+        if (!app.isUserLogin()) {
+            reply.setVisibility(GONE);
+        }
     }
 
 
@@ -142,16 +147,37 @@ public class CommentView extends RelativeLayout {
                 loadMore.setVisibility(GONE);
             }
         } else {
-            if (comment.isReply()) {
-                reply.setVisibility(GONE);
-            } else {
+
+            if (app.isUserLogin()) {
                 reply.setVisibility(VISIBLE);
+            } else {
+                reply.setVisibility(GONE);
             }
+
             commentNo.setText("#" + comment.getComment_no());
             replyIndicator.setVisibility(GONE);
             loadMore.setVisibility(GONE);
         }
-        Picasso.with(context).load(comment.getUser().getAvatar().getLarge()).transform(new CircleTransform()).into(authorPic);
+
+        Picasso.with(context).
+
+                load(comment.getUser()
+
+                                .
+
+                                        getAvatar()
+
+                                .
+
+                                        getLarge()
+
+                ).
+
+                transform(new CircleTransform()
+
+                ).
+
+                into(authorPic);
 
 
     }
@@ -171,24 +197,30 @@ public class CommentView extends RelativeLayout {
 
     @Click
     public void reply() {
-        app.getEventBus()
-                .post(new DoReplyEvent(comment.getComment_id(), comment.getComment_no(), comment.getDate().getTime()));
+        if (app.isUserLogin()) {
+            app.getEventBus()
+                    .post(new DoReplyEvent(comment.getComment_id(), comment.getComment_no(), comment.getDate().getTime()));
+        }
     }
 
     @Click
     public void votes() {
 
-        if (!comment.isVoted()) {
+        if (app.isUserLogin()) {
+            if (!comment.isVoted()) {
 
-            app.getEventBus().post(new DoVoteEvent(this, comment));
+                app.getEventBus().post(new DoVoteEvent(this, comment));
 
+            }
         }
     }
 
     @Click
     public void emo() {
-        Log.d("emo", "send event");
-        app.getEventBus().post(new DoEmoEvent(this, comment));
+        if (app.isUserLogin()) {
+            Log.d("emo", "send event");
+            app.getEventBus().post(new DoEmoEvent(this, comment));
+        }
     }
 
     public void setVote(int point) {
@@ -198,7 +230,7 @@ public class CommentView extends RelativeLayout {
     }
 
     public void setEmo(EmoResponse emoResponse) {
-        if( comment.getEmotion().getLike().getStatus() == null &&
+        if (comment.getEmotion().getLike().getStatus() == null &&
                 comment.getEmotion().getLove().getStatus() == null &&
                 comment.getEmotion().getLaugh().getStatus() == null &&
                 comment.getEmotion().getScary().getStatus() == null &&
@@ -232,8 +264,6 @@ public class CommentView extends RelativeLayout {
                 comment.getEmotion().getSurprised().setStatus(true);
             }
         }
-
-
 
 
         bind(comment);
