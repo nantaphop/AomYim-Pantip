@@ -14,8 +14,8 @@ apply plugin: 'android-apt'
 
 
 repositories {
-    mavenCentral()
-    mavenLocal()
+//    mavenCentral()
+//    mavenLocal()
     jcenter()
     flatDir {
         dirs 'libs'
