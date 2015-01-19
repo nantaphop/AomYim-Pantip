@@ -1,67 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/topPanel"
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:background="?attr/colorPrimaryDark"
+    android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+    <ImageView
+        android:id="@+id/userPhoto"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/padding_default"
+        android:src="@drawable/ic_launcher_pantip" />
 
-        <android.support.v4.view.ViewPager
-            android:id="@+id/viewPager"
-            android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="0dp">
-
-        </android.support.v4.view.ViewPager>
-
-        <include layout="@layout/ads" />
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:id="@+id/topPanel"
-
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/username"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="?attr/colorPrimaryDark"
-        android:orientation="vertical">
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="@dimen/padding_default"
+        android:text=""
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="#ffffff" />
 
-        <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+    <com.astuetz.PagerSlidingTabStrip
+        android:id="@+id/tabs"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/tabs_height"
+        android:textColor="#ffffffff"
+        android:layout_gravity="center_horizontal" />
 
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewPager"
+        android:background="@color/background"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
-        <ImageView
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:id="@+id/userPhoto"
-            android:src="@drawable/ic_launcher_pantip"
-            android:layout_gravity="center_horizontal" />
+    </android.support.v4.view.ViewPager>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="ป๋าตุ๊กกับหนูแพรว"
-            android:id="@+id/username"
-            android:layout_margin="@dimen/padding_default"
-            android:layout_gravity="center_horizontal" />
-
-        <com.astuetz.PagerSlidingTabStrip
-            android:id="@+id/tabs"
-
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/tabs_height"
-            android:textColor="#ffffffff" />
-
-    </LinearLayout>
+    <include layout="@layout/ads" />
+</LinearLayout>
 
 
-</FrameLayout>

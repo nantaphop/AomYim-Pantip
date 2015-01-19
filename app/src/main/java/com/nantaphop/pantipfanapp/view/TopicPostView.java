@@ -11,6 +11,7 @@ import com.nantaphop.pantipfanapp.BaseApplication;
 import com.nantaphop.pantipfanapp.R;
 import com.nantaphop.pantipfanapp.event.DoEmoEvent;
 import com.nantaphop.pantipfanapp.event.DoVoteEvent;
+import com.nantaphop.pantipfanapp.event.OpenUserEvent;
 import com.nantaphop.pantipfanapp.response.EmoResponse;
 import com.nantaphop.pantipfanapp.response.TopicPost;
 import com.nantaphop.pantipfanapp.service.PantipRestClient;
@@ -116,6 +117,11 @@ public class TopicPostView extends RelativeLayout{
     @Click
     void votes(){
         app.getEventBus().post(new DoVoteEvent(this, topicPost));
+    }
+
+    @Click
+    void authorPic(){
+        BaseApplication.getEventBus().post(new OpenUserEvent(topicPost.getUserId(), topicPost.getAuthor(), topicPost.getAuthorPic()));
     }
 
     public void setEmo() {

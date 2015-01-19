@@ -1,17 +1,15 @@
 package com.nantaphop.pantipfanapp;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.FrameLayout;
 
-import com.nantaphop.pantipfanapp.event.OpenUserEvent;
-import com.nantaphop.pantipfanapp.fragment.TopicFragment;
-import com.nantaphop.pantipfanapp.fragment.TopicFragment_;
-import com.nantaphop.pantipfanapp.response.Topic;
+import com.nantaphop.pantipfanapp.fragment.UserFragment;
+import com.nantaphop.pantipfanapp.fragment.UserFragment_;
 import com.nantaphop.pantipfanapp.view.BaseActivity;
-import com.squareup.otto.Subscribe;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.App;
@@ -24,7 +22,7 @@ import org.androidannotations.annotations.ViewById;
  * Created by nantaphop on 24-Oct-14.
  */
 @EActivity(R.layout.activity_fragment)
-public class TopicActivity extends BaseActivity {
+public class UserActivity extends BaseActivity {
 
 
     @ViewById
@@ -35,10 +33,14 @@ public class TopicActivity extends BaseActivity {
     BaseApplication app;
 
     @Extra
-    Topic topic;
+    int userId;
+    @Extra
+    String avatar;
+    @Extra
+    String user;
 
     @NonConfigurationInstance
-    TopicFragment topicFragment;
+    UserFragment userFragment;
     @ViewById
     View toolbarPadding;
 
@@ -50,16 +52,17 @@ public class TopicActivity extends BaseActivity {
 
     @AfterViews
     void init() {
+        setSupportActionBar(toolbar);
         toolbarPadding.setVisibility(View.GONE);
-        if (topicFragment == null) {
-            topicFragment = TopicFragment_.builder().topic(topic).build();
+        if (userFragment == null) {
+            userFragment = UserFragment_.builder().userId(userId).avatar(avatar).user(user).build();
             getSupportFragmentManager()
                     .beginTransaction()
-                    .add(R.id.content_frame, topicFragment, null)
+                    .add(R.id.content_frame, userFragment, null)
                     .commit();
         }
-        setSupportActionBar(toolbar);
-
+        toolbar.setBackgroundColor(Color.parseColor("#00000000"));
+        setTitle("");
     }
 
     @Override
@@ -74,9 +77,5 @@ public class TopicActivity extends BaseActivity {
         app.getEventBus().unregister(this);
     }
 
-    @Subscribe
-    public void openUser(OpenUserEvent e) {
-        UserActivity_.intent(this).userId(e.getUserId()).user(e.getUsername()).avatar(e.getAvatar()).start();
-    }
 
 }

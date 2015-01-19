@@ -13,6 +13,7 @@ import java.util.Date;
  */
 public class TopicPost implements Serializable{
    String title;
+    int userId;
     String body;
     String author;
     Date date;
@@ -130,5 +131,13 @@ public class TopicPost implements Serializable{
 
     public void setTags(ArrayList<Tag> tags) {
         this.tags = tags;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 }

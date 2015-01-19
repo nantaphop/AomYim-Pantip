@@ -10,6 +10,7 @@ import com.nantaphop.pantipfanapp.response.Comments;
 import com.nantaphop.pantipfanapp.response.EmoResponse;
 import com.nantaphop.pantipfanapp.response.Forum;
 import com.nantaphop.pantipfanapp.response.ForumPart;
+import com.nantaphop.pantipfanapp.response.MyPage;
 import com.nantaphop.pantipfanapp.response.Reply;
 import com.nantaphop.pantipfanapp.response.TopicPost;
 import com.nantaphop.pantipfanapp.response.VoteResponse;
@@ -28,6 +29,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Formatter;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -38,6 +40,15 @@ public class RESTUtils {
     public static Forum parseForum(String resp) {
         try {
             return BaseApplication.getGson().fromJson(new JSONObject(resp).get("item").toString(), Forum.class);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static MyPage parseUserForum(String resp) {
+        try {
+            return BaseApplication.getGson().fromJson(new JSONObject(resp).toString(), MyPage.class);
         } catch (JSONException e) {
             e.printStackTrace();
             return null;
@@ -149,6 +160,7 @@ public class RESTUtils {
         topicPost.setVotes(Integer.parseInt(doc.select("span.like-score ").get(0).text()));
         topicPost.setEmotions(Integer.parseInt(doc.select("span.emotion-score").get(0).text()));
         topicPost.setAuthor(doc.select("a.display-post-name").get(0).text());
+        topicPost.setUserId(Integer.parseInt(doc.select("div.display-post-avatar a").get(0).attr("href").split("/")[4]));
         topicPost.setVoted(doc.select("a.icon-heart-like.i-vote").size() > 0);
         topicPost.setEmoted(doc.select("a.emotion-choice-icon.i-vote").size() > 0);
         String avatar = doc.select("div.display-post-avatar a img").get(0).attr("src");
@@ -224,10 +236,11 @@ public class RESTUtils {
             Document doc = Jsoup.parse(new String(httpBody, "utf-8"));
             String title = doc.select("title").get(0).text().replace("หน้าของ ", "").replace(" - Pantip", "");
             String avatar = doc.select("img.big-avatar").get(0).attr("src");
+            int userId = Integer.parseInt(doc.select("div.profile-follow").get(0).attr("id").substring(2));
             if (avatar.startsWith("/images"))
                 avatar += "http://pantip.com" + avatar;
             Log.d("login", "User login - " + title + " : " + avatar);
-            userPref.edit().username().put(title).avatar().put(avatar).apply();
+            userPref.edit().username().put(title).avatar().put(avatar).userId().put(userId).apply();
             return true;
         } catch (UnsupportedEncodingException e) {
             return false;

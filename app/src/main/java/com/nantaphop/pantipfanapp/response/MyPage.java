@@ -1,5 +1,6 @@
 package com.nantaphop.pantipfanapp.response;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -9,7 +10,7 @@ import java.util.ArrayList;
  * Time: 7:20 PM
  * To change this template use File | Settings | File Templates.
  */
-public class MyPage {
+public class MyPage implements Serializable {
 
     int page;
     int max_page;

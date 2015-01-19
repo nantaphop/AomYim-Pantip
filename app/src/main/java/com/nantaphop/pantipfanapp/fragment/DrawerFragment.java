@@ -1,14 +1,19 @@
 package com.nantaphop.pantipfanapp.fragment;
 
 import android.view.View;
-import android.widget.*;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import com.nantaphop.pantipfanapp.BaseApplication;
 import com.nantaphop.pantipfanapp.R;
-import com.nantaphop.pantipfanapp.event.OpenTopicEvent;
-import com.nantaphop.pantipfanapp.event.UpdateLoginStateEvent;
 import com.nantaphop.pantipfanapp.event.OpenForumRearrangeEvent;
 import com.nantaphop.pantipfanapp.event.OpenLoginScreenEvent;
+import com.nantaphop.pantipfanapp.event.OpenUserEvent;
+import com.nantaphop.pantipfanapp.event.UpdateLoginStateEvent;
 import com.nantaphop.pantipfanapp.pref.UserPref_;
-import com.nantaphop.pantipfanapp.response.Topic;
+import com.nantaphop.pantipfanapp.service.PantipRestClient;
 import com.nantaphop.pantipfanapp.utils.CircleTransform;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
@@ -16,7 +21,10 @@ import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 import com.squareup.otto.Subscribe;
 import com.squareup.picasso.Picasso;
 
-import org.androidannotations.annotations.*;
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Click;
+import org.androidannotations.annotations.EFragment;
+import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.res.StringArrayRes;
 import org.androidannotations.annotations.sharedpreferences.Pref;
 
@@ -29,7 +37,6 @@ public class DrawerFragment extends BaseFragment {
     @Pref
     UserPref_ userPref;
 
-
     @StringArrayRes
     String[] drawer_menu;
     @ViewById
@@ -41,7 +48,9 @@ public class DrawerFragment extends BaseFragment {
     @ViewById
     ListView list;
     @ViewById
-    Button login;
+    TextView login;
+    @ViewById
+    TextView myProfile;
 
     private static DisplayImageOptions displayImageOptions =  new DisplayImageOptions.Builder()
             .resetViewBeforeLoading(true)
@@ -56,6 +65,7 @@ public class DrawerFragment extends BaseFragment {
     void init() {
         app.getEventBus().register(this);
         if(userPref.username().exists()){
+            myProfile.setVisibility(View.VISIBLE);
             login.setVisibility(View.GONE);
             userPane.setVisibility(View.VISIBLE);
             usernameTxt.setText(userPref.username().get());
@@ -64,27 +74,8 @@ public class DrawerFragment extends BaseFragment {
         }else{
             login.setVisibility(View.VISIBLE);
             userPane.setVisibility(View.GONE);
+            myProfile.setVisibility(View.GONE);
         }
-
-        list.setAdapter(new ArrayAdapter<String>(getAttachedActivity(), android.R.layout.simple_list_item_1, drawer_menu));
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                switch (i) {
-                    case 0:
-                        app.getEventBus().post(new OpenForumRearrangeEvent());
-                        break;
-//                    case 1:
-//                        Topic topic = new Topic();
-////                        topic.setId(31049053);
-//                        topic.setId(32772497);
-//                        topic.setTitle("[SR]รีวิวสั้น Pantip Fan App - Dark Theme [Android]");
-//                        app.getEventBus().post(new OpenTopicEvent(topic));
-//                        break;
-
-                }
-            }
-        });
     }
 
     @Subscribe
@@ -94,10 +85,16 @@ public class DrawerFragment extends BaseFragment {
 
     @Click
     void login(){
-        app.getEventBus().post(new OpenLoginScreenEvent());
+        BaseApplication.getEventBus().post(new OpenLoginScreenEvent());
     }
     @Click
     void userPane(){
-        app.getEventBus().post(new OpenLoginScreenEvent());
+        BaseApplication.getEventBus().post(new OpenLoginScreenEvent());
     }
+    @Click
+    void rearrangeRoom(){
+        BaseApplication.getEventBus().post(new OpenForumRearrangeEvent());
+    }
+    @Click
+    void myProfile(){BaseApplication.getEventBus().post(new OpenUserEvent(userPref.userId().get(), userPref.username().get(), userPref.avatar().get()));}
 }

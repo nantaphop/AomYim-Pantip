@@ -27,6 +27,7 @@ import com.nantaphop.pantipfanapp.event.ToggleDrawerEvent;
 import com.nantaphop.pantipfanapp.model.ForumPagerItem;
 import com.nantaphop.pantipfanapp.response.Forum;
 import com.nantaphop.pantipfanapp.response.ForumPart;
+import com.nantaphop.pantipfanapp.response.MyPage;
 import com.nantaphop.pantipfanapp.response.Topic;
 import com.nantaphop.pantipfanapp.service.PantipRestClient;
 import com.nantaphop.pantipfanapp.utils.DeviceUtils;
@@ -87,6 +88,7 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
     // User Args
     @FragmentArg
     int userId;
+    @FragmentArg
     PantipRestClient.UserTopicType userTopicType;
 
 
@@ -96,11 +98,17 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
     int currentPage = 0;
     @InstanceState
     int cardRenderCount = 0;
+    @InstanceState
+    long lastFirstId = 0;
+    @InstanceState
+    long lastLastId = 0;
 
     @InstanceState
     Forum forum;
     @InstanceState
     ForumPart forumPart;
+    @InstanceState
+    MyPage myPage;
 
     @InstanceState
     int lastFirstVisibleItem;
@@ -124,12 +132,43 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
     private boolean prepareRecommendDone;
     private float fabDefaultY;
     private boolean fabIsHiding;
-    private ForumAdapter topicAdapter;
+    private TopicAdapter forumAdapter;
     private SimpleEmptyView emptyView;
 
     private TopicType topicType;
     private LoadingItemView loadingItemView;
 
+
+    BaseJsonHttpResponseHandler userForumCallback = new BaseJsonHttpResponseHandler() {
+        @Override
+        public void onSuccess(int i, Header[] headers, String s, Object o) {
+            Log.i("loadData " + userId, " userForumCallback success");
+            MyPage newMyPage = (MyPage) o;
+            if (myPage == null) {
+                myPage = newMyPage;
+
+            } else {
+                myPage.getResult().addAll(myPage.getResult());
+            }
+            lastFirstId = myPage.getFirst_id();
+            lastLastId = myPage.getLast_id();
+
+            prepareTopic();
+        }
+
+        @Override
+        public void onFailure(int i, Header[] headers, Throwable throwable, String s, Object o) {
+            Log.d("forum", "failed load forum");
+            Log.i("loadData", "forumCallback failed");
+            showErrorScreen();
+            currentPage--;
+        }
+
+        @Override
+        protected Object parseResponse(String s, boolean b) throws Throwable {
+            return RESTUtils.parseUserForum(s);
+        }
+    };
     BaseJsonHttpResponseHandler forumCallback = new BaseJsonHttpResponseHandler() {
         @Override
         public void onSuccess(int i, Header[] headers, String s, Object o) {
@@ -183,8 +222,8 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
     void prepareForumPart() {
         Log.i("loadData " + forumPagerItem.title, "prepareForumPart start");
         forumPart = RESTUtils.parseForumPart(new String(tmpForumPartBytes));
-        if(forumType == ForumType.Room && forumPart.getRecommendTopic().get(0) == null){
-            Log.e("forumPath", "CANT PARSE FORUMPATH\n"+new String(tmpForumPartBytes));
+        if (forumType == ForumType.Room && forumPart.getRecommendTopic().get(0) == null) {
+            Log.e("forumPath", "CANT PARSE FORUMPATH\n" + new String(tmpForumPartBytes));
         }
         Log.d(
                 "forumPart",
@@ -228,10 +267,12 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        if(noTabMargin){
-            inflater.inflate(R.menu.menu_forum_tag, menu);
-        }else{
-            inflater.inflate(R.menu.menu_forum, menu);
+        if (forumPagerItem != null) {
+            if (noTabMargin) {
+                inflater.inflate(R.menu.menu_forum_tag, menu);
+            } else {
+                inflater.inflate(R.menu.menu_forum, menu);
+            }
         }
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -239,45 +280,49 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
     @Trace
     @Background
     void prepareTopic() {
-        Log.i("loadData " + forumPagerItem.title, "prepareTopic start");
+        Log.i("loadData ", "prepareTopic start");
 
         prepareTopicDone = true;
         joinForum();
-        Log.i("loadData " + forumPagerItem.title, "prepareTopic finish");
+        Log.i("loadData ", "prepareTopic finish");
 
     }
 
     @Trace(tag = "joinForum")
     @UiThread
     void joinForum() {
-        Log.i("loadData " + forumPagerItem.title, "joinForum start");
+        if (forumType != null) {
+            Log.i("loadData " + forumPagerItem.title, "joinForum start");
+        } else {
+            Log.i("loadData " + userTopicType, " joinForum start");
+        }
 
         // Join Thread
         if (prepareRecommendDone && prepareTopicDone) {
             // Update List
-            topicAdapter.notifyDataSetChanged();
-            topicAdapter.setData(forum, forumPart, recommendTopicTitle, recommendTopicUrl);
+            forumAdapter.notifyDataSetChanged();
+            if (forumType != null) {
+                ((ForumAdapter) forumAdapter).setData(forum, forumPart, recommendTopicTitle, recommendTopicUrl);
+            } else {
+                forumAdapter.setTopics(myPage.getResult());
+            }
             setRefreshComplete();
             if (lastFirstVisibleItem != 0) {
                 list.setSelection(lastFirstVisibleItem);
             }
-            Log.i("loadData " + forumPagerItem.title, "joinForum finish");
-        }else{
-            Log.i("loadData " + forumPagerItem.title, "joinForum postpone");
+            Log.i("loadData", "joinForum finish");
+        } else {
+            Log.i("loadData", "joinForum postpone");
         }
 
 
-
     }
 
-    @Override
-    void back() {
-        app.getEventBus().post(new ToggleDrawerEvent());
-    }
 
-    void showErrorScreen(){
+
+    void showErrorScreen() {
         setRefreshComplete();
-        if(emptyView != null && emptyView.getParent() != null){
+        if (emptyView != null && emptyView.getParent() != null) {
             root.removeView(emptyView);
         }
         if (forumEmptyView == null) {
@@ -296,8 +341,8 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
 
     }
 
-    void showLoadingScreen(){
-        if(forumEmptyView!= null && forumEmptyView.getParent() != null){
+    void showLoadingScreen() {
+        if (forumEmptyView != null && forumEmptyView.getParent() != null) {
             root.removeView(forumEmptyView);
         }
         if (emptyView == null) {
@@ -370,7 +415,7 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
 
     @OptionsItem
     void action_sort_topic() {
-        Log.d("menu", "sort - " + forumPagerItem.title);
+        Log.d("menu", "sort");
         new MaterialDialog.Builder(getAttachedActivity())
                 .title(topic_sort_type_title)
                 .items(topic_sort_type)
@@ -393,7 +438,7 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
                                 break;
                         }
                         Collections.sort(forum.getTopics(), topicComparator);
-                        topicAdapter.notifyDataSetChanged();
+                        forumAdapter.notifyDataSetChanged();
                         dialog.dismiss();
                     }
                 })
@@ -439,7 +484,7 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
 
     @OptionsItem
     void action_view_tag() {
-        if (forumPart!=null) {
+        if (forumPart != null) {
             new MaterialDialog.Builder(getAttachedActivity())
                     .title(R.string.title_tags_dialog)
                     .items(forumPart.getTag().toArray(new String[forumPart.getTag().size()]))
@@ -458,7 +503,7 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
 
     @OptionsItem
     void action_view_club() {
-        if (forumPart!=null) {
+        if (forumPart != null) {
 
             new MaterialDialog.Builder(getAttachedActivity())
                     .title(R.string.title_club_dialog)
@@ -481,7 +526,7 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
     void setRefreshComplete() {
         Log.d("refresh", "stop");
         swipeRefreshLayout.setRefreshing(false);
-        if(loadingItemView != null){
+        if (loadingItemView != null) {
             loadingItemView.setVisibility(View.GONE);
         }
     }
@@ -492,21 +537,28 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
         topicType = TopicType.All_Except_Sell;
 
         fabDefaultY = fab.getY();
-        Log.d("forum", "init forum fragment " + forumPagerItem.title);
+        if (forumType != null) {
+            Log.d("forum", "init forum fragment " + forumPagerItem.title);
+        } else {
+            Log.d("forum", "init forum fragment " + userTopicType);
+        }
         int toolbarAndNavSize = getResources().getDimensionPixelSize(R.dimen.tabs_height) + getResources().getDimensionPixelSize(R.dimen.toolbar_size);
 
 
-
-        topicAdapter = new ForumAdapter(getAttachedActivity(), forum, forumPart, forumType, recommendTopicTitle, recommendTopicUrl);
-        topicAdapter.setLoadMoreListener(new TopicAdapter.LoadMoreListener() {
+        if (forumType != null && userTopicType == null) {
+            forumAdapter = new ForumAdapter(getAttachedActivity(), forum, forumPart, forumType, recommendTopicTitle, recommendTopicUrl);
+        } else if (forumType == null && userTopicType != null) {
+            forumAdapter = new TopicAdapter(getAttachedActivity(), new ArrayList<Topic>());
+        }
+        forumAdapter.setLoadMoreListener(new TopicAdapter.LoadMoreListener() {
             @Override
             public void onLoadMore() {
                 loadMore();
             }
         });
-        loadingItemView = topicAdapter.getLoadingItemView();
+        loadingItemView = forumAdapter.getLoadingItemView();
 
-        MyAnimationAdapter animationAdapter = new MyAnimationAdapter(topicAdapter);
+        MyAnimationAdapter animationAdapter = new MyAnimationAdapter(forumAdapter);
         animationAdapter.setAbsListView(list);
         showLoadingScreen();
 
@@ -518,7 +570,7 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
             View blankHeader = new View(getAttachedActivity());
             blankHeader.setMinimumHeight(toolbarAndNavSize);
             list.addHeaderView(blankHeader);
-        }else{
+        } else {
             getAttachedActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         swipeRefreshLayout.setProgressViewOffset(false
@@ -527,7 +579,7 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
 
         // Now setup the PullToRefreshLayout
         swipeRefreshLayout.setOnRefreshListener(this);
-        Log.d("refresh", toolbarAndNavSize+"");
+        Log.d("refresh", toolbarAndNavSize + "");
         swipeRefreshLayout.setColorSchemeResources(R.color.base_color);
 
         // Attach scroll listener
@@ -545,10 +597,10 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
 
             @Override
             public void onUpOrCancelMotionEvent(ScrollState scrollState) {
-                if(scrollState == ScrollState.UP){
+                if (scrollState == ScrollState.UP) {
                     app.getEventBus().post(new ForumScrollDownEvent());
                     hideFab();
-                }else if (scrollState == ScrollState.DOWN){
+                } else if (scrollState == ScrollState.DOWN) {
                     app.getEventBus().post(new ForumScrollUpEvent());
                     showFab();
                 }
@@ -605,8 +657,11 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
         cardRenderCount = 0;
         forumPart = null;
         forum = null;
+        myPage = null;
+        lastFirstId = 0;
+        lastLastId = 0;
         // Load Initial Data
-        topicAdapter.notifyDataSetChanged();
+        forumAdapter.notifyDataSetChanged();
         loadMore();
         loadForumPart();
     }
@@ -618,29 +673,37 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
     private void loadMore(boolean showSwipeRefresh) {
         currentPage++;
 
-        if(loadingItemView!= null){
+        if (loadingItemView != null) {
             loadingItemView.setVisibility(View.VISIBLE);
         }
 //        if (!swipeRefreshLayout.isRefreshing())
 //            swipeRefreshLayout.setRefreshing(showSwipeRefresh);
         prepareTopicDone = false;
-        client.getForum(
-                forumPagerItem.url,
-                forumType,
-                topicType,
-                currentPage,
-                lastIdCurrentPage,
-                false,
-                forumCallback
-        );
+
+        if (forumType != null) {
+            client.getForum(
+                    forumPagerItem.url,
+                    forumType,
+                    topicType,
+                    currentPage,
+                    lastIdCurrentPage,
+                    false,
+                    forumCallback
+            );
+        } else if (userTopicType != null) {
+            Log.d("Load User Topic ", userTopicType.toString());
+            if (myPage == null || currentPage < myPage.getMax_page())
+                client.getUserTopic(userId, userTopicType, currentPage, lastFirstId, lastLastId, userForumCallback);
+            else
+                prepareTopic();
+
+        }
     }
 
     @Override
     public void onRefresh() {
         refresh();
     }
-
-
 
 
 }

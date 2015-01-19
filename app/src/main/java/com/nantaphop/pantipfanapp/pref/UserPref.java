@@ -9,6 +9,7 @@ import org.androidannotations.annotations.sharedpreferences.SharedPref;
 public interface UserPref {
 
     String username();
+    int userId();
     String avatar();
     String bio();
     String password();

@@ -16,6 +16,7 @@ import com.nantaphop.pantipfanapp.R;
 import com.nantaphop.pantipfanapp.event.DoEmoEvent;
 import com.nantaphop.pantipfanapp.event.DoReplyEvent;
 import com.nantaphop.pantipfanapp.event.DoVoteEvent;
+import com.nantaphop.pantipfanapp.event.OpenUserEvent;
 import com.nantaphop.pantipfanapp.response.Comment;
 import com.nantaphop.pantipfanapp.response.EmoResponse;
 import com.nantaphop.pantipfanapp.service.PantipRestClient;
@@ -267,6 +268,11 @@ public class CommentView extends RelativeLayout {
 
 
         bind(comment);
+    }
+
+    @Click
+    void authorPic(){
+        BaseApplication.getEventBus().post(new OpenUserEvent(comment.getUser().getId(), comment.getUser().getName(), comment.getUser().getAvatar().getLarge()));
     }
 
 

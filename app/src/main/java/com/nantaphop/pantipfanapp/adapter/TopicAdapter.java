@@ -77,7 +77,7 @@ public class TopicAdapter extends BaseAdapter {
         } catch (Exception e) {
             return TYPE_TOPIC;
         }
-        if (topic.getCoverImg().length() > 0)
+        if (topic.getCoverImg() != null && topic.getCoverImg().length() > 0)
             return TYPE_TOPIC_THUMBNAIL;
         else
             return TYPE_TOPIC;

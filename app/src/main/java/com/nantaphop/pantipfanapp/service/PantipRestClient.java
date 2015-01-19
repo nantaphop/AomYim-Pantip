@@ -2,25 +2,23 @@ package com.nantaphop.pantipfanapp.service;
 
 import android.content.Context;
 import android.util.Log;
-import com.activeandroid.app.Application;
-import com.loopj.android.http.*;
-import com.nantaphop.pantipfanapp.pref.UserPref_;
-import com.nantaphop.pantipfanapp.response.ForumPart;
-import org.androidannotations.annotations.*;
-import org.androidannotations.annotations.sharedpreferences.Pref;
-import org.apache.http.Header;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.params.ClientPNames;
-import org.apache.http.client.utils.URLEncodedUtils;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
-import java.io.IOException;
+import com.activeandroid.app.Application;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.PersistentCookieStore;
+import com.loopj.android.http.RequestParams;
+import com.nantaphop.pantipfanapp.pref.UserPref_;
+
+import org.androidannotations.annotations.Background;
+import org.androidannotations.annotations.EBean;
+import org.androidannotations.annotations.RootContext;
+import org.androidannotations.annotations.Trace;
+import org.androidannotations.annotations.sharedpreferences.Pref;
+import org.apache.http.client.params.ClientPNames;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -41,6 +39,29 @@ public class PantipRestClient {
     private AsyncHttpClient client = null;
     private Context context;
 
+    public static enum UserTopicType {
+        Topic {
+            @Override
+            public String toString() {
+                return "topic";
+            }
+        },
+        Comment {
+            @Override
+            public String toString() {
+                return "comment";
+            }
+        },
+        Bookmarks {
+            @Override
+            public String toString() {
+                return "bookmarks";
+            }
+        }
+    }
+
+    ;
+
     public static enum ForumType {
         Room {
             @Override
@@ -54,7 +75,7 @@ public class PantipRestClient {
                 return "club";
             }
         },
-        Tag {
+        forumType, Tag {
             @Override
             public String toString() {
                 return "tag";
@@ -298,7 +319,7 @@ public class PantipRestClient {
 
     @Trace
     @Background
-    public void getForumPart(String forumName, ForumType type, AsyncHttpResponseHandler cb){
+    public void getForumPart(String forumName, ForumType type, AsyncHttpResponseHandler cb) {
         try {
             forumName = URLEncoder.encode(forumName, "utf-8");
         } catch (UnsupportedEncodingException e) {
@@ -316,6 +337,19 @@ public class PantipRestClient {
         get(url + forumName, null, cb);
         Log.d(TAG, "get forum part - " + forumName);
 
+    }
+
+    @Background
+    public void getUserTopic(int userId, UserTopicType userTopicType, int page, long first_id, long last_id, AsyncHttpResponseHandler cb) {
+        String url = String.format("profile/me/ajax_my_%s?type=%s&mid=%d&p=%d&ftid=%d&ltid=%d"
+                , userTopicType.toString()
+                , userTopicType.toString()
+                , userId
+                , page
+                , first_id
+                , last_id);
+        get(url, null, cb);
+        Log.d(TAG, "get user " + userId + " " + userTopicType);
     }
 
     @Trace

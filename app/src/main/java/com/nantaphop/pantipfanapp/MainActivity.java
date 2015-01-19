@@ -11,11 +11,11 @@ import android.view.MenuItem;
 import android.widget.FrameLayout;
 
 import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
 import com.nantaphop.pantipfanapp.event.OpenForumEvent;
 import com.nantaphop.pantipfanapp.event.OpenForumRearrangeEvent;
 import com.nantaphop.pantipfanapp.event.OpenLoginScreenEvent;
 import com.nantaphop.pantipfanapp.event.OpenTopicEvent;
+import com.nantaphop.pantipfanapp.event.OpenUserEvent;
 import com.nantaphop.pantipfanapp.event.SetTitleEvent;
 import com.nantaphop.pantipfanapp.event.ToggleDrawerEvent;
 import com.nantaphop.pantipfanapp.event.UpdateForumListEvent;
@@ -148,6 +148,13 @@ public class MainActivity extends BaseActivity {
     public void openLogin(OpenLoginScreenEvent e) {
         Intent i = new Intent(this, LoginActivity_.class);
         startActivity(i);
+        drawer_layout.closeDrawers();
+
+    }
+
+    @Subscribe
+    public void openUser(OpenUserEvent e) {
+        UserActivity_.intent(this).userId(e.getUserId()).user(e.getUsername()).avatar(e.getAvatar()).start();
         drawer_layout.closeDrawers();
 
     }
