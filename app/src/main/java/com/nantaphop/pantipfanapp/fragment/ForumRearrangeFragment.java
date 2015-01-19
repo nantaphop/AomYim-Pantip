@@ -8,12 +8,22 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.github.amlcurran.showcaseview.OnShowcaseEventListener;
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.PointTarget;
+import com.github.amlcurran.showcaseview.targets.Target;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.nantaphop.pantipfanapp.BaseApplication;
 import com.nantaphop.pantipfanapp.R;
+import com.nantaphop.pantipfanapp.RoomArrangementActivity;
 import com.nantaphop.pantipfanapp.event.UpdateForumListEvent;
 import com.nantaphop.pantipfanapp.model.ForumPagerItem;
+import com.nantaphop.pantipfanapp.utils.DeviceUtils;
+import com.nantaphop.pantipfanapp.utils.ShowcaseUtils;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.App;
@@ -76,13 +86,115 @@ public class ForumRearrangeFragment extends BaseFragment {
         cardDragDropArrayAdapter = new CardDragDropArrayAdapter(getActivity(), cards);
         cardList.setScrollSpeed(6f);
         cardList.setAdapter(cardDragDropArrayAdapter);
+//        delay1SecBeforeShowcase();
+        showcase();
+    }
+
+//    @Background
+//    void delay1SecBeforeShowcase(){
+//        try {
+//            Thread.sleep(1000);
+//            showcase();
+//        } catch (InterruptedException e) {
+//        }
+//    }
+
+    @UiThread
+    void showcase() {
+
+        final RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        lp.addRule(RelativeLayout.CENTER_IN_PARENT);
+
+        final View item = cardList.getChildAt(1);
+
+
+
+
+
+        ShowcaseView svScreen = new ShowcaseView.Builder(getAttachedActivity(), true)
+                .setTarget(Target.NONE)
+                .hideOnTouchOutside()
+                .setContentTitle("จัดการห้อง")
+                .singleShot(ShowcaseUtils.REARRANGE_FORUM_ID)
+                .setContentText("คุณสามารถจัดการห้องต่างๆ\nได้ในหน้าจอนี้")
+                .setShowcaseEventListener(new OnShowcaseEventListener() {
+                    @Override
+                    public void onShowcaseViewHide(ShowcaseView showcaseView) {
+                            Log.d("showcase", "hide");
+                        ShowcaseView svShowHide = new ShowcaseView.Builder(getAttachedActivity())
+                                .setTarget(new ViewTarget(item.findViewById(R.id.enable)))
+                                .setContentTitle("เลือกแสดงเฉพาะห้องที่ต้องการ")
+                                .setContentText("คงไม่มีใครอ่าน Pantip ทุกห้อง\nดังนี้นเลือกแสดงเฉพาะห้องที่คุณชอบดีกว่า")
+                                .setShowcaseEventListener(new OnShowcaseEventListener() {
+                                    @Override
+                                    public void onShowcaseViewHide(ShowcaseView showcaseView) {
+                                        ShowcaseView svSort = new ShowcaseView.Builder(getAttachedActivity())
+                                                .setTarget(new ViewTarget(((LinearLayout) item).getChildAt(1)))
+                                                .setContentTitle("เรียงลำดับห้อง ตามที่คุณชอบ")
+                                                .setContentText("กดค้างด้านขวา แล้วลาก\nให้การอ่าน Pantip ของคุณเป็นไปอย่างลื่นไหล\nเรียงลำดับห้องตามที่คุณต้องการได้เลย")
+                                                .setShowcaseEventListener(new OnShowcaseEventListener() {
+                                                    @Override
+                                                    public void onShowcaseViewHide(ShowcaseView showcaseView) {
+                                                        ShowcaseView svSave = new ShowcaseView.Builder(getAttachedActivity())
+                                                                .setTarget(new PointTarget(DeviceUtils.getDisplayWidth(getAttachedActivity()), 0))
+                                                                .setContentTitle("อย่าลืมกดบันทึก")
+                                                                .setContentText("เสร็จแล้วก็เริ่มอ่าน Pantip กันได้เลย!")
+                                                                .build();
+                                                        svSave.setButtonPosition(lp);
+                                                    }
+
+                                                    @Override
+                                                    public void onShowcaseViewDidHide(ShowcaseView showcaseView) {
+
+                                                    }
+
+                                                    @Override
+                                                    public void onShowcaseViewShow(ShowcaseView showcaseView) {
+
+                                                    }
+                                                })
+                                                .build();
+                                        svSort.setButtonPosition(lp);
+                                    }
+
+                                    @Override
+                                    public void onShowcaseViewDidHide(ShowcaseView showcaseView) {
+
+                                    }
+
+                                    @Override
+                                    public void onShowcaseViewShow(ShowcaseView showcaseView) {
+
+                                    }
+                                })
+                                .build();
+                        svShowHide.setButtonPosition(lp);
+                    }
+
+                    @Override
+                    public void onShowcaseViewDidHide(ShowcaseView showcaseView) {
+                        Log.d("showcase", "did hide");
+
+                    }
+
+                    @Override
+                    public void onShowcaseViewShow(ShowcaseView showcaseView) {
+                        Log.d("showcase", "show");
+                    }
+                })
+                .build();
+
+
+        svScreen.setButtonPosition(lp);
+
 
     }
+
+
 
     @Override
     public void onStart() {
         super.onStart();
-        init();
     }
 
     @OptionsItem
@@ -109,7 +221,7 @@ public class ForumRearrangeFragment extends BaseFragment {
                 .getLaunchIntentForPackage( app.getPackageName() );
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(i);
-        getActivity().onBackPressed();
+        ((RoomArrangementActivity)getActivity()).back();
     }
 
     @Override

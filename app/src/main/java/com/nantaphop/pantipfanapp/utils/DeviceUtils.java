@@ -16,4 +16,14 @@ public class DeviceUtils {
         display.getSize(size);
         return size.y/2;
     }
+
+    public static int getDisplayWidth(Context context){
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        return size.x;
+    }
+
+
 }

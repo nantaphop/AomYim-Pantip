@@ -33,6 +33,8 @@
         <item name="android:actionBarSize">56dp</item>
         <item name="actionBarSize">@dimen/toolbar_size</item>
         <item name="actionBarStyle">@style/MyActionBarStyle</item>
+        <item name="showcaseViewStyle">@style/CustomShowcaseTheme</item>
+
 
 
         <!--<item name="android:actionBarItemBackground">@drawable/selectable_background_pantip</item>-->
