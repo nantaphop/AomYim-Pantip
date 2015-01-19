@@ -84,7 +84,10 @@ public class RecommendCardView extends LinearLayout {
             text.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    app.fireEvent(new OpenTopicEvent(topic));
+
+                    if (topic.getId()>0) {
+                        app.fireEvent(new OpenTopicEvent(topic));
+                    }
                 }
             });
         }

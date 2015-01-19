@@ -26,4 +26,14 @@
         <item name="android:layout_marginBottom">@dimen/padding_narrow</item>
     </style>
 
+    <style name="drawer_item">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/drawer_item_height</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:drawablePadding">16dp</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:textColor">#dd000000</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
 </resources>

@@ -38,5 +38,6 @@
     <dimen name="text_body">14sp</dimen>
     <dimen name="author_pic_comment">36dp</dimen>
     <dimen name="line_space_extra_body">4dp</dimen>
+    <dimen name="drawer_item_height">48dp</dimen>
 
 </resources>

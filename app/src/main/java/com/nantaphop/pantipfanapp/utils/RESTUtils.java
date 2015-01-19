@@ -1,9 +1,19 @@
 package com.nantaphop.pantipfanapp.utils;
 
 import android.util.Log;
+
 import com.nantaphop.pantipfanapp.BaseApplication;
 import com.nantaphop.pantipfanapp.pref.UserPref_;
-import com.nantaphop.pantipfanapp.response.*;
+import com.nantaphop.pantipfanapp.response.Comment;
+import com.nantaphop.pantipfanapp.response.CommentResponse;
+import com.nantaphop.pantipfanapp.response.Comments;
+import com.nantaphop.pantipfanapp.response.EmoResponse;
+import com.nantaphop.pantipfanapp.response.Forum;
+import com.nantaphop.pantipfanapp.response.ForumPart;
+import com.nantaphop.pantipfanapp.response.Reply;
+import com.nantaphop.pantipfanapp.response.TopicPost;
+import com.nantaphop.pantipfanapp.response.VoteResponse;
+
 import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,14 +25,17 @@ import org.jsoup.select.Elements;
 import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Formatter;
+import java.util.Locale;
 
 /**
  * Created by nantaphop on 27-Jul-14.
  */
 public class RESTUtils {
 
-    public static Forum parseForum(String resp){
+    public static Forum parseForum(String resp) {
         try {
             return BaseApplication.getGson().fromJson(new JSONObject(resp).get("item").toString(), Forum.class);
         } catch (JSONException e) {
@@ -31,7 +44,7 @@ public class RESTUtils {
         }
     }
 
-    public static ForumPart parseForumPart(String pageHtml){
+    public static ForumPart parseForumPart(String pageHtml) {
         Document doc = Jsoup.parse(pageHtml);
         ForumPart forumPart = new ForumPart();
 
@@ -40,10 +53,18 @@ public class RESTUtils {
         ArrayList<String> recList = new ArrayList<String>();
         ArrayList<String> recUrl = new ArrayList<String>();
 
-        Elements temp = doc.select("div.best-item a");
-        for(Element e: temp){
-            recUrl.add("http://pantip.com"+e.attr("href"));
-            recList.add(e.text());
+        Elements temp = doc.select("div.best-item");
+
+        for (Element e : temp) {
+            Elements a = e.select("a");
+            if(a.size() > 0) {
+                Element recommendTopic = a.get(0);
+                recUrl.add("http://pantip.com" + recommendTopic.attr("href"));
+                recList.add(recommendTopic.text());
+            }else{
+                recList.add(e.text());
+                recUrl.add("");
+            }
         }
 
         forumPart.setRecommendTopic(recList);
@@ -55,9 +76,9 @@ public class RESTUtils {
 
         temp = doc.select("#tag-filter-container-topic div.tag-item a.tag-title");
 
-        for (Element e: temp){
+        for (Element e : temp) {
             tagList.add(e.text());
-            tagUrl.add("http://pantip.com"+e.attr("href"));
+            tagUrl.add("http://pantip.com" + e.attr("href"));
         }
 
         forumPart.setTag(tagList);
@@ -69,9 +90,9 @@ public class RESTUtils {
         ArrayList<String> clubUrl = new ArrayList<String>();
 
         temp = doc.select("div.section-club div.item_club a");
-        for (Element e: temp){
+        for (Element e : temp) {
             clubList.add(e.text());
-            clubUrl.add("http://pantip.com"+e.attr("href"));
+            clubUrl.add("http://pantip.com" + e.attr("href"));
         }
 
         forumPart.setClub(clubList);
@@ -94,11 +115,11 @@ public class RESTUtils {
             }
         }
 
-        long duration = (System.currentTimeMillis()-start);
+        long duration = (System.currentTimeMillis() - start);
         return b.toString();
     }
 
-    public static TopicPost parseTopicPost(String topicPageHtml){
+    public static TopicPost parseTopicPost(String topicPageHtml) {
         TopicPost topicPost = new TopicPost();
         Document doc = Jsoup.parse(topicPageHtml);
 
@@ -110,17 +131,17 @@ public class RESTUtils {
 
         // Add Image Link
         Elements imgs = body.select("img.img-in-post");
-        for(Element img: imgs){
-            img.before("<a href=\""+img.attr("src") +"\">ดูภาพใหญ่<br/>");
+        for (Element img : imgs) {
+            img.before("<a href=\"" + img.attr("src") + "\">ดูภาพใหญ่<br/>");
             img.after("</a>");
 
         }
 
         // Add Youtube Link
         imgs = body.select("a.play_btn");
-        for(Element a: imgs){
+        for (Element a : imgs) {
             a.before("<br/>");
-            a.after("<br/><a href=\""+ a.attr("href") +"\">ดู Video</a>");
+            a.after("<br/><a href=\"" + a.attr("href") + "\">ดู Video</a>");
         }
 
 
@@ -129,9 +150,9 @@ public class RESTUtils {
         topicPost.setEmotions(Integer.parseInt(doc.select("span.emotion-score").get(0).text()));
         topicPost.setAuthor(doc.select("a.display-post-name").get(0).text());
         topicPost.setVoted(doc.select("a.icon-heart-like.i-vote").size() > 0);
-        topicPost.setEmoted(doc.select("a.emotion-choice-icon.i-vote").size()>0);
+        topicPost.setEmoted(doc.select("a.emotion-choice-icon.i-vote").size() > 0);
         String avatar = doc.select("div.display-post-avatar a img").get(0).attr("src");
-        if(avatar.startsWith("/images"))
+        if (avatar.startsWith("/images"))
             avatar = "http://pantip.com" + avatar;
         topicPost.setAuthorPic(avatar);
 
@@ -146,24 +167,25 @@ public class RESTUtils {
         return topicPost;
     }
 
-    public static Comments parseComments(String resp){
+    public static Comments parseComments(String resp) {
         return BaseApplication.getGson().fromJson(resp, Comments.class);
     }
 
-    public static Reply parseReplies(String resp){
+    public static Reply parseReplies(String resp) {
         return BaseApplication.getGson().fromJson(resp, Reply.class);
     }
-    public static CommentResponse parseCommentResp(String resp){
+
+    public static CommentResponse parseCommentResp(String resp) {
         Log.d("resp", resp);
         return BaseApplication.getGson().fromJson(resp, CommentResponse.class);
     }
 
-    public static VoteResponse parseVoteResp(String resp){
+    public static VoteResponse parseVoteResp(String resp) {
         Log.d("resp", resp);
         return BaseApplication.getGson().fromJson(resp, VoteResponse.class);
     }
 
-    public static EmoResponse parseEmoResp(String resp){
+    public static EmoResponse parseEmoResp(String resp) {
         Log.d("resp", resp);
         return BaseApplication.getGson().fromJson(resp, EmoResponse.class);
     }
@@ -172,39 +194,39 @@ public class RESTUtils {
         Document doc = Jsoup.parse(c.getMessage());
 
         Elements imgs = doc.select("img.img-in-post");
-        for(Element img: imgs){
+        for (Element img : imgs) {
             img.before("<br/>");
-            img.after("<br/><a href=\""+ img.attr("src") +"\">ดูภาพใหญ่</a>");
+            img.after("<br/><a href=\"" + img.attr("src") + "\">ดูภาพใหญ่</a>");
         }
 
         // Add Youtube Link
         imgs = doc.select("a.play_btn");
-        for(Element a: imgs){
+        for (Element a : imgs) {
             a.before("<br/>");
-            a.after("<br/><a href=\""+ a.attr("href") +"\">ดู Video</a>");
+            a.after("<br/><a href=\"" + a.attr("href") + "\">ดู Video</a>");
         }
 
         c.setMessage(doc.html());
     }
 
-    public static boolean isLogin(Header[] headers){
-        for (Header h : headers){
-            if(h.getName().equalsIgnoreCase("Connection") &&
-                    h.getValue().equalsIgnoreCase("keep-alive")){
+    public static boolean isLogin(Header[] headers) {
+        for (Header h : headers) {
+            if (h.getName().equalsIgnoreCase("Connection") &&
+                    h.getValue().equalsIgnoreCase("keep-alive")) {
                 return true;
             }
         }
         return false;
     }
 
-    public static boolean parseUserInfo(byte[] httpBody, UserPref_ userPref){
+    public static boolean parseUserInfo(byte[] httpBody, UserPref_ userPref) {
         try {
             Document doc = Jsoup.parse(new String(httpBody, "utf-8"));
-            String title = doc.select("title").get(0).text().replace("หน้าของ ","").replace(" - Pantip","");
+            String title = doc.select("title").get(0).text().replace("หน้าของ ", "").replace(" - Pantip", "");
             String avatar = doc.select("img.big-avatar").get(0).attr("src");
-            if(avatar.startsWith("/images"))
+            if (avatar.startsWith("/images"))
                 avatar += "http://pantip.com" + avatar;
-            Log.d("login", "User login - "+title+" : "+avatar);
+            Log.d("login", "User login - " + title + " : " + avatar);
             userPref.edit().username().put(title).avatar().put(avatar).apply();
             return true;
         } catch (UnsupportedEncodingException e) {

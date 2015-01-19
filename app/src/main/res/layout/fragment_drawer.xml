@@ -17,11 +17,11 @@
             android:layout_height="wrap_content">
 
         <ImageView
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+            android:layout_marginLeft="16dp"
                 android:id="@+id/avatar"
-                android:src="@drawable/ic_launcher_pantip"
-                android:layout_gravity="center_horizontal"/>
+                android:src="@drawable/ic_launcher_pantip" />
 
         <TextView
                 android:layout_width="wrap_content"
@@ -33,23 +33,26 @@
 
                 android:textColor="@android:color/white"
 
-                android:layout_gravity="center_horizontal"/>
+            />
     </LinearLayout>
 
 
-    <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/login"
-            android:id="@+id/login"
-            android:textColor="@android:color/white"
-            android:background="@color/base_color"
-            android:layout_gravity="center_horizontal"/>
 
-    <ListView
-            android:background="@android:color/white"
-            android:animateLayoutChanges="true"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/list"/>
+
+    <TextView
+        android:id="@+id/myProfile"
+        android:drawableLeft="@drawable/ic_action_social_person"
+        android:text="หน้าของฉัน"
+        style="@style/drawer_item" />
+    <TextView
+        android:id="@+id/login"
+        android:drawableLeft="@drawable/ic_action_social_person"
+        android:text="@string/login"
+        style="@style/drawer_item" />
+    <TextView
+        android:id="@+id/rearrangeRoom"
+        android:drawableLeft="@drawable/ic_action_action_reorder"
+        android:text="จัดการห้อง"
+        style="@style/drawer_item" />
+
 </LinearLayout>

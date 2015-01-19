@@ -183,8 +183,11 @@ public class ForumAdapter extends TopicAdapter {
             public void onItemClick(AdapterView<?> parent, View view, int i, long id) {
                 final Topic topic = new Topic();
                 topic.setTitle(forumPart.getRecommendTopic().get(i));
-                topic.setId(Integer.parseInt(forumPart.getRecommendUrl().get(i).split("/")[4]));
-                ((BaseApplication)context.getApplicationContext()).getEventBus().post(new OpenTopicEvent(topic));
+                try {
+                    topic.setId(Integer.parseInt(forumPart.getRecommendUrl().get(i).split("/")[4]));
+                    ((BaseApplication)context.getApplicationContext()).getEventBus().post(new OpenTopicEvent(topic));
+                } catch (ArrayIndexOutOfBoundsException e) {
+                }
             }
         });
         dialog.show();

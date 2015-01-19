@@ -28,6 +28,7 @@ import com.nantaphop.pantipfanapp.model.ForumPagerItem;
 import com.nantaphop.pantipfanapp.response.Forum;
 import com.nantaphop.pantipfanapp.response.ForumPart;
 import com.nantaphop.pantipfanapp.response.Topic;
+import com.nantaphop.pantipfanapp.service.PantipRestClient;
 import com.nantaphop.pantipfanapp.utils.DeviceUtils;
 import com.nantaphop.pantipfanapp.utils.RESTUtils;
 import com.nantaphop.pantipfanapp.utils.TopicComparator;
@@ -73,6 +74,7 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
     FrameLayout root;
 
 
+    // Forum Args
     @FragmentArg
     ForumPagerItem forumPagerItem;
 
@@ -81,6 +83,11 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
 
     @FragmentArg
     boolean noTabMargin = false;
+
+    // User Args
+    @FragmentArg
+    int userId;
+    PantipRestClient.UserTopicType userTopicType;
 
 
     @InstanceState

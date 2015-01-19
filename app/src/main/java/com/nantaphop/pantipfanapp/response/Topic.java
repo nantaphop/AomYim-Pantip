@@ -37,6 +37,9 @@ public class Topic implements Serializable {
     @SerializedName("utime")
     Date date;
 
+    @SerializedName("stime")
+    long stime;
+
     @SerializedName("topic_type")
     int topicType;
 
