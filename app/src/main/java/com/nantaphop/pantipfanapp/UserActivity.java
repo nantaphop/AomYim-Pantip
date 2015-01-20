@@ -1,15 +1,19 @@
 package com.nantaphop.pantipfanapp;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import com.nantaphop.pantipfanapp.event.OpenTopicEvent;
 import com.nantaphop.pantipfanapp.fragment.UserFragment;
 import com.nantaphop.pantipfanapp.fragment.UserFragment_;
 import com.nantaphop.pantipfanapp.view.BaseActivity;
+import com.squareup.otto.Subscribe;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.App;
@@ -75,6 +79,16 @@ public class UserActivity extends BaseActivity {
     protected void onPause() {
         super.onPause();
         app.getEventBus().unregister(this);
+    }
+
+    @Subscribe
+    public void openTopic(OpenTopicEvent e) {
+        Intent i = new Intent(this, TopicActivity_.class);
+        i.putExtra("topic", e.getTopic());
+        startActivity(i);
+        overrideAnimationBeforeStartActivity();
+        Log.d("fragment", "open topic");
+
     }
 
 
