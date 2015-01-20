@@ -62,7 +62,8 @@ public class AnalyticsUtils {
     static synchronized Tracker getTracker(Context context) {
         if (tracker == null) {
             GoogleAnalytics analytics = GoogleAnalytics.getInstance(context);
-            tracker = (analytics.newTracker(R.xml.global_tracker));
+            tracker = (analytics.newTracker(R.xml.ga_tracking_id));
+            tracker.enableExceptionReporting(true);
             tracker.enableAdvertisingIdCollection(true);
         }
         return tracker;

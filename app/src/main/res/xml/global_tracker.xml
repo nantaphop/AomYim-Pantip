@@ -1,31 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <integer name="ga_sessionTimeout">300</integer>
 
-    <!-- Enable automatic Activity measurement -->
-    <bool name="ga_autoActivityTracking">true</bool>
-
-    <!-- The screen names that will appear in reports -->
-    <screenName name="com.nantaphop.pantipfanapp.MainActivity_">
-        Main Screen
-    </screenName>
-    <screenName name="com.nantaphop.pantipfanapp.TopicActivity_">
-        Topic Activity
-    </screenName>
-    <screenName name="com.nantaphop.pantipfanapp.LoginActivity_">
-        Login Activity
-    </screenName>
-    <screenName name="com.nantaphop.pantipfanapp.RoomArrangementActivity_">
-        Room Arrangement Activity
-    </screenName>
-    <screenName name="com.nantaphop.pantipfanapp.ForumActivity_">
-        Forum Activity for Tag/Club
-    </screenName>
-    <screenName name="com.nantaphop.pantipfanapp.UserActivity_">
-        User Detail Activity
-    </screenName>
-    <!--  The following value should be replaced with correct property id. -->
-    <string name="ga_trackingId">UA-40149704-5</string>
     <string name="ga_reportUncaughtExceptions">true</string>
     <string name="ga_dryRun">true</string>
     <string name="ga_logLevel">verbose</string>
