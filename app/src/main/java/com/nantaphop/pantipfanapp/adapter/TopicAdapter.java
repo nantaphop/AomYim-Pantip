@@ -127,7 +127,7 @@ public class TopicAdapter extends BaseAdapter {
             topicView = (TopicView) convertView;
         } else {
             topicView = TopicView_.build(context);
-
+            topicView.setAdapter(this);
         }
         topicView.bind((Topic) getItem(position));
         return topicView;
@@ -145,6 +145,7 @@ public class TopicAdapter extends BaseAdapter {
             topicView = (TopicThumbnailView) convertView;
         } else {
             topicView = TopicThumbnailView_.build(context);
+            topicView.setAdapter(this);
 
         }
         topicView.bind((Topic) getItem(position));

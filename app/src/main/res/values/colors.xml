@@ -11,7 +11,8 @@
 
 
     //Text Color
-    <color name="text_color_title_dark">#000</color>
+    <color name="text_color_title_primary_dark">#ff555555</color>
+    <color name="text_color_title_secondary_dark">#ffc6c6c6</color>
     <color name="text_color_title_bright">#fff</color>
     <color name="text_color_tag">#8c88c3</color>
     <color name="text_color_score_0">#bebebe</color>
@@ -20,6 +21,9 @@
     <color name="text_color_score_3">#5e5a9a</color>
 
     <color name="comment_tools_bg">#ddffffff</color>
+
+    //Topic
+    <color name="read_topic_overlay">#88ffffff</color>
 
 
 

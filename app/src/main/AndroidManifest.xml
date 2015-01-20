@@ -23,7 +23,7 @@
             android:value="pantipfanapp.db" />
         <meta-data
             android:name="AA_DB_VERSION"
-            android:value="1" />
+            android:value="2" />
 
 
         <activity

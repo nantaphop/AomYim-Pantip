@@ -8,12 +8,14 @@ import android.support.v7.widget.CardView;
 import android.text.Html;
 import android.text.format.DateUtils;
 import android.view.View;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.nantaphop.pantipfanapp.BaseApplication;
 import com.nantaphop.pantipfanapp.R;
 import com.nantaphop.pantipfanapp.event.OpenTopicEvent;
+import com.nantaphop.pantipfanapp.model.ReadLog;
 import com.nantaphop.pantipfanapp.response.Tag;
 import com.nantaphop.pantipfanapp.response.Topic;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -53,7 +55,10 @@ public class TopicThumbnailView extends RelativeLayout implements View.OnClickLi
     TextView votes;
     @ViewById
     TextView comments;
+    @ViewById
+    View read;
     private Context context;
+    private BaseAdapter adapter;
 
     @DimensionPixelSizeRes(R.dimen.padding_extra)
     int paddingExtra;
@@ -61,6 +66,10 @@ public class TopicThumbnailView extends RelativeLayout implements View.OnClickLi
     int paddingDefault;
     @ColorRes(R.color.base_color_bright)
     int rippleColor;
+    @ColorRes(R.color.text_color_title_primary_dark)
+    int text_color_title_primary_dark;
+    @ColorRes(R.color.text_color_title_secondary_dark)
+    int text_color_title_secondary_dark;
 
 
 
@@ -70,6 +79,10 @@ public class TopicThumbnailView extends RelativeLayout implements View.OnClickLi
         super(context);
         this.context = context;
 
+    }
+
+    public void setAdapter(BaseAdapter adapter) {
+        this.adapter = adapter;
     }
 
     @AfterViews
@@ -88,10 +101,11 @@ public class TopicThumbnailView extends RelativeLayout implements View.OnClickLi
         this.topic = topic;
 
         title.setText(Html.fromHtml(topic.getTitle()));
-//        title.setTextColor(textDark);
-//        title.setBackgroundColor(headerBgTransparent);
-
-//        app.getImageLoader().displayImage(topic.getCoverImg(), thumbnail, displayImageOptions);
+        if (topic.isRead()) {
+            read.setVisibility(VISIBLE);
+        } else {
+            read.setVisibility(GONE);
+        }
 
         Picasso.with(context).load(topic.getCoverImg()).placeholder(R.drawable.ic_image).resize(400,300).centerCrop().into(thumbnail);
 
@@ -135,6 +149,8 @@ public class TopicThumbnailView extends RelativeLayout implements View.OnClickLi
 
     @Override
     public void onClick(View view) {
+        topic.setRead(true);
+        adapter.notifyDataSetChanged();
         app.getEventBus().post(new OpenTopicEvent(topic));
     }
 }

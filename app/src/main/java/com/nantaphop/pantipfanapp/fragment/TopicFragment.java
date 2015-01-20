@@ -3,7 +3,6 @@ package com.nantaphop.pantipfanapp.fragment;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.inputmethodservice.InputMethodService;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -34,6 +33,7 @@ import com.nantaphop.pantipfanapp.R;
 import com.nantaphop.pantipfanapp.event.DoEmoEvent;
 import com.nantaphop.pantipfanapp.event.DoReplyEvent;
 import com.nantaphop.pantipfanapp.event.DoVoteEvent;
+import com.nantaphop.pantipfanapp.model.ReadLog;
 import com.nantaphop.pantipfanapp.pref.UserPref_;
 import com.nantaphop.pantipfanapp.response.Comment;
 import com.nantaphop.pantipfanapp.response.CommentResponse;
@@ -77,6 +77,7 @@ import org.apache.http.Header;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Iterator;
 
 /**
@@ -85,6 +86,8 @@ import java.util.Iterator;
 @OptionsMenu(R.menu.menu_topic)
 @EFragment(R.layout.fragment_topic)
 public class TopicFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
+
+    private static final String LOG_TAG = TopicFragment.class.getSimpleName();
 
     @FragmentArg
     Topic topic;
@@ -331,6 +334,8 @@ public class TopicFragment extends BaseFragment implements SwipeRefreshLayout.On
 
     @AfterViews
     void init() {
+        saveReadLog();
+
         initCommentDialog();
         getAttachedActivity().loadAd(ads);
         getAttachedActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -397,9 +402,15 @@ public class TopicFragment extends BaseFragment implements SwipeRefreshLayout.On
         );
     }
 
+    private void saveReadLog() {
+        ReadLog log = new ReadLog(topic, new Date().getTime());
+        Long id = log.save();
+        Log.i(LOG_TAG, "Save read log "+id);
+    }
+
     @AfterViews
-    void disableNonLoginUser(){
-        if(!app.isUserLogin()){
+    void disableNonLoginUser() {
+        if (!app.isUserLogin()) {
             fab.setVisibility(View.GONE);
         }
     }
@@ -833,14 +844,14 @@ public class TopicFragment extends BaseFragment implements SwipeRefreshLayout.On
     }
 
     @Click
-    void fab(){
+    void fab() {
         commentDialogView.clear();
         commentDialog.show();
         showKeyboard();
     }
 
-    void showKeyboard(){
-        inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
+    void showKeyboard() {
+        inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
     }
 
     private CommentDialogView initCommentDialog() {

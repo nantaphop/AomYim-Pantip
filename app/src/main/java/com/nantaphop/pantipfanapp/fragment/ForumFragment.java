@@ -23,8 +23,8 @@ import com.nantaphop.pantipfanapp.event.ForumScrollDownEvent;
 import com.nantaphop.pantipfanapp.event.ForumScrollUpEvent;
 import com.nantaphop.pantipfanapp.event.OpenForumEvent;
 import com.nantaphop.pantipfanapp.event.SortForumEvent;
-import com.nantaphop.pantipfanapp.event.ToggleDrawerEvent;
 import com.nantaphop.pantipfanapp.model.ForumPagerItem;
+import com.nantaphop.pantipfanapp.model.ReadLog;
 import com.nantaphop.pantipfanapp.response.Forum;
 import com.nantaphop.pantipfanapp.response.ForumPart;
 import com.nantaphop.pantipfanapp.response.MyPage;
@@ -144,6 +144,12 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
         public void onSuccess(int i, Header[] headers, String s, Object o) {
             Log.i("loadData " + userId, " userForumCallback success");
             MyPage newMyPage = (MyPage) o;
+            //Check Read
+            for(Topic t: newMyPage.getResult()){
+                if(ReadLog.isRead(t.getId())){
+                    t.setRead(true);
+                }
+            }
             if (myPage == null) {
                 myPage = newMyPage;
 
@@ -175,6 +181,12 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
             Log.i("loadData " + forumPagerItem.title, "forumCallback success");
             Log.d("forum", "success");
             Forum newForum = (Forum) o;
+            //Check Read
+            for(Topic t: newForum.getTopics()){
+                if(ReadLog.isRead(t.getId())){
+                    t.setRead(true);
+                }
+            }
             if (forum == null) {
                 forum = newForum;
                 lastIdCurrentPage = forum.getLastIdCurrentPage();
