@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="dialog_title">โหวต %s</string>
+    <string name="rate_message">ถ้าคุณชอบแอปนี้ โปรดสละเวลาซักนิดเพื่อโหวต เป็นกำลังใจให้นักพัฒนา ขอบคุณมากครับ :)</string>
+    <string name="rate">โหวต</string>
+    <string name="later">เตือนภายหลัง</string>
+    <string name="no_thanks">ไม่โหวต</string>
+</resources>

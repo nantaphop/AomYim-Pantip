@@ -24,6 +24,7 @@ import com.nantaphop.pantipfanapp.service.PantipRestClient;
 import com.nantaphop.pantipfanapp.utils.TranslucentUtils;
 import com.squareup.otto.Subscribe;
 import org.androidannotations.annotations.*;
+import org.codechimp.apprater.AppRater;
 
 import java.util.List;
 
@@ -57,6 +58,9 @@ public class ForumHolderFragment extends BaseFragment {
 
     @AfterViews
     void init(){
+
+        rateApp();
+
         getAttachedActivity().loadAd(ads);
         getAttachedActivity().setSupportActionBar(toolbar);
         getAttachedActivity().initNavDrawer(toolbar);
@@ -101,6 +105,14 @@ public class ForumHolderFragment extends BaseFragment {
 
         actionBar = ((ActionBarActivity)getAttachedActivity()).getSupportActionBar();
         topDefaultY = topPanel.getY();
+    }
+
+    private void rateApp() {
+        AppRater.app_launched(getAttachedActivity());
+        AppRater.setLightTheme();
+//        AppRater.setVersionCodeCheckEnabled(true);
+        AppRater.setNumLaunchesForRemindLater(1);
+//        AppRater.showRateDialog(getAttachedActivity());
     }
 
     @Override
