@@ -698,8 +698,10 @@ public class TopicFragment extends BaseFragment implements SwipeRefreshLayout.On
                                 commentComparator = new CommentComparator(CommentComparator.SortType.Order);
                                 break;
                         }
-                        Collections.sort(comments.getComments(), commentComparator);
-                        commentAdapter.notifyDataSetChanged();
+                        if (comments.getComments()!=null) {
+                            Collections.sort(comments.getComments(), commentComparator);
+                            commentAdapter.notifyDataSetChanged();
+                        }
                     }
                 })
                 .show();
