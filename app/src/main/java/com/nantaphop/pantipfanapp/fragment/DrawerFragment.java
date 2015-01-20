@@ -14,6 +14,7 @@ import com.nantaphop.pantipfanapp.event.OpenUserEvent;
 import com.nantaphop.pantipfanapp.event.UpdateLoginStateEvent;
 import com.nantaphop.pantipfanapp.pref.UserPref_;
 import com.nantaphop.pantipfanapp.service.PantipRestClient;
+import com.nantaphop.pantipfanapp.utils.AnalyticsUtils;
 import com.nantaphop.pantipfanapp.utils.CircleTransform;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
@@ -96,5 +97,7 @@ public class DrawerFragment extends BaseFragment {
         BaseApplication.getEventBus().post(new OpenForumRearrangeEvent());
     }
     @Click
-    void myProfile(){BaseApplication.getEventBus().post(new OpenUserEvent(userPref.userId().get(), userPref.username().get(), userPref.avatar().get()));}
+    void myProfile(){
+        tracker.sendEvent(AnalyticsUtils.CATEGORY_USER_ACTION, AnalyticsUtils.ACTION_OPEN_MY_PROFILE, null);
+        BaseApplication.getEventBus().post(new OpenUserEvent(userPref.userId().get(), userPref.username().get(), userPref.avatar().get()));}
 }

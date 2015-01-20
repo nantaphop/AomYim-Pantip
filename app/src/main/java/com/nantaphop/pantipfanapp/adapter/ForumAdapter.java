@@ -15,6 +15,7 @@ import com.nantaphop.pantipfanapp.response.Forum;
 import com.nantaphop.pantipfanapp.response.ForumPart;
 import com.nantaphop.pantipfanapp.response.Topic;
 import com.nantaphop.pantipfanapp.service.PantipRestClient;
+import com.nantaphop.pantipfanapp.utils.AnalyticsUtils;
 import com.nantaphop.pantipfanapp.view.RecommendCardView;
 import com.nantaphop.pantipfanapp.view.RecommendCardView_;
 import com.nantaphop.pantipfanapp.view.TopicSectionView;
@@ -167,7 +168,7 @@ public class ForumAdapter extends TopicAdapter {
     }
 
     private void showRecommendDialog() {
-
+        AnalyticsUtils.sendEvent(AnalyticsUtils.CATEGORY_USER_ACTION, AnalyticsUtils.ACTION_VIEW_RECOMMEND_LIST, null);
         MaterialDialog dialog = new MaterialDialog.Builder(context)
                 .title(R.string.recomend_topic)
                 .adapter(new ArrayAdapter<String>(context, R.layout.listitem_recommend_dialog, forumPart.getRecommendTopic()))

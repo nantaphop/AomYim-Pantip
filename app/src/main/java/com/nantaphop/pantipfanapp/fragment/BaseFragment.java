@@ -7,6 +7,7 @@ import android.util.Log;
 import com.github.mrengineer13.snackbar.SnackBar;
 import com.nantaphop.pantipfanapp.BaseApplication;
 import com.nantaphop.pantipfanapp.service.PantipRestClient;
+import com.nantaphop.pantipfanapp.utils.AnalyticsUtils;
 import com.nantaphop.pantipfanapp.view.BaseActivity;
 import org.androidannotations.annotations.*;
 import org.jsoup.Connection;
@@ -20,6 +21,9 @@ public class BaseFragment extends Fragment {
     protected BaseApplication app;
     @Bean
     protected PantipRestClient client;
+    @Bean
+    protected AnalyticsUtils tracker;
+
     private BaseActivity activity;
 
     @Override

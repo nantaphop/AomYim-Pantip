@@ -30,6 +30,7 @@ import com.nantaphop.pantipfanapp.response.ForumPart;
 import com.nantaphop.pantipfanapp.response.MyPage;
 import com.nantaphop.pantipfanapp.response.Topic;
 import com.nantaphop.pantipfanapp.service.PantipRestClient;
+import com.nantaphop.pantipfanapp.utils.AnalyticsUtils;
 import com.nantaphop.pantipfanapp.utils.DeviceUtils;
 import com.nantaphop.pantipfanapp.utils.RESTUtils;
 import com.nantaphop.pantipfanapp.utils.TopicComparator;
@@ -437,15 +438,19 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
                         TopicComparator topicComparator;
                         switch (i) {
                             case 0:
+                                tracker.sendEvent(AnalyticsUtils.CATEGORY_USER_ACTION, AnalyticsUtils.ACTION_SORT_TOPIC, "Comment");
                                 topicComparator = new TopicComparator(TopicComparator.SortType.Comment);
                                 break;
                             case 1:
+                                tracker.sendEvent(AnalyticsUtils.CATEGORY_USER_ACTION, AnalyticsUtils.ACTION_SORT_TOPIC, "Vote");
                                 topicComparator = new TopicComparator(TopicComparator.SortType.Vote);
                                 break;
                             case 2:
+                                tracker.sendEvent(AnalyticsUtils.CATEGORY_USER_ACTION, AnalyticsUtils.ACTION_SORT_TOPIC, "Time");
                                 topicComparator = new TopicComparator(TopicComparator.SortType.Time);
                                 break;
                             default:
+                                tracker.sendEvent(AnalyticsUtils.CATEGORY_USER_ACTION, AnalyticsUtils.ACTION_SORT_TOPIC, "Time");
                                 topicComparator = new TopicComparator(TopicComparator.SortType.Time);
                                 break;
                         }
@@ -467,24 +472,31 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
                     public void onSelection(MaterialDialog dialog, View view, int i, CharSequence text) {
                         switch (i) {
                             case 0:
+                                tracker.sendEvent(AnalyticsUtils.CATEGORY_USER_ACTION, AnalyticsUtils.ACTION_CHOOSE_TOPIC_TYPE, "All_Except_Sell");
                                 topicType = TopicType.All_Except_Sell;
                                 break;
                             case 1:
+                                tracker.sendEvent(AnalyticsUtils.CATEGORY_USER_ACTION, AnalyticsUtils.ACTION_CHOOSE_TOPIC_TYPE, "Question");
                                 topicType = TopicType.Question;
                                 break;
                             case 2:
+                                tracker.sendEvent(AnalyticsUtils.CATEGORY_USER_ACTION, AnalyticsUtils.ACTION_CHOOSE_TOPIC_TYPE, "Chat");
                                 topicType = TopicType.Chat;
                                 break;
                             case 3:
+                                tracker.sendEvent(AnalyticsUtils.CATEGORY_USER_ACTION, AnalyticsUtils.ACTION_CHOOSE_TOPIC_TYPE, "Poll");
                                 topicType = TopicType.Poll;
                                 break;
                             case 4:
+                                tracker.sendEvent(AnalyticsUtils.CATEGORY_USER_ACTION, AnalyticsUtils.ACTION_CHOOSE_TOPIC_TYPE, "Review");
                                 topicType = TopicType.Review;
                                 break;
                             case 5:
+                                tracker.sendEvent(AnalyticsUtils.CATEGORY_USER_ACTION, AnalyticsUtils.ACTION_CHOOSE_TOPIC_TYPE, "News");
                                 topicType = TopicType.News;
                                 break;
                             case 6:
+                                tracker.sendEvent(AnalyticsUtils.CATEGORY_USER_ACTION, AnalyticsUtils.ACTION_CHOOSE_TOPIC_TYPE, "Sell");
                                 topicType = TopicType.Sell;
                                 break;
                         }
@@ -497,6 +509,7 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
     @OptionsItem
     void action_view_tag() {
         if (forumPart != null) {
+            tracker.sendEvent(AnalyticsUtils.CATEGORY_USER_ACTION, AnalyticsUtils.ACTION_VIEW_TAG_LIST, forumPagerItem.title);
             new MaterialDialog.Builder(getAttachedActivity())
                     .title(R.string.title_tags_dialog)
                     .items(forumPart.getTag().toArray(new String[forumPart.getTag().size()]))
@@ -516,7 +529,7 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
     @OptionsItem
     void action_view_club() {
         if (forumPart != null) {
-
+            tracker.sendEvent(AnalyticsUtils.CATEGORY_USER_ACTION, AnalyticsUtils.ACTION_VIEW_CLUB_LIST, forumPagerItem.title);
             new MaterialDialog.Builder(getAttachedActivity())
                     .title(R.string.title_club_dialog)
                     .items(forumPart.getClub().toArray(new String[forumPart.getClub().size()]))
@@ -559,8 +572,14 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
 
         if (forumType != null && userTopicType == null) {
             forumAdapter = new ForumAdapter(getAttachedActivity(), forum, forumPart, forumType, recommendTopicTitle, recommendTopicUrl);
+            tracker.setScreen(forumPagerItem.title);
+            tracker.sendEvent(AnalyticsUtils.CATEGORY_USER_ACTION, AnalyticsUtils.ACTION_OPEN_FORUM, forumPagerItem.title);
+
         } else if (forumType == null && userTopicType != null) {
             forumAdapter = new TopicAdapter(getAttachedActivity(), new ArrayList<Topic>());
+            tracker.setScreen("user "+userTopicType.toString());
+            tracker.sendEvent(AnalyticsUtils.CATEGORY_USER_ACTION, AnalyticsUtils.ACTION_OPEN_FORUM, "user "+userTopicType.toString());
+
         }
         forumAdapter.setLoadMoreListener(new TopicAdapter.LoadMoreListener() {
             @Override
