@@ -25,6 +25,10 @@
     //Topic
     <color name="read_topic_overlay">#88ffffff</color>
 
+    //Comment
+    <color name="author_indicator">#11E5C700</color>
+
+
 
 
 </resources>
