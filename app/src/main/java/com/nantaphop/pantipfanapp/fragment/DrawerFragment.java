@@ -4,6 +4,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.nantaphop.pantipfanapp.BaseApplication;
@@ -45,7 +46,7 @@ public class DrawerFragment extends BaseFragment {
     @ViewById
     TextView usernameTxt;
     @ViewById
-    LinearLayout userPane;
+    RelativeLayout userPane;
     @ViewById
     ListView list;
     @ViewById

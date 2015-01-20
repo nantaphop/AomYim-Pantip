@@ -10,17 +10,18 @@
 
 
     <RelativeLayout
-        android:layout_height="wrap_content"
+        android:id="@+id/userPane"
+        android:layout_height="175dp"
         android:layout_width="match_parent">
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:src="@drawable/drawer_header"
             android:scaleType="centerCrop"
-            android:layout_alignBottom="@+id/userPane" />
+           android:layout_alignParentBottom="true" />
         <LinearLayout
             android:padding="@dimen/padding_default"
-            android:id="@+id/userPane"
+            android:layout_marginTop="32dp"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
