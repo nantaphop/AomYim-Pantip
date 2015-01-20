@@ -1,5 +1,7 @@
 package com.nantaphop.pantipfanapp.utils;
 
+import android.content.Context;
+
 import com.activeandroid.app.Application;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
@@ -13,7 +15,6 @@ import org.androidannotations.annotations.RootContext;
 /**
  * Created by nantaphop on 20-Jan-15.
  */
-@EBean(scope = EBean.Scope.Singleton)
 public class AnalyticsUtils {
 
     public static String CATEGORY_USER_ACTION = "User Action";
@@ -51,31 +52,28 @@ public class AnalyticsUtils {
 
     public static String CATEGORY_UI_ACTION = "UI Action";
 
-    @RootContext
-    Application app;
 
     private static Tracker tracker;
 
-    @AfterInject
-    void init(){
-        tracker = getTracker();
+    public AnalyticsUtils(Context context) {
+        tracker = getTracker(context);
     }
 
-    synchronized Tracker getTracker() {
+    static synchronized Tracker getTracker(Context context) {
         if (tracker == null) {
-            GoogleAnalytics analytics = GoogleAnalytics.getInstance(app);
+            GoogleAnalytics analytics = GoogleAnalytics.getInstance(context);
             tracker = (analytics.newTracker(R.xml.global_tracker));
             tracker.enableAdvertisingIdCollection(true);
         }
         return tracker;
     }
 
-    public static void setScreen(String screenName){
+    public void setScreen(String screenName){
         tracker.setScreenName(screenName);
         tracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
 
-    public static void sendEvent(String category, String action, String label, long value){
+    public void sendEvent(String category, String action, String label, long value){
         tracker.send(new HitBuilders.EventBuilder()
                 .setCategory(category)
                 .setAction(action)
@@ -84,7 +82,7 @@ public class AnalyticsUtils {
                 .build());
     }
 
-    public static void sendEvent(String category, String action, String label){
+    public void sendEvent(String category, String action, String label){
         tracker.send(new HitBuilders.EventBuilder()
                 .setCategory(category)
                 .setAction(action)
@@ -92,7 +90,7 @@ public class AnalyticsUtils {
                 .build());
     }
 
-    public static void sendTiming(String category, long value, String name, String label){
+    public void sendTiming(String category, long value, String name, String label){
         tracker.send(new HitBuilders.TimingBuilder()
                 .setCategory(category)
                 .setValue(value)

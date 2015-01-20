@@ -36,6 +36,7 @@ public class ForumAdapter extends TopicAdapter {
     private ForumPart forumPart;
     private final PantipRestClient.ForumType forumType;
     private String[] recommendTopicUrl;
+    private AnalyticsUtils analyticsUtils;
 
     public ForumAdapter(Context context, Forum forum, ForumPart forumPart, PantipRestClient.ForumType forumType, String[] recommendTopicTitle, String[] recommendTopicUrl) {
         super(context, new ArrayList<Topic>());
@@ -45,6 +46,7 @@ public class ForumAdapter extends TopicAdapter {
         this.forumType = forumType;
         this.recommendTopicTitle = recommendTopicTitle;
         this.recommendTopicUrl = recommendTopicUrl;
+        analyticsUtils = new AnalyticsUtils(context);
     }
 
     public void setForum(Forum forum) {
@@ -168,7 +170,8 @@ public class ForumAdapter extends TopicAdapter {
     }
 
     private void showRecommendDialog() {
-        AnalyticsUtils.sendEvent(AnalyticsUtils.CATEGORY_USER_ACTION, AnalyticsUtils.ACTION_VIEW_RECOMMEND_LIST, null);
+
+        analyticsUtils.sendEvent(AnalyticsUtils.CATEGORY_USER_ACTION, AnalyticsUtils.ACTION_VIEW_RECOMMEND_LIST, null);
         MaterialDialog dialog = new MaterialDialog.Builder(context)
                 .title(R.string.recomend_topic)
                 .adapter(new ArrayAdapter<String>(context, R.layout.listitem_recommend_dialog, forumPart.getRecommendTopic()))

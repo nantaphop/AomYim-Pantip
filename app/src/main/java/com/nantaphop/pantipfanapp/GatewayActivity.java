@@ -60,9 +60,10 @@ public class GatewayActivity extends Activity {
         // Second Segment is {tagName, forumName, topicId}
         String view = pathSegments.get(0);
         String detail = pathSegments.get(1);
+        AnalyticsUtils tracker = new AnalyticsUtils(this);
 
         if(view.equals("topic")){
-            AnalyticsUtils.sendEvent(AnalyticsUtils.CATEGORY_USER_ACTION, AnalyticsUtils.ACTION_IN_LINK, "Topic");
+            tracker.sendEvent(AnalyticsUtils.CATEGORY_USER_ACTION, AnalyticsUtils.ACTION_IN_LINK, "Topic");
             final Intent i = new Intent(this, TopicActivity_.class);
             Topic topic = new Topic();
             topic.setId(Integer.parseInt(uri.toString().split("/")[4]));
@@ -73,7 +74,7 @@ public class GatewayActivity extends Activity {
             return;
         }
         else if(view.equals("forum") || view.equals("tag")){
-            AnalyticsUtils.sendEvent(AnalyticsUtils.CATEGORY_USER_ACTION, AnalyticsUtils.ACTION_IN_LINK, "Forum");
+            tracker.sendEvent(AnalyticsUtils.CATEGORY_USER_ACTION, AnalyticsUtils.ACTION_IN_LINK, "Forum");
             Intent i = new Intent(this, ForumActivity_.class);
             ForumPagerItem forumPagerItem = new ForumPagerItem(uri.toString(), Utils.getForumPath(uri.toString()));
             i.putExtra("forumPagerItem", forumPagerItem);

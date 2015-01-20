@@ -21,7 +21,7 @@ public class BaseFragment extends Fragment {
     protected BaseApplication app;
     @Bean
     protected PantipRestClient client;
-    @Bean
+
     protected AnalyticsUtils tracker;
 
     private BaseActivity activity;
@@ -29,6 +29,7 @@ public class BaseFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         this.activity = (BaseActivity)activity;
+        tracker = new AnalyticsUtils(activity);
         super.onAttach(activity);
     }
 
