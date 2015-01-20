@@ -35,7 +35,7 @@ public class PantipRestClient {
 
     private static final String TAG = "REST";
 
-    private final String BASE_URL = "http://pantip.com/";
+    private final String BASE_URL = "http://pantip.com";
     private AsyncHttpClient client = null;
     private Context context;
 
@@ -244,7 +244,7 @@ public class PantipRestClient {
         params.put("action", "login");
         params.put("redirect", "");
         params.put("persistent[remember]", "1");
-        post("login/authentication", params, cb);
+        post("/login/authentication", params, cb);
     }
 
     public void logout() {
@@ -267,7 +267,7 @@ public class PantipRestClient {
         params.put("msg[ref_comment]", "comment" + commentNo);
 
 
-        post("forum/topic/save_reply", params, cb);
+        post("/forum/topic/save_reply", params, cb);
     }
 
     @Trace
@@ -280,7 +280,7 @@ public class PantipRestClient {
         params.put("type", "1");
 
 
-        post("forum/topic/save_comment", params, cb);
+        post("/forum/topic/save_comment", params, cb);
     }
 
     @Trace
@@ -290,11 +290,11 @@ public class PantipRestClient {
 
         String url;
         if (type == ForumType.Tag) {
-            url = "forum/topic/ajax_json_all_topic_tag";
+            url = "/forum/topic/ajax_json_all_topic_tag";
         } else if (type == ForumType.Room) {
-            url = "forum/topic/ajax_json_all_topic_info_loadmore";
+            url = "/forum/topic/ajax_json_all_topic_info_loadmore";
         } else {
-            url = "forum/topic/ajax_json_all_topic_club";
+            url = "/forum/topic/ajax_json_all_topic_club";
             type = ForumType.Tag;
         }
 
@@ -327,11 +327,11 @@ public class PantipRestClient {
         }
         String url;
         if (type == ForumType.Tag) {
-            url = "tag/";
+            url = "/tag/";
         } else if (type == ForumType.Room) {
-            url = "forum/";
+            url = "/forum/";
         } else {
-            url = "club/";
+            url = "/club/";
             type = ForumType.Club;
         }
         get(url + forumName, null, cb);
@@ -341,7 +341,7 @@ public class PantipRestClient {
 
     @Background
     public void getUserTopic(int userId, UserTopicType userTopicType, int page, long first_id, long last_id, AsyncHttpResponseHandler cb) {
-        String url = String.format("profile/me/ajax_my_%s?type=%s&mid=%d&p=%d&ftid=%d&ltid=%d"
+        String url = String.format("/profile/me/ajax_my_%s?type=%s&mid=%d&p=%d&ftid=%d&ltid=%d"
                 , userTopicType.toString()
                 , userTopicType.toString()
                 , userId
@@ -355,7 +355,7 @@ public class PantipRestClient {
     @Trace
     @Background
     public void getTopicPost(String topicId, AsyncHttpResponseHandler cb) {
-        get("topic/" + topicId, null, cb);
+        post("/topic/" + topicId, null, cb);
         Log.d(TAG, "get topic post " + topicId);
 
     }
@@ -367,10 +367,10 @@ public class PantipRestClient {
 
         if (justOwner) {
 
-            url = "forum/topic_mode/render_comments?tid=" + topicId + "&type=1&page=" + page + "&param=story" + page + "&_=" + new Date()
+            url = "/forum/topic_mode/render_comments?tid=" + topicId + "&type=1&page=" + page + "&param=story" + page + "&_=" + new Date()
                     .getTime();
         } else {
-            url = "forum/topic/render_comments?tid=" + topicId + "&type=1&page=" + page + "&param=page" + page + "&_=" + new Date()
+            url = "/forum/topic/render_comments?tid=" + topicId + "&type=1&page=" + page + "&param=page" + page + "&_=" + new Date()
                     .getTime();
         }
         get(url, null, cb);
@@ -380,7 +380,7 @@ public class PantipRestClient {
     @Trace
     @Background
     public void getReplies(int commentId, int lastReply, int maxReplyCount, int parentCommentUserId, AsyncHttpResponseHandler cb) {
-        String url = "http://pantip.com/forum/topic/render_replys?last=" + lastReply + "&cid=" + commentId + "&c=" + maxReplyCount + "&ac=n&o=" + parentCommentUserId;
+        String url = "/forum/topic/render_replys?last=" + lastReply + "&cid=" + commentId + "&c=" + maxReplyCount + "&ac=n&o=" + parentCommentUserId;
         get(url, null, cb);
         Log.d(TAG, "get repiles - " + commentId);
     }
@@ -396,7 +396,7 @@ public class PantipRestClient {
         params.add("comment_id", comment_id + "");
         params.add("comment_no", commentNo + "");
 
-        post("vote1/cal_like", params, cb);
+        post("/vote1/cal_like", params, cb);
     }
 
     @Trace
@@ -412,7 +412,7 @@ public class PantipRestClient {
         params.add("rp_id", reply_id + "");
         params.add("rp_no", replyNo + "");
 
-        post("vote1/cal_like", params, cb);
+        post("/vote1/cal_like", params, cb);
     }
 
     @Trace
@@ -423,7 +423,7 @@ public class PantipRestClient {
         params.add("vote_status", "1");
         params.add("vote_type", VoteType.Topic.toString());
         params.add("topic_id", topic_id + "");
-        post("vote1/cal_like", params, cb);
+        post("/vote1/cal_like", params, cb);
     }
 
     @Trace
@@ -436,7 +436,7 @@ public class PantipRestClient {
         params.add("type", "topic");
         params.add("emo", emo.toString());
 
-        post("forum/topic/express_emotion", params, cb);
+        post("/forum/topic/express_emotion", params, cb);
     }
 
     @Trace
@@ -449,7 +449,7 @@ public class PantipRestClient {
         params.add("type", "comment");
         params.add("emo", emo.toString());
 
-        post("forum/topic/express_emotion", params, cb);
+        post("/forum/topic/express_emotion", params, cb);
     }
 
     @Trace
@@ -465,21 +465,40 @@ public class PantipRestClient {
         params.add("comment_no", comment_no + "");
         params.add("no", reply_no + "");
 
-        post("forum/topic/express_emotion", params, cb);
+        post("/forum/topic/express_emotion", params, cb);
     }
 
     @Trace
     @Background
     public void getRoomsTags(AsyncHttpResponseHandler cb) {
         RequestParams params = new RequestParams();
-        post("forum/new_topic/get_rooms_tags", params, cb);
+        post("/forum/new_topic/get_rooms_tags", params, cb);
     }
 
     @Trace
     @Background
     public void saveTopic(AsyncHttpResponseHandler cb) {
         RequestParams params = new RequestParams();
-        post("forum/new_topic/save", params, cb);
+        post("/forum/new_topic/save", params, cb);
+    }
+
+    @Trace
+    @Background
+    public void favTopic(int topicId, AsyncHttpResponseHandler cb){
+        bookmark(topicId, "push", cb);
+    }
+
+    @Trace
+    @Background
+    public void unFavTopic(int topicId, AsyncHttpResponseHandler cb){
+        bookmark(topicId, "pop", cb);
+    }
+
+    private void bookmark(int topicId, String action, AsyncHttpResponseHandler cb){
+        RequestParams params = new RequestParams();
+        params.add("tid", ""+topicId);
+        params.add("ac", action);
+        post("/forum/topic/bookmarks", params, cb);
     }
 
 

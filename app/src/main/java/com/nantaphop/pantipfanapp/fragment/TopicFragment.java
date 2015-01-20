@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,6 +67,7 @@ import org.androidannotations.annotations.FragmentArg;
 import org.androidannotations.annotations.InstanceState;
 import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.OptionsMenu;
+import org.androidannotations.annotations.OptionsMenuItem;
 import org.androidannotations.annotations.SystemService;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
@@ -104,6 +106,12 @@ public class TopicFragment extends BaseFragment implements SwipeRefreshLayout.On
 
     @SystemService
     InputMethodManager inputMethodManager;
+
+    @OptionsMenuItem(R.id.action_fav)
+    MenuItem menuFav;
+    @OptionsMenuItem(R.id.action_unfav)
+    MenuItem menuUnFav;
+
 
     @DimensionPixelSizeRes(R.dimen.list_footer_height)
     int footerHeight;
@@ -190,6 +198,50 @@ public class TopicFragment extends BaseFragment implements SwipeRefreshLayout.On
         @Override
         protected Object parseResponse(String s, boolean b) throws Throwable {
             return RESTUtils.parseComments(s);
+        }
+    };
+
+    private BaseJsonHttpResponseHandler favCallback = new BaseJsonHttpResponseHandler() {
+
+        @Override
+        public void onSuccess(int statusCode, Header[] headers, String rawJsonResponse, Object response) {
+            if((Boolean)response){
+                toastInfo("เก็บเข้ากระทู้โปรดเรียบร้อย");
+                topicPost.setFav(true);
+                updateMenuFav();
+            }
+        }
+
+        @Override
+        public void onFailure(int statusCode, Header[] headers, Throwable throwable, String rawJsonData, Object errorResponse) {
+            toastAlert("ไม่สามารถเก็บเข้ากระทู้โปรดได้ โปรลองอีกครั้ง");
+        }
+
+        @Override
+        protected Object parseResponse(String rawJsonData, boolean isFailure) throws Throwable {
+            return RESTUtils.parseFavResp(rawJsonData);
+        }
+    };
+
+    private BaseJsonHttpResponseHandler unfavCallback = new BaseJsonHttpResponseHandler() {
+
+        @Override
+        public void onSuccess(int statusCode, Header[] headers, String rawJsonResponse, Object response) {
+            if((Boolean)response){
+                toastInfo("เอาออกจากกระทู้โปรดเรียบร้อย");
+                topicPost.setFav(false);
+                updateMenuFav();
+            }
+        }
+
+        @Override
+        public void onFailure(int statusCode, Header[] headers, Throwable throwable, String rawJsonData, Object errorResponse) {
+            toastAlert("ไม่สามารถเอาออกจากกระทู้โปรดได้ โปรลองอีกครั้ง");
+        }
+
+        @Override
+        protected Object parseResponse(String rawJsonData, boolean isFailure) throws Throwable {
+            return RESTUtils.parseFavResp(rawJsonData);
         }
     };
 
@@ -318,6 +370,8 @@ public class TopicFragment extends BaseFragment implements SwipeRefreshLayout.On
     private boolean toolbarHiding;
     private MaterialDialog commentDialog;
     private CommentDialogView commentDialogView;
+    private boolean shouldShowFav;
+    private boolean shouldShowFavNothing;
 
     @Override
     public void onAttach(Activity activity) {
@@ -400,12 +454,17 @@ public class TopicFragment extends BaseFragment implements SwipeRefreshLayout.On
                     }
                 }
         );
+
+
     }
 
     private void saveReadLog() {
-        ReadLog log = new ReadLog(topic, new Date().getTime());
-        Long id = log.save();
-        Log.i(LOG_TAG, "Save read log "+id);
+        try {
+            ReadLog log = new ReadLog(topic, new Date().getTime());
+            Long id = log.save();
+            Log.i(LOG_TAG, "Save read log " + id);
+        } catch (Exception e) {
+        }
     }
 
     @AfterViews
@@ -447,8 +506,26 @@ public class TopicFragment extends BaseFragment implements SwipeRefreshLayout.On
     public void prepareTopicPost() {
         prepareTopicPostDone = false;
         topicPost = RESTUtils.parseTopicPost(new String(tmpTopicPageHtml));
+        // invalidate optionmenu after inject to update fav menu
+        updateMenuFav();
         prepareTopicPostDone = true;
         joinTopic();
+    }
+
+    @UiThread
+    public void updateMenuFav() {
+        if (userPref.username().exists()) {
+            shouldShowFavNothing = false;
+            if (topicPost.isFav()) {
+                shouldShowFav = false;
+            } else {
+                shouldShowFav = true;
+            }
+        } else {
+            shouldShowFavNothing = true;
+
+        }
+        getAttachedActivity().invalidateOptionsMenu();
     }
 
     @Background
@@ -547,6 +624,16 @@ public class TopicFragment extends BaseFragment implements SwipeRefreshLayout.On
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
         inflater.inflate(R.menu.menu_topic, menu);
+        if (shouldShowFavNothing) {
+            menu.removeItem(R.id.action_unfav);
+            menu.removeItem(R.id.action_fav);
+        }else{
+            if(shouldShowFav){
+                menu.removeItem(R.id.action_unfav);
+            }else{
+                menu.removeItem(R.id.action_fav);
+            }
+        }
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -642,6 +729,16 @@ public class TopicFragment extends BaseFragment implements SwipeRefreshLayout.On
         i.setData(Uri.parse("http://pantip.com/topic/" + topic.getId()));
         startActivity(i);
 
+    }
+
+    @OptionsItem
+    void action_fav() {
+        client.favTopic(topic.getId(), favCallback);
+    }
+
+    @OptionsItem
+    void action_unfav() {
+        client.unFavTopic(topic.getId(), unfavCallback);
     }
 
     @OptionsItem

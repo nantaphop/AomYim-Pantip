@@ -163,6 +163,7 @@ public class RESTUtils {
         topicPost.setUserId(Integer.parseInt(doc.select("div.display-post-avatar a").get(0).attr("href").split("/")[4]));
         topicPost.setVoted(doc.select("a.icon-heart-like.i-vote").size() > 0);
         topicPost.setEmoted(doc.select("a.emotion-choice-icon.i-vote").size() > 0);
+        topicPost.setFav(doc.select("a.icon-fav").size()>0);
         String avatar = doc.select("div.display-post-avatar a img").get(0).attr("src");
         if (avatar.startsWith("/images"))
             avatar = "http://pantip.com" + avatar;
@@ -243,6 +244,15 @@ public class RESTUtils {
             userPref.edit().username().put(title).avatar().put(avatar).userId().put(userId).apply();
             return true;
         } catch (UnsupportedEncodingException e) {
+            return false;
+        }
+    }
+
+    public static boolean parseFavResp(String resp){
+        try {
+            return new JSONObject(resp).getString("status").equalsIgnoreCase("success");
+        } catch (JSONException e) {
+            e.printStackTrace();
             return false;
         }
     }

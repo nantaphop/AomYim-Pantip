@@ -45,7 +45,10 @@ public class ReadLog extends Model implements Serializable {
         topic_id = t.getId();
         coverImg = t.getCoverImg();
         title = t.getTitle();
-        date = t.getDate().getTime();
+        Date d = t.getDate();
+        if(d!=null){
+            date = d.getTime();
+        }
         sdate = t.getDateString();
         topicType = t.getTopicType();
         author = t.getAuthor();

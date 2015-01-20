@@ -7,12 +7,24 @@
             android:id="@+id/action_share"
             android:icon="@drawable/ic_action_share"
             android:title="@string/action_share"
-            app:showAsAction="ifRoom"/>
+            app:showAsAction="always"/>
+    <item
+        android:id="@+id/action_fav"
+        android:title="@string/action_fav"
+        android:icon="@drawable/ic_action_toggle_star_outline"
+        app:showAsAction="always"/>
+    <item
+        android:id="@+id/action_unfav"
+        android:title="@string/action_unfav"
+        android:icon="@drawable/ic_action_toggle_star"
+        app:showAsAction="always"/>
     <item
             android:id="@+id/action_sort_comment"
             android:title="@string/action_sort_comment"
             android:icon="@drawable/ic_action_sort"
-            app:showAsAction="ifRoom"/>
+            app:showAsAction="always"/>
+
+
     <item
             android:id="@+id/action_open_browser"
             android:title="@string/action_open_browser"

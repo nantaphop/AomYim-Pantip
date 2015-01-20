@@ -1,35 +1,20 @@
 package com.nantaphop.pantipfanapp;
 
-import android.app.Activity;
 import android.app.ActivityManager;
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Bitmap;
-import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
-import android.media.Image;
 import android.net.ConnectivityManager;
-import android.preference.PreferenceManager;
 import android.support.v4.util.LruCache;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
+
 import com.activeandroid.app.Application;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.AdView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.nantaphop.pantipfanapp.pref.UserPref_;
-import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
-import com.nostra13.universalimageloader.utils.StorageUtils;
 import com.squareup.otto.Bus;
 import com.squareup.otto.ThreadEnforcer;
+
 import org.androidannotations.annotations.EApplication;
 import org.androidannotations.annotations.sharedpreferences.Pref;
 import org.apache.http.HttpResponse;
@@ -37,7 +22,13 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.ByteArrayBuffer;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 /**

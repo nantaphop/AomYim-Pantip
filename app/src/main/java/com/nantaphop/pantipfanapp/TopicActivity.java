@@ -59,6 +59,7 @@ public class TopicActivity extends BaseActivity {
                     .commit();
         }
         setSupportActionBar(toolbar);
+        setTitle("");
 
     }
 

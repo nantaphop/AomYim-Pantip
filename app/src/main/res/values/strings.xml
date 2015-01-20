@@ -14,6 +14,8 @@
 
     <string name="action_sort_topic">เรียงกระทู้</string>
     <string name="action_sort_comment">เรียงความเห็น</string>
+    <string name="action_fav">เก็บเข้ากระทู้โปรด</string>
+    <string name="action_unfav">เอาออกจากกระทู้โปรด</string>
     <string name="topic_sort_type_title">เรียงกระทู้ตาม</string>
     <string name="comment_sort_type_title">เรียงความเห็นตาม</string>
     <string name="action_save">บันทึก</string>
