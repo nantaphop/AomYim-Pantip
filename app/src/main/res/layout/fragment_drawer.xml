@@ -8,35 +8,44 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
-    <LinearLayout
-            android:background="@color/base_color"
+
+    <RelativeLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent">
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/drawer_header"
+            android:scaleType="centerCrop"
+            android:layout_alignBottom="@+id/userPane" />
+        <LinearLayout
             android:padding="@dimen/padding_default"
             android:id="@+id/userPane"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-        <ImageView
+            <ImageView
                 android:layout_width="64dp"
                 android:layout_height="64dp"
-            android:layout_marginLeft="16dp"
+                android:layout_marginLeft="16dp"
                 android:id="@+id/avatar"
                 android:src="@drawable/ic_launcher_pantip" />
 
-        <TextView
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Large Text"
                 android:id="@+id/usernameTxt"
                 android:layout_marginTop="@dimen/padding_extra"
 
                 android:textColor="@android:color/white"
 
-            />
-    </LinearLayout>
-
-
+                android:layout_marginLeft="16dp"
+                android:layout_marginBottom="16dp" />
+        </LinearLayout>
+    </RelativeLayout>
 
 
     <TextView
