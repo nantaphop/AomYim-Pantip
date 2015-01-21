@@ -30,6 +30,8 @@
     <!-- GPlay sectioned list-->
     <dimen name="tabs_height">48dp</dimen>
     <dimen name="card_topic_thumbnail_portrait_height">200dp</dimen>
+    <dimen name="card_pantip_pick_thumbnail_land_height">100dp</dimen>
+    <dimen name="card_pantip_pick_thumbnail_land_width">100dp</dimen>
     <dimen name="card_topic_thumbnail_land_height">150dp</dimen>
     <dimen name="card_topic_thumbnail_land_width">250dp</dimen>
     <dimen name="card_topic_elevation">1dp</dimen>

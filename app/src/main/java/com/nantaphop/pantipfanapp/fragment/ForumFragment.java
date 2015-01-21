@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -18,6 +19,7 @@ import com.loopj.android.http.BaseJsonHttpResponseHandler;
 import com.melnykov.fab.FloatingActionButton;
 import com.nantaphop.pantipfanapp.R;
 import com.nantaphop.pantipfanapp.adapter.ForumAdapter;
+import com.nantaphop.pantipfanapp.adapter.PantipPickAdapter;
 import com.nantaphop.pantipfanapp.adapter.TopicAdapter;
 import com.nantaphop.pantipfanapp.event.ForumScrollDownEvent;
 import com.nantaphop.pantipfanapp.event.ForumScrollUpEvent;
@@ -58,6 +60,7 @@ import org.apache.http.Header;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import static com.nantaphop.pantipfanapp.service.PantipRestClient.ForumType;
 import static com.nantaphop.pantipfanapp.service.PantipRestClient.TopicType;
@@ -134,6 +137,7 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
     private float fabDefaultY;
     private boolean fabIsHiding;
     private TopicAdapter forumAdapter;
+    private BaseAdapter adapter;
     private SimpleEmptyView emptyView;
 
     private TopicType topicType;
@@ -146,8 +150,8 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
             Log.i("loadData " + userId, " userForumCallback success");
             MyPage newMyPage = (MyPage) o;
             //Check Read
-            for(Topic t: newMyPage.getResult()){
-                if(ReadLog.isRead(t.getId())){
+            for (Topic t : newMyPage.getResult()) {
+                if (ReadLog.isRead(t.getId())) {
                     t.setRead(true);
                 }
             }
@@ -183,8 +187,8 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
             Log.d("forum", "success");
             Forum newForum = (Forum) o;
             //Check Read
-            for(Topic t: newForum.getTopics()){
-                if(ReadLog.isRead(t.getId())){
+            for (Topic t : newForum.getTopics()) {
+                if (ReadLog.isRead(t.getId())) {
                     t.setRead(true);
                 }
             }
@@ -212,6 +216,25 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
             return RESTUtils.parseForum(s);
         }
     };
+
+    AsyncHttpResponseHandler pantipPickCallback = new AsyncHttpResponseHandler() {
+
+        @Override
+        public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+            List<Topic> topics = RESTUtils.parsePantipPick(responseBody);
+            ((PantipPickAdapter)adapter).setTopics(topics);
+            prepareRecommendDone = true;
+            prepareTopicDone = true;
+            joinForum();
+        }
+
+        @Override
+        public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+            Log.d("forum", "failed load Pantip Pick");
+            showErrorScreen();
+        }
+    };
+
     private byte[] tmpForumPartBytes;
     AsyncHttpResponseHandler forumPartCallback = new AsyncHttpResponseHandler() {
         @Override
@@ -233,21 +256,26 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
     @Trace
     @Background
     void prepareForumPart() {
-        Log.i("loadData " + forumPagerItem.title, "prepareForumPart start");
-        forumPart = RESTUtils.parseForumPart(new String(tmpForumPartBytes));
-        if (forumType == ForumType.Room && forumPart.getRecommendTopic().get(0) == null) {
-            Log.e("forumPath", "CANT PARSE FORUMPATH\n" + new String(tmpForumPartBytes));
+        if ( !isPantipPick() && !isPantipTrend()) {
+            Log.i("loadData " + forumPagerItem.title, "prepareForumPart start");
+            forumPart = RESTUtils.parseForumPart(new String(tmpForumPartBytes));
+            if (forumType == ForumType.Room && forumPart.getRecommendTopic().get(0) == null) {
+                Log.e("forumPath", "CANT PARSE FORUMPATH\n" + new String(tmpForumPartBytes));
+            }
+            Log.d(
+                    "forumPart",
+                    "prepareForumPart recommend size : " + forumPart.getRecommendUrl()
+                            .size() + " - " + forumPart.getRecommendTopic().size()
+            );
+            for (String s : forumPart.getRecommendTopic()) {
+                Log.d("recommend", forumPagerItem.title + " " + s);
+            }
+            Log.i("loadData " + forumPagerItem.title, "prepareForumPart finish");
+            prepareRecommendCard();
+        }else{
+            prepareRecommendDone = true;
+            joinForum();
         }
-        Log.d(
-                "forumPart",
-                "prepareForumPart recommend size : " + forumPart.getRecommendUrl()
-                        .size() + " - " + forumPart.getRecommendTopic().size()
-        );
-        for (String s : forumPart.getRecommendTopic()) {
-            Log.d("recommend", forumPagerItem.title + " " + s);
-        }
-        Log.i("loadData " + forumPagerItem.title, "prepareForumPart finish");
-        prepareRecommendCard();
     }
 
     @Background
@@ -313,11 +341,13 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
         // Join Thread
         if (prepareRecommendDone && prepareTopicDone) {
             // Update List
-            forumAdapter.notifyDataSetChanged();
-            if (forumType != null) {
+            if (forumType != null && (!isPantipTrend() && !isPantipPick())) {
                 ((ForumAdapter) forumAdapter).setData(forum, forumPart, recommendTopicTitle, recommendTopicUrl);
-            } else {
+                forumAdapter.notifyDataSetChanged();
+            } else if(userTopicType != null){
                 forumAdapter.setTopics(myPage.getResult());
+            }else {
+                adapter.notifyDataSetChanged();
             }
             setRefreshComplete();
             if (lastFirstVisibleItem != 0) {
@@ -330,7 +360,6 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
 
 
     }
-
 
 
     void showErrorScreen() {
@@ -569,31 +598,39 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
         }
         int toolbarAndNavSize = getResources().getDimensionPixelSize(R.dimen.tabs_height) + getResources().getDimensionPixelSize(R.dimen.toolbar_size);
 
+        if (isPantipPick()) {
+            adapter = new PantipPickAdapter(getAttachedActivity());
+        } else if (isPantipTrend()) {
 
-        if (forumType != null && userTopicType == null) {
+        } else if (forumType != null && userTopicType == null) {
             forumAdapter = new ForumAdapter(getAttachedActivity(), forum, forumPart, forumType, recommendTopicTitle, recommendTopicUrl);
             tracker.setScreen(forumPagerItem.title);
             tracker.sendEvent(AnalyticsUtils.CATEGORY_USER_ACTION, AnalyticsUtils.ACTION_OPEN_FORUM, forumPagerItem.title);
 
         } else if (forumType == null && userTopicType != null) {
             forumAdapter = new TopicAdapter(getAttachedActivity(), new ArrayList<Topic>());
-            tracker.setScreen("user "+userTopicType.toString());
-            tracker.sendEvent(AnalyticsUtils.CATEGORY_USER_ACTION, AnalyticsUtils.ACTION_OPEN_FORUM, "user "+userTopicType.toString());
+            tracker.setScreen("user " + userTopicType.toString());
+            tracker.sendEvent(AnalyticsUtils.CATEGORY_USER_ACTION, AnalyticsUtils.ACTION_OPEN_FORUM, "user " + userTopicType.toString());
 
         }
-        forumAdapter.setLoadMoreListener(new TopicAdapter.LoadMoreListener() {
-            @Override
-            public void onLoadMore() {
-                loadMore();
-            }
-        });
-        loadingItemView = forumAdapter.getLoadingItemView();
+        if (forumAdapter != null) {
+            forumAdapter.setLoadMoreListener(new TopicAdapter.LoadMoreListener() {
+                @Override
+                public void onLoadMore() {
+                    loadMore();
+                }
+            });
+            loadingItemView = forumAdapter.getLoadingItemView();
+            MyAnimationAdapter animationAdapter = new MyAnimationAdapter(forumAdapter);
+            animationAdapter.setAbsListView(list);
+            list.setAdapter(animationAdapter);
+        }else{
+            list.setAdapter(adapter);
+        }
 
-        MyAnimationAdapter animationAdapter = new MyAnimationAdapter(forumAdapter);
-        animationAdapter.setAbsListView(list);
+
+
         showLoadingScreen();
-
-        list.setAdapter(animationAdapter);
         list.setEmptyView(emptyView);
 
         // Add Blank Margin on top height = Tab's height
@@ -651,6 +688,14 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
         }
     }
 
+    private boolean isPantipTrend() {
+        return forumPagerItem.title.equalsIgnoreCase("pantip trend");
+    }
+
+    private boolean isPantipPick() {
+        return forumPagerItem.title.equalsIgnoreCase("pantip pick");
+    }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -669,7 +714,7 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
     private void loadForumPart() {
         if (!swipeRefreshLayout.isRefreshing())
             swipeRefreshLayout.setRefreshing(true);
-        if (forumType == ForumType.Room) {
+        if (forumType == ForumType.Room && (!isPantipTrend() && !isPantipPick())) {
             prepareRecommendDone = false;
             client.getForumPart(forumPagerItem.url, forumType, forumPartCallback);
         } else {
@@ -711,23 +756,29 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
 //            swipeRefreshLayout.setRefreshing(showSwipeRefresh);
         prepareTopicDone = false;
 
-        if (forumType != null) {
-            client.getForum(
-                    forumPagerItem.url,
-                    forumType,
-                    topicType,
-                    currentPage,
-                    lastIdCurrentPage,
-                    false,
-                    forumCallback
-            );
-        } else if (userTopicType != null) {
-            Log.d("Load User Topic ", userTopicType.toString());
-            if (myPage == null || currentPage < myPage.getMax_page())
-                client.getUserTopic(userId, userTopicType, currentPage, lastFirstId, lastLastId, userForumCallback);
-            else
-                prepareTopic();
+        if (isPantipPick()) {
+            client.getPantipPick(pantipPickCallback);
+        } else if (isPantipTrend()) {
 
+        } else {
+            if (forumType != null) {
+                client.getForum(
+                        forumPagerItem.url,
+                        forumType,
+                        topicType,
+                        currentPage,
+                        lastIdCurrentPage,
+                        false,
+                        forumCallback
+                );
+            } else if (userTopicType != null) {
+                Log.d("Load User Topic ", userTopicType.toString());
+                if (myPage == null || currentPage < myPage.getMax_page())
+                    client.getUserTopic(userId, userTopicType, currentPage, lastFirstId, lastLastId, userForumCallback);
+                else
+                    prepareTopic();
+
+            }
         }
     }
 

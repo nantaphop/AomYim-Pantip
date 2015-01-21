@@ -30,6 +30,10 @@ public class Topic implements Serializable {
     @SerializedName("disp_topic")
     String title;
 
+
+
+    String desc;
+
     int comments;
     int votes;
 
@@ -154,6 +158,12 @@ public class Topic implements Serializable {
         return title + " - " + author;
     }
 
+    public String getDesc() {
+        return desc;
+    }
 
+    public void setDesc(String desc) {
+        this.desc = desc;
+    }
 
 }

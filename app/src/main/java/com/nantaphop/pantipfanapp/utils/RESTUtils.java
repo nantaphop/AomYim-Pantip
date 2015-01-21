@@ -12,6 +12,8 @@ import com.nantaphop.pantipfanapp.response.Forum;
 import com.nantaphop.pantipfanapp.response.ForumPart;
 import com.nantaphop.pantipfanapp.response.MyPage;
 import com.nantaphop.pantipfanapp.response.Reply;
+import com.nantaphop.pantipfanapp.response.Tag;
+import com.nantaphop.pantipfanapp.response.Topic;
 import com.nantaphop.pantipfanapp.response.TopicPost;
 import com.nantaphop.pantipfanapp.response.VoteResponse;
 
@@ -45,6 +47,8 @@ public class RESTUtils {
             return null;
         }
     }
+
+
 
     public static MyPage parseUserForum(String resp) {
         try {
@@ -246,6 +250,36 @@ public class RESTUtils {
         } catch (UnsupportedEncodingException e) {
             return false;
         }
+    }
+
+    public static List<Topic> parsePantipPick(byte[] httpBody) {
+        try {
+            Document doc = Jsoup.parse(new String(httpBody, "utf-8"));
+            Elements elements = doc.select("div#timeline_post_lists > div");
+            List<Topic> topics = new ArrayList<Topic>();
+            for(Element e : elements){
+                Topic t = new Topic();
+                t.setId(Integer.parseInt(e.select("a").get(0).attr("href").split("/")[2]));
+                t.setTitle(e.select("div.post-pick-title").get(0).text());
+                t.setDesc(e.select("div.post-pick-desc").get(0).text());
+                t.setAuthor(e.select("span.by-name").get(0).text());
+                Elements cover = e.select("img");
+                if(cover.size()>0){
+                    t.setCoverImg(cover.attr("src"));
+                }
+                ArrayList<Tag> tags = new ArrayList<>();
+                for(Element tagE : e.select("div.post-pick-taglist a")){
+                    tags.add(new Tag(tagE.text(), tagE.attr("href")));
+                }
+                t.setTags(tags);
+                topics.add(t);
+            }
+            return topics;
+
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public static boolean parseFavResp(String resp){

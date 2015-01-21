@@ -501,5 +501,13 @@ public class PantipRestClient {
         post("/forum/topic/bookmarks", params, cb);
     }
 
+    @Trace
+    @Background
+    public void getPantipPick(AsyncHttpResponseHandler cb) {
+        get("", null, cb);
+        Log.d(TAG, "get Pantip Pick");
+
+    }
+
 
 }
