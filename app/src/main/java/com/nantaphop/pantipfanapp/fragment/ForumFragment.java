@@ -31,6 +31,7 @@ import com.nantaphop.pantipfanapp.response.Forum;
 import com.nantaphop.pantipfanapp.response.ForumPart;
 import com.nantaphop.pantipfanapp.response.MyPage;
 import com.nantaphop.pantipfanapp.response.Topic;
+import com.nantaphop.pantipfanapp.response.Trend;
 import com.nantaphop.pantipfanapp.service.PantipRestClient;
 import com.nantaphop.pantipfanapp.utils.AnalyticsUtils;
 import com.nantaphop.pantipfanapp.utils.DeviceUtils;
@@ -60,7 +61,6 @@ import org.apache.http.Header;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 import static com.nantaphop.pantipfanapp.service.PantipRestClient.ForumType;
 import static com.nantaphop.pantipfanapp.service.PantipRestClient.TopicType;
@@ -113,6 +113,9 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
     ForumPart forumPart;
     @InstanceState
     MyPage myPage;
+    @InstanceState
+    Trend trend;
+
 
     @InstanceState
     int lastFirstVisibleItem;
@@ -221,17 +224,45 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
 
         @Override
         public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-            List<Topic> topics = RESTUtils.parsePantipPick(responseBody);
-            ((PantipPickAdapter) adapter).setTopics(topics);
-            prepareRecommendDone = true;
-            prepareTopicDone = true;
-            joinForum();
+            Trend t = new Trend();
+            t.setTrend(RESTUtils.parsePantipPick(responseBody));
+            trend = t;
+            preparePantipPickAndTrend();
         }
 
         @Override
         public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
             Log.d("forum", "failed load Pantip Pick");
             showErrorScreen();
+        }
+    };
+
+    private void preparePantipPickAndTrend() {
+        ((PantipPickAdapter) adapter).setTopics(trend.getTrend());
+        prepareRecommendDone = true;
+        prepareTopicDone = true;
+        joinForum();
+    }
+
+    BaseJsonHttpResponseHandler pantipTrendCallback = new BaseJsonHttpResponseHandler() {
+        @Override
+        public void onSuccess(int i, Header[] headers, String s, Object o) {
+            Log.i("loadData", "pantipTrendCallback success");
+            Log.d("forum", "success");
+            Trend trend = (Trend) o;
+            ForumFragment.this.trend = trend;
+            preparePantipPickAndTrend();
+        }
+
+        @Override
+        public void onFailure(int i, Header[] headers, Throwable throwable, String s, Object o) {
+            Log.d("forum", "failed Pantip Trend");
+            showErrorScreen();
+        }
+
+        @Override
+        protected Object parseResponse(String s, boolean b) throws Throwable {
+            return RESTUtils.parsePantipTrend(s);
         }
     };
 
@@ -312,7 +343,10 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
             if (noTabMargin) {
                 inflater.inflate(R.menu.menu_forum_tag, menu);
             } else {
-                inflater.inflate(R.menu.menu_forum, menu);
+                if (!isPantipTrend() && !isPantipPick()) {
+                    inflater.inflate(R.menu.menu_forum, menu);
+
+                }
             }
         }
         super.onCreateOptionsMenu(menu, inflater);
@@ -601,7 +635,7 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
         if (isPantipPick()) {
             adapter = new PantipPickAdapter(getAttachedActivity());
         } else if (isPantipTrend()) {
-
+            adapter = new PantipPickAdapter(getAttachedActivity());
         } else if (forumType != null && userTopicType == null) {
             forumAdapter = new ForumAdapter(getAttachedActivity(), forum, forumPart, forumType, recommendTopicTitle, recommendTopicUrl);
             tracker.setScreen(forumPagerItem.title);
@@ -680,7 +714,9 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
             prepareRecommendCard();
             prepareTopic();
             return;
-        } else {
+        } else if(trend !=null){
+            preparePantipPickAndTrend();
+        } else{
             // Load Initial Data
             loadMore();
             loadForumPart();
@@ -734,6 +770,7 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
         prepareTopicDone = false;
         currentPage = 0;
         lastIdCurrentPage = "0";
+        trend = null;
         lastFirstVisibleItem = 0;
         cardRenderCount = 0;
         forumPart = null;
@@ -742,7 +779,11 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
         lastFirstId = 0;
         lastLastId = 0;
         // Load Initial Data
-        forumAdapter.notifyDataSetChanged();
+        if (forumAdapter !=null) {
+            forumAdapter.notifyDataSetChanged();
+        } else {
+            adapter.notifyDataSetChanged();
+        }
         loadMore();
         loadForumPart();
     }
@@ -764,6 +805,7 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
         if (isPantipPick()) {
             client.getPantipPick(pantipPickCallback);
         } else if (isPantipTrend()) {
+            client.getPantipTrend(pantipTrendCallback);
 
         } else {
             if (forumType != null) {

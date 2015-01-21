@@ -509,5 +509,13 @@ public class PantipRestClient {
 
     }
 
+    @Trace
+    @Background
+    public void getPantipTrend(AsyncHttpResponseHandler cb) {
+        get("/home/ajax_pantip_trend?p=1", null, cb);
+        Log.d(TAG, "get Pantip Trend");
+
+    }
+
 
 }

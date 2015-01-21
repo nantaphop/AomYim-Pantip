@@ -15,6 +15,7 @@ import com.nantaphop.pantipfanapp.response.Reply;
 import com.nantaphop.pantipfanapp.response.Tag;
 import com.nantaphop.pantipfanapp.response.Topic;
 import com.nantaphop.pantipfanapp.response.TopicPost;
+import com.nantaphop.pantipfanapp.response.Trend;
 import com.nantaphop.pantipfanapp.response.VoteResponse;
 
 import org.apache.http.Header;
@@ -49,7 +50,6 @@ public class RESTUtils {
     }
 
 
-
     public static MyPage parseUserForum(String resp) {
         try {
             return BaseApplication.getGson().fromJson(new JSONObject(resp).toString(), MyPage.class);
@@ -72,11 +72,11 @@ public class RESTUtils {
 
         for (Element e : temp) {
             Elements a = e.select("a");
-            if(a.size() > 0) {
+            if (a.size() > 0) {
                 Element recommendTopic = a.get(0);
                 recUrl.add("http://pantip.com" + recommendTopic.attr("href"));
                 recList.add(recommendTopic.text());
-            }else{
+            } else {
                 recList.add(e.text());
                 recUrl.add("");
             }
@@ -167,7 +167,7 @@ public class RESTUtils {
         topicPost.setUserId(Integer.parseInt(doc.select("div.display-post-avatar a").get(0).attr("href").split("/")[4]));
         topicPost.setVoted(doc.select("a.icon-heart-like.i-vote").size() > 0);
         topicPost.setEmoted(doc.select("a.emotion-choice-icon.i-vote").size() > 0);
-        topicPost.setFav(doc.select("a.icon-fav").size()>0);
+        topicPost.setFav(doc.select("a.icon-fav").size() > 0);
         String avatar = doc.select("div.display-post-avatar a img").get(0).attr("src");
         if (avatar.startsWith("/images"))
             avatar = "http://pantip.com" + avatar;
@@ -257,18 +257,18 @@ public class RESTUtils {
             Document doc = Jsoup.parse(new String(httpBody, "utf-8"));
             Elements elements = doc.select("div#timeline_post_lists > div");
             List<Topic> topics = new ArrayList<Topic>();
-            for(Element e : elements){
+            for (Element e : elements) {
                 Topic t = new Topic();
                 t.setId(Integer.parseInt(e.select("a").get(0).attr("href").split("/")[2]));
                 t.setTitle(e.select("div.post-pick-title").get(0).text());
                 t.setDesc(e.select("div.post-pick-desc").get(0).text());
                 t.setAuthor(e.select("span.by-name").get(0).text());
                 Elements cover = e.select("img");
-                if(cover.size()>0){
+                if (cover.size() > 0) {
                     t.setCoverImg(cover.attr("src"));
                 }
                 ArrayList<Tag> tags = new ArrayList<>();
-                for(Element tagE : e.select("div.post-pick-taglist a")){
+                for (Element tagE : e.select("div.post-pick-taglist a")) {
                     tags.add(new Tag(tagE.text(), tagE.attr("href")));
                 }
                 t.setTags(tags);
@@ -282,7 +282,11 @@ public class RESTUtils {
         return null;
     }
 
-    public static boolean parseFavResp(String resp){
+    public static Trend parsePantipTrend(String resp) {
+        return BaseApplication.getGson().fromJson(resp, Trend.class);
+    }
+
+    public static boolean parseFavResp(String resp) {
         try {
             return new JSONObject(resp).getString("status").equalsIgnoreCase("success");
         } catch (JSONException e) {

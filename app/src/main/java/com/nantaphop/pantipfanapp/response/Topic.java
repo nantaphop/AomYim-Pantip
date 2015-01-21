@@ -31,7 +31,7 @@ public class Topic implements Serializable {
     String title;
 
 
-
+    @SerializedName("disp_msg")
     String desc;
 
     int comments;
@@ -51,6 +51,7 @@ public class Topic implements Serializable {
     String dateString;
 
     String author;
+    String name;
 
     boolean read;
 
@@ -166,4 +167,11 @@ public class Topic implements Serializable {
         this.desc = desc;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

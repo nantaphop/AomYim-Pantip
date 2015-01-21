@@ -2,6 +2,7 @@ package com.nantaphop.pantipfanapp.view;
 
 import android.content.Context;
 import android.support.v7.widget.CardView;
+import android.text.Html;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -49,8 +50,8 @@ public class PantipPickView extends RelativeLayout{
 
     public void bind(Topic topic){
         this.topic = topic;
-        title.setText(topic.getTitle());
-        author.setText(topic.getAuthor());
+        title.setText(Html.fromHtml(topic.getTitle()));
+        author.setText(topic.getAuthor()!=null?topic.getAuthor():topic.getName());
 
         StringBuilder sb = new StringBuilder();
         for (Tag tag : topic.getTags()) {
@@ -61,7 +62,7 @@ public class PantipPickView extends RelativeLayout{
         } catch (Exception e) {
         }
 
-        if(topic.getCoverImg()!=null) {
+        if(topic.getCoverImg()!=null && topic.getCoverImg().length()>0) {
             thumbnail.setVisibility(VISIBLE);
             Picasso.with(context).load(topic.getCoverImg()).placeholder(R.drawable.ic_image).resize(400, 300).centerCrop().into(thumbnail);
         }else{
