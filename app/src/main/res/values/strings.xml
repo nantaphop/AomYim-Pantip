@@ -75,6 +75,8 @@
     <string name="feecback_waiting_forumpart_load">กำลังโหลดข้อมูลห้อง กรุณาลองใหม่ภายหลัง</string>
     <string name="feedback_connection_failed_short">การเชื่อมต่อมีปัญหา</string>
     <string name="retry">ลองใหม่</string>
+    <string name="action_story_mode">อ่านเฉพาะข้อความเจ้าของกระทู้</string>
+    <string name="action_all_comment_mode">อ่านความคิดเห็นทั้งหมด</string>
     <array name="emo_type">
         <item>ถูกใจ</item>
         <item>ขำกลิ้ง</item>

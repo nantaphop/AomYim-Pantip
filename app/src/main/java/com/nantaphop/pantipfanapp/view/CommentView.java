@@ -287,5 +287,14 @@ public class CommentView extends RelativeLayout {
         BaseApplication.getEventBus().post(new OpenUserEvent(comment.getUser().getId(), comment.getUser().getName(), comment.getUser().getAvatar().getLarge()));
     }
 
+    public void setGone(){
+        root.setVisibility(GONE);
+    }
+
+    public void setVisible(){
+        root.setVisibility(VISIBLE);
+
+    }
+
 
 }

@@ -104,6 +104,8 @@ public class TopicFragment extends BaseFragment implements SwipeRefreshLayout.On
     TopicPost topicPost;
     @InstanceState
     Comments comments;
+    @InstanceState
+    boolean justOwner;
 
     @SystemService
     InputMethodManager inputMethodManager;
@@ -635,6 +637,12 @@ public class TopicFragment extends BaseFragment implements SwipeRefreshLayout.On
                 menu.removeItem(R.id.action_fav);
             }
         }
+
+        if(justOwner){
+            menu.removeItem(R.id.action_story_mode);
+        }else{
+            menu.removeItem(R.id.action_all_comment_mode);
+        }
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -727,6 +735,20 @@ public class TopicFragment extends BaseFragment implements SwipeRefreshLayout.On
 
         tracker.sendEvent(AnalyticsUtils.CATEGORY_USER_ACTION, AnalyticsUtils.ACTION_UNFAVORITE, getTrackerEventLabel());
         client.unFavTopic(topic.getId(), unfavCallback);
+    }
+
+    @OptionsItem
+    void action_story_mode(){
+        justOwner = true;
+        commentAdapter.notifyDataSetChanged();
+        getAttachedActivity().invalidateOptionsMenu();
+    }
+
+    @OptionsItem
+    void action_all_comment_mode(){
+        justOwner = false;
+        commentAdapter.notifyDataSetChanged();
+        getAttachedActivity().invalidateOptionsMenu();
     }
 
     @OptionsItem
@@ -960,6 +982,8 @@ public class TopicFragment extends BaseFragment implements SwipeRefreshLayout.On
     public void onRefresh() {
         topicPost = null;
         comments = null;
+        justOwner = false;
+        commentAdapter.notifyDataSetChanged();
         currentCommentPage = 1;
         loadNextComments();
         loadTopicPost();
@@ -1020,7 +1044,7 @@ public class TopicFragment extends BaseFragment implements SwipeRefreshLayout.On
                 commentView = CommentView_.build(getAttachedActivity());
 
             }
-            commentView.bind(comments.getComments().get(position));
+            commentView.bind((Comment) getItem(position));
             commentView.setOnLoadMoreClick(
                     new View.OnClickListener() {
                         @Override
@@ -1032,6 +1056,16 @@ public class TopicFragment extends BaseFragment implements SwipeRefreshLayout.On
                     }
             );
 
+            // Condition for story mode
+            if (justOwner){
+                if(((Comment) getItem(position)).isOwner_topic()){
+                    commentView.setVisible();
+                }else{
+                    commentView.setGone();
+                }
+            }else{
+                commentView.setVisible();
+            }
             return commentView;
         }
 

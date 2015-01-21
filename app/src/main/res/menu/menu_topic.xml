@@ -24,7 +24,14 @@
             android:icon="@drawable/ic_action_sort"
             app:showAsAction="always"/>
 
-
+    <item
+        android:id="@+id/action_story_mode"
+        android:title="@string/action_story_mode"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_all_comment_mode"
+        android:title="@string/action_all_comment_mode"
+        app:showAsAction="never"/>
     <item
             android:id="@+id/action_open_browser"
             android:title="@string/action_open_browser"
