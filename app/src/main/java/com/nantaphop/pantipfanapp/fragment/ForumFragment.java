@@ -222,7 +222,7 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
         @Override
         public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
             List<Topic> topics = RESTUtils.parsePantipPick(responseBody);
-            ((PantipPickAdapter)adapter).setTopics(topics);
+            ((PantipPickAdapter) adapter).setTopics(topics);
             prepareRecommendDone = true;
             prepareTopicDone = true;
             joinForum();
@@ -256,7 +256,7 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
     @Trace
     @Background
     void prepareForumPart() {
-        if ( !isPantipPick() && !isPantipTrend()) {
+        if (!isPantipPick() && !isPantipTrend()) {
             Log.i("loadData " + forumPagerItem.title, "prepareForumPart start");
             forumPart = RESTUtils.parseForumPart(new String(tmpForumPartBytes));
             if (forumType == ForumType.Room && forumPart.getRecommendTopic().get(0) == null) {
@@ -272,7 +272,7 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
             }
             Log.i("loadData " + forumPagerItem.title, "prepareForumPart finish");
             prepareRecommendCard();
-        }else{
+        } else {
             prepareRecommendDone = true;
             joinForum();
         }
@@ -344,9 +344,9 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
             if (forumType != null && (!isPantipTrend() && !isPantipPick())) {
                 ((ForumAdapter) forumAdapter).setData(forum, forumPart, recommendTopicTitle, recommendTopicUrl);
                 forumAdapter.notifyDataSetChanged();
-            } else if(userTopicType != null){
+            } else if (userTopicType != null) {
                 forumAdapter.setTopics(myPage.getResult());
-            }else {
+            } else {
                 adapter.notifyDataSetChanged();
             }
             setRefreshComplete();
@@ -624,10 +624,9 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
             MyAnimationAdapter animationAdapter = new MyAnimationAdapter(forumAdapter);
             animationAdapter.setAbsListView(list);
             list.setAdapter(animationAdapter);
-        }else{
+        } else {
             list.setAdapter(adapter);
         }
-
 
 
         showLoadingScreen();
@@ -689,11 +688,17 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
     }
 
     private boolean isPantipTrend() {
-        return forumPagerItem.title.equalsIgnoreCase("pantip trend");
+        if (forumPagerItem == null)
+            return false;
+        else
+            return forumPagerItem.title.equalsIgnoreCase("pantip trend");
     }
 
     private boolean isPantipPick() {
-        return forumPagerItem.title.equalsIgnoreCase("pantip pick");
+        if (forumPagerItem == null)
+            return false;
+        else
+            return forumPagerItem.title.equalsIgnoreCase("pantip pick");
     }
 
     @Override
