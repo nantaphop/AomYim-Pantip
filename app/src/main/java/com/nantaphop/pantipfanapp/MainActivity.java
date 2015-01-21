@@ -3,6 +3,9 @@ package com.nantaphop.pantipfanapp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
@@ -11,6 +14,7 @@ import android.view.MenuItem;
 import android.widget.FrameLayout;
 
 import com.google.android.gms.ads.AdRequest;
+import com.nantaphop.pantipfanapp.event.OpenChangelogDialog;
 import com.nantaphop.pantipfanapp.event.OpenForumEvent;
 import com.nantaphop.pantipfanapp.event.OpenForumRearrangeEvent;
 import com.nantaphop.pantipfanapp.event.OpenLoginScreenEvent;
@@ -19,6 +23,7 @@ import com.nantaphop.pantipfanapp.event.OpenUserEvent;
 import com.nantaphop.pantipfanapp.event.SetTitleEvent;
 import com.nantaphop.pantipfanapp.event.ToggleDrawerEvent;
 import com.nantaphop.pantipfanapp.event.UpdateForumListEvent;
+import com.nantaphop.pantipfanapp.fragment.DialogMaterialFragment;
 import com.nantaphop.pantipfanapp.fragment.ForumHolderFragment;
 import com.nantaphop.pantipfanapp.fragment.ForumHolderFragment_;
 import com.nantaphop.pantipfanapp.view.BaseActivity;
@@ -193,6 +198,26 @@ public class MainActivity extends BaseActivity {
     @Subscribe
     public void setTitle(SetTitleEvent e) {
         getSupportActionBar().setTitle(e.title);
+    }
+
+    @Subscribe
+    public void openChangelogDialog(OpenChangelogDialog e){
+        openDialogFragment(new DialogMaterialFragment());
+        drawer_layout.closeDrawers();
+
+    }
+    private void openDialogFragment(DialogFragment dialogStandardFragment) {
+        if (dialogStandardFragment!=null){
+            FragmentManager fm = getSupportFragmentManager();
+            FragmentTransaction ft = fm.beginTransaction();
+            Fragment prev = fm.findFragmentByTag("changelogdemo_dialog");
+            if (prev != null) {
+                ft.remove(prev);
+            }
+            //ft.addToBackStack(null);
+
+            dialogStandardFragment.show(ft,"changelogdemo_dialog");
+        }
     }
 
 

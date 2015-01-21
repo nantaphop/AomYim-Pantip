@@ -102,8 +102,7 @@ public class ForumRearrangeFragment extends BaseFragment {
     @UiThread
     void showcase() {
 
-        final RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        lp.addRule(RelativeLayout.CENTER_IN_PARENT);
+
 
         final View item = cardList.getChildAt(1);
 
@@ -140,7 +139,7 @@ public class ForumRearrangeFragment extends BaseFragment {
                                                                 .setContentTitle("อย่าลืมกดบันทึก")
                                                                 .setContentText("เสร็จแล้วก็เริ่มอ่าน Pantip กันได้เลย!")
                                                                 .build();
-                                                        svSave.setButtonPosition(lp);
+                                                        svSave.setButtonPosition(ShowcaseUtils.getCenterInParentLayoutParam());
                                                     }
 
                                                     @Override
@@ -154,7 +153,7 @@ public class ForumRearrangeFragment extends BaseFragment {
                                                     }
                                                 })
                                                 .build();
-                                        svSort.setButtonPosition(lp);
+                                        svSort.setButtonPosition(ShowcaseUtils.getCenterInParentLayoutParam());
                                     }
 
                                     @Override
@@ -168,7 +167,7 @@ public class ForumRearrangeFragment extends BaseFragment {
                                     }
                                 })
                                 .build();
-                        svShowHide.setButtonPosition(lp);
+                        svShowHide.setButtonPosition(ShowcaseUtils.getCenterInParentLayoutParam());
                     }
 
                     @Override
@@ -185,7 +184,7 @@ public class ForumRearrangeFragment extends BaseFragment {
                 .build();
 
 
-        svScreen.setButtonPosition(lp);
+        svScreen.setButtonPosition(ShowcaseUtils.getCenterInParentLayoutParam());
 
 
     }

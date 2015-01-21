@@ -64,5 +64,10 @@
         android:drawableLeft="@drawable/ic_action_action_reorder"
         android:text="จัดการห้อง"
         style="@style/drawer_item" />
+    <TextView
+        android:id="@+id/changelog"
+        android:drawableLeft="@drawable/ic_action_action_reorder"
+        android:text="รายการสิ่งที่เปลี่ยนแปลง"
+        style="@style/drawer_item" />
 
 </LinearLayout>

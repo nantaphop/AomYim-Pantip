@@ -16,11 +16,16 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.LinearLayout;
 
 import com.astuetz.PagerSlidingTabStrip;
+import com.github.amlcurran.showcaseview.OnShowcaseEventListener;
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.Target;
 import com.google.android.gms.ads.AdView;
+import com.nantaphop.pantipfanapp.BaseApplication;
 import com.nantaphop.pantipfanapp.R;
 import com.nantaphop.pantipfanapp.event.*;
 import com.nantaphop.pantipfanapp.model.ForumPagerItem;
 import com.nantaphop.pantipfanapp.service.PantipRestClient;
+import com.nantaphop.pantipfanapp.utils.ShowcaseUtils;
 import com.nantaphop.pantipfanapp.utils.TranslucentUtils;
 import com.squareup.otto.Subscribe;
 import org.androidannotations.annotations.*;
@@ -105,6 +110,55 @@ public class ForumHolderFragment extends BaseFragment {
 
         actionBar = ((ActionBarActivity)getAttachedActivity()).getSupportActionBar();
         topDefaultY = topPanel.getY();
+        showcase();
+    }
+
+    private void showcase() {
+        ShowcaseView sv1 = new ShowcaseView.Builder(getAttachedActivity())
+                .setTarget(Target.NONE)
+                .singleShot(ShowcaseUtils.FIRST_TIME_LAUNCH_ID)
+                .setContentTitle("ยินดีต้อนรับเข้าสู่ PantipFanApp")
+                .setContentText("ประสบการณ์ การเล่น Pantip ที่แปลกใหม่!")
+                .setShowcaseEventListener(new OnShowcaseEventListener() {
+                    @Override
+                    public void onShowcaseViewHide(ShowcaseView showcaseView) {
+                        ShowcaseView sv2 = new ShowcaseView.Builder(getAttachedActivity())
+                                .setContentTitle("คุณคงไม่ได้อ่าน Pantip ทุกห้อง")
+                                .setContentText("เราจึงทำระบบให้คุณเลือกแสดง" +
+                                        "\nและจัดอันดับห้องตามที่คุณชอบได้" +
+                                        "\nลองไปทำกันเลย")
+                                .setShowcaseEventListener(new OnShowcaseEventListener() {
+                                    @Override
+                                    public void onShowcaseViewHide(ShowcaseView showcaseView) {
+                                        BaseApplication.getEventBus().post(new OpenForumRearrangeEvent());
+                                    }
+
+                                    @Override
+                                    public void onShowcaseViewDidHide(ShowcaseView showcaseView) {
+
+                                    }
+
+                                    @Override
+                                    public void onShowcaseViewShow(ShowcaseView showcaseView) {
+
+                                    }
+                                })
+                                .build();
+                        sv2.setButtonPosition(ShowcaseUtils.getCenterInParentLayoutParam());
+                    }
+
+                    @Override
+                    public void onShowcaseViewDidHide(ShowcaseView showcaseView) {
+
+                    }
+
+                    @Override
+                    public void onShowcaseViewShow(ShowcaseView showcaseView) {
+
+                    }
+                })
+                .build();
+        sv1.setButtonPosition(ShowcaseUtils.getCenterInParentLayoutParam());
     }
 
     private void rateApp() {

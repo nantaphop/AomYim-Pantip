@@ -84,6 +84,7 @@ dependencies {
     compile 'com.afollestad:material-dialogs:0.6.0'
     compile 'com.github.amlcurran.showcaseview:library:5.0.0'
     compile 'com.github.codechimp-org.apprater:library:1.0.+'
+    compile 'com.github.gabrielemariotti.changeloglib:library:1.5.2'
 
 }
 
