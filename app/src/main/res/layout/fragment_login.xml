@@ -48,6 +48,24 @@
                 android:text="@string/login"
                 android:id="@+id/login"
                 android:layout_gravity="center_horizontal"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:linksClickable="true"
+            android:layout_marginTop="16dp"
+            android:autoLink="web"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="กรณี Login ไม่ได้ ให้ลองไป Login/Logout ที่หน้าเวป http://www.pantip.com/login/authentication ให้ผ่าน จนกรอก Capcha สำเร็จ"
+            android:id="@+id/help1" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:linksClickable="true"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="ให้ทดลองพิมพ์ อีเมล/นามแฝง ด้วยตัวอย่างทั้งหมด อย่าใช้ตัวช่วยสะกดคำของคีย์บอร์ด"
+            android:id="@+id/help2" />
     </LinearLayout>
 
     <LinearLayout
