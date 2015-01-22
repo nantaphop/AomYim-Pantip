@@ -1,5 +1,7 @@
 package com.nantaphop.pantipfanapp.fragment;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.view.View;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
@@ -55,6 +57,8 @@ public class DrawerFragment extends BaseFragment {
     TextView myProfile;
     @ViewById
     TextView changelog;
+    @ViewById
+    TextView facebook;
 
     private static DisplayImageOptions displayImageOptions = new DisplayImageOptions.Builder()
             .resetViewBeforeLoading(true)
@@ -111,6 +115,12 @@ public class DrawerFragment extends BaseFragment {
     @Click
     void changelog(){
         BaseApplication.getEventBus().post(new OpenChangelogDialog());
+    }
+
+    @Click
+    void facebook(){
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.facebook.com/pantipfanapp"));
+        startActivity(browserIntent);
     }
 
 }

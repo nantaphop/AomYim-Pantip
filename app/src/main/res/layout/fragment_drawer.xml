@@ -65,6 +65,11 @@
         android:text="จัดการห้อง"
         style="@style/drawer_item" />
     <TextView
+        android:id="@+id/facebook"
+        android:drawableLeft="@drawable/ic_action_facebook"
+        android:text="Facebook Fanpage"
+        style="@style/drawer_item" />
+    <TextView
         android:id="@+id/changelog"
         android:drawableLeft="@drawable/ic_action_action_list"
         android:text="รายการสิ่งที่เปลี่ยนแปลง"
