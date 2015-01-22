@@ -123,14 +123,14 @@ public class ForumRearrangeFragment extends BaseFragment {
                         ShowcaseView svShowHide = new ShowcaseView.Builder(getAttachedActivity())
                                 .setTarget(new ViewTarget(item.findViewById(R.id.enable)))
                                 .setContentTitle("เลือกแสดงเฉพาะห้องที่ต้องการ")
-                                .setContentText("คงไม่มีใครอ่าน Pantip ทุกห้อง\nดังนี้นเลือกแสดงเฉพาะห้องที่คุณชอบดีกว่า")
+                                .setContentText("คงไม่มีใครอ่าน Pantip ทุกห้อง\nดังนั้นเลือกแสดงเฉพาะห้องที่คุณชอบดีกว่า")
                                 .setShowcaseEventListener(new OnShowcaseEventListener() {
                                     @Override
                                     public void onShowcaseViewHide(ShowcaseView showcaseView) {
                                         ShowcaseView svSort = new ShowcaseView.Builder(getAttachedActivity())
                                                 .setTarget(new ViewTarget(((LinearLayout) item).getChildAt(1)))
                                                 .setContentTitle("เรียงลำดับห้อง ตามที่คุณชอบ")
-                                                .setContentText("กดค้างด้านขวา แล้วลาก\nให้การอ่าน Pantip ของคุณเป็นไปอย่างลื่นไหล\nเรียงลำดับห้องตามที่คุณต้องการได้เลย")
+                                                .setContentText("กดค้างด้านขวา แล้วลาก\nให้การอ่าน Pantip ของคุณเป็นไปอย่างลื่นไหล\nเรียงลำดับห้องตามที่คุณต้องการ")
                                                 .setShowcaseEventListener(new OnShowcaseEventListener() {
                                                     @Override
                                                     public void onShowcaseViewHide(ShowcaseView showcaseView) {
