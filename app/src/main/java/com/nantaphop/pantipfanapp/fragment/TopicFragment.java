@@ -762,7 +762,7 @@ public class TopicFragment extends BaseFragment implements SwipeRefreshLayout.On
             intent.putExtra(Intent.EXTRA_SUBJECT, app.getString(R.string.share_title));
             intent.putExtra(
                     Intent.EXTRA_TEXT,
-                    getString(R.string.share_text, topic.getTitle(), "http://pantip.com/topic/" + topic.getId())
+                    getString(R.string.share_text, topicPost.getTitle(), "http://pantip.com/topic/" + topic.getId())
             );
 
             startActivity(Intent.createChooser(intent, app.getString(R.string.share_prompt)));
