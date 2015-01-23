@@ -117,7 +117,7 @@ public class ForumHolderFragment extends BaseFragment {
         ShowcaseView sv1 = new ShowcaseView.Builder(getAttachedActivity())
                 .setTarget(Target.NONE)
                 .singleShot(ShowcaseUtils.FIRST_TIME_LAUNCH_ID)
-                .setContentTitle("ยินดีต้อนรับเข้าสู่ PantipFanApp")
+                .setContentTitle("ยินดีต้อนรับเข้าสู่ \"อมยิ้ม\"")
                 .setContentText("ประสบการณ์ การเล่น Pantip ที่แปลกใหม่!")
                 .setShowcaseEventListener(new OnShowcaseEventListener() {
                     @Override

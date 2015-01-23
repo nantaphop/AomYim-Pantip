@@ -119,7 +119,7 @@ public class DrawerFragment extends BaseFragment {
 
     @Click
     void facebook(){
-        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.facebook.com/pantipfanapp"));
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.facebook.com/aomyimpantip"));
         startActivity(browserIntent);
     }
 
