@@ -2,11 +2,14 @@ package com.nantaphop.pantipfanapp;
 
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import com.nantaphop.pantipfanapp.event.OpenPhotoEvent;
 import com.nantaphop.pantipfanapp.event.OpenUserEvent;
+import com.nantaphop.pantipfanapp.fragment.PhotoViewFragment_;
 import com.nantaphop.pantipfanapp.fragment.TopicFragment;
 import com.nantaphop.pantipfanapp.fragment.TopicFragment_;
 import com.nantaphop.pantipfanapp.response.Topic;
@@ -31,8 +34,11 @@ public class TopicActivity extends BaseActivity {
     Toolbar toolbar;
     @ViewById
     FrameLayout contentFrame;
+    @ViewById
+    FrameLayout root;
     @App
     BaseApplication app;
+
 
     @Extra
     Topic topic;
@@ -78,6 +84,14 @@ public class TopicActivity extends BaseActivity {
     @Subscribe
     public void openUser(OpenUserEvent e) {
         UserActivity_.intent(this).userId(e.getUserId()).user(e.getUsername()).avatar(e.getAvatar()).start();
+    }
+
+    @Subscribe
+    public void openPhoto(OpenPhotoEvent event){
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.add(R.id.root, PhotoViewFragment_.builder().photoUrl(event.getPhotoUrl()).build(), null);
+        ft.addToBackStack(null);
+        ft.commit();
     }
 
 }

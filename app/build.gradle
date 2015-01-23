@@ -32,8 +32,9 @@ android {
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 21
-        versionCode 21
+        versionCode 22
         versionName "3"
+        applicationId "com.nantaphop.aomyim"
     }
     dexOptions {
         preDexLibraries = false
@@ -85,6 +86,7 @@ dependencies {
     compile 'com.github.amlcurran.showcaseview:library:5.0.0'
     compile 'com.github.codechimp-org.apprater:library:1.0.+'
     compile 'com.github.gabrielemariotti.changeloglib:library:1.5.2'
+    compile 'com.github.chrisbanes.photoview:library:1.2.3'
 
 }
 
