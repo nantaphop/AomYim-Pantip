@@ -35,6 +35,10 @@ public class CommentDialogView extends LinearLayout{
 
     }
 
+    public void setText(String msg){
+        shortComment.setText(msg);
+    }
+
     public void replyTo(int commentNo){
         shortComment.setText(
                 Html.fromHtml(

@@ -278,7 +278,7 @@ public class TopicFragment extends BaseFragment implements SwipeRefreshLayout.On
                 currentCommentPage = 1;
                 loadNextComments();
                 list.requestFocus();
-                shortComment.setText("");
+                commentDialogView.setText("");
                 toastInfo(getString(R.string.feedback_comment_success));
             } else {
                 toastAlert(getString(R.string.feedback_comment_failed));
@@ -656,7 +656,7 @@ public class TopicFragment extends BaseFragment implements SwipeRefreshLayout.On
         if (msg.startsWith("ตอบ คห.")) {
             String commentNo = msg.substring(0, msg.indexOf(">")).split(" ")[2];
             msg = msg.split(">")[1].trim();
-            DoReplyEvent e = (DoReplyEvent) shortComment.getTag();
+            DoReplyEvent e = (DoReplyEvent) commentDialogView.getTag();
             tracker.sendEvent(AnalyticsUtils.CATEGORY_USER_ACTION, AnalyticsUtils.ACTION_REPLY_COMMENT, getTrackerEventLabel());
             client.reply(topic.getId(), e.commentRefId, e.commentNo, e.commentTimestamp, msg, doCommentCallback);
 
