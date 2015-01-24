@@ -71,12 +71,6 @@ public class BaseActivity extends ActionBarActivity {
 
     }
 
-
-    @Override
-    public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
-    }
-
     @Override
     protected void onSaveInstanceState(Bundle saveState) {
         super.onSaveInstanceState(saveState);

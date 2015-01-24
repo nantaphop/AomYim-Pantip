@@ -567,8 +567,11 @@ public class TopicFragment extends BaseFragment implements SwipeRefreshLayout.On
 
             topicPostView = TopicPostView_.build(getAttachedActivity());
             topicPostView.bind(topicPost);
-            if (list.getHeaderViewsCount() == 0)
+            if (list.getHeaderViewsCount() == 0) {
+                list.setAdapter(null);
                 list.addHeaderView(topicPostView);
+                list.setAdapter(commentAdapter);
+            }
             commentAdapter.notifyDataSetChanged();
             if (lastFirstVisibleItem != 0) {
                 list.setSelection(lastFirstVisibleItem);

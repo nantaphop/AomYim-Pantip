@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog bulletedList="true">
 
+    <changelogversion versionName="1.0.2" changeDate="2014-01-24">
+        <changelogtext>[b]แก้ปัญหา[/b]เปิดอ่านกระทู้ไม่ได้ใน Android เวอชั่นก่อน 4.4</changelogtext>
+    </changelogversion>
+    <changelogversion versionName="1.0.1" changeDate="2014-01-24">
+        <changelogtext>[b]แก้ปัญหา[/b]เปิดแอปไม่ได้ใน Android เวอชั่นเก่า</changelogtext>
+    </changelogversion>
     <changelogversion versionName="1.0.0" changeDate="2014-01-23">
         <changelogtext>[b]ยินดีต้อนรับสู่ อมยิ้ม[/b]</changelogtext>
     </changelogversion>

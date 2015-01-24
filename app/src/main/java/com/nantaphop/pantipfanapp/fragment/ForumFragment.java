@@ -647,6 +647,14 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
             tracker.sendEvent(AnalyticsUtils.CATEGORY_USER_ACTION, AnalyticsUtils.ACTION_OPEN_FORUM, "user " + userTopicType.toString());
 
         }
+        // Add Blank Margin on top height = Tab's height
+        if (!noTabMargin) {
+            View blankHeader = new View(getAttachedActivity());
+            blankHeader.setMinimumHeight(toolbarAndNavSize);
+            list.addHeaderView(blankHeader);
+        } else {
+            getAttachedActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         if (forumAdapter != null) {
             forumAdapter.setLoadMoreListener(new TopicAdapter.LoadMoreListener() {
                 @Override
@@ -666,14 +674,7 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
         showLoadingScreen();
         list.setEmptyView(emptyView);
 
-        // Add Blank Margin on top height = Tab's height
-        if (!noTabMargin) {
-            View blankHeader = new View(getAttachedActivity());
-            blankHeader.setMinimumHeight(toolbarAndNavSize);
-            list.addHeaderView(blankHeader);
-        } else {
-            getAttachedActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
+
         swipeRefreshLayout.setProgressViewOffset(false
                 , getResources().getDimensionPixelSize(R.dimen.toolbar_size)
                 , DeviceUtils.getDisplayCenterPixel(getAttachedActivity()));

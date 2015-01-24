@@ -32,7 +32,7 @@
     <string name="please_wait">โปรดรอซักครู่</string>
 
     <string name="share_title">กระทู้น่าสนใจ</string>
-    <string name="share_text">%1$s | %2$s via #PantipFanApp</string>
+    <string name="share_text">%1$s | %2$s via #อมยิ้มForPantip</string>
     <string name="share_prompt">แชร์กระทู้ ใน...</string>
     <string name="action_share">แชร์</string>
     <string name="action_open_browser">ดูบน Browser</string>

@@ -30,11 +30,11 @@ android {
     buildToolsVersion '21.0.1'
 
     defaultConfig {
-        minSdkVersion 14
+        minSdkVersion 15
         targetSdkVersion 21
-        versionCode 1
-        versionName "1.0.0"
-        applicationId "com.nantaphop.aomyim"
+        versionCode 3
+        versionName "1.0.2"
+        applicationId "com.nantaphop.aomyimforpantip"
     }
     dexOptions {
         preDexLibraries = false
