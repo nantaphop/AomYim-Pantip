@@ -1,6 +1,5 @@
 package com.nantaphop.pantipfanapp.fragment;
 
-import android.os.Build;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -10,25 +9,29 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.LinearLayout;
 
 import com.astuetz.PagerSlidingTabStrip;
+
 import com.github.amlcurran.showcaseview.OnShowcaseEventListener;
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.Target;
 import com.google.android.gms.ads.AdView;
 import com.nantaphop.pantipfanapp.BaseApplication;
 import com.nantaphop.pantipfanapp.R;
-import com.nantaphop.pantipfanapp.event.*;
+import com.nantaphop.pantipfanapp.event.ForumScrollDownEvent;
+import com.nantaphop.pantipfanapp.event.ForumScrollUpEvent;
+import com.nantaphop.pantipfanapp.event.OpenForumRearrangeEvent;
+import com.nantaphop.pantipfanapp.event.ToggleDrawerEvent;
 import com.nantaphop.pantipfanapp.model.ForumPagerItem;
 import com.nantaphop.pantipfanapp.service.PantipRestClient;
 import com.nantaphop.pantipfanapp.utils.ShowcaseUtils;
-import com.nantaphop.pantipfanapp.utils.TranslucentUtils;
 import com.squareup.otto.Subscribe;
-import org.androidannotations.annotations.*;
+
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.EFragment;
+import org.androidannotations.annotations.ViewById;
 import org.codechimp.apprater.AppRater;
 
 import java.util.List;
