@@ -1,19 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog bulletedList="true">
 
-    <changelogversion versionName="1.0.4" changeDate="2014-01-25">
-        <changelogtext>[b]แก้ปัญหา[/b]เปิดแอปไม่ได้ในเครื่องที่จอละเอียดเกิน 1920*1080 เช่น Note 4, LG G3, Tabs, Nexus 6</changelogtext>
+    <changelogversion versionName="1.0.5" changeDate="2015-01-29">
+        <changelogtext>[b]ปรับปรุง[/b] ขนาดตัวหนังสือ</changelogtext>
+        <changelogtext>[b]ปรับปรุง[/b] สีและหน้าจอบางส่วน</changelogtext>
+        <changelogtext>[b]ปรับปรุง[/b] ขนาดช่องพิมพ์ความเห็น</changelogtext>
+        <changelogtext>[b]แก้ปัญหา[/b] App ปิดเอง บางกรณี</changelogtext>
     </changelogversion>
-    <changelogversion versionName="1.0.3" changeDate="2014-01-24">
-        <changelogtext>[b]แก้ปัญหา[/b]มองไม่เห็นปุ่ม Comment และ ตอบกลับเห็นไม่ได้ไม่ได้</changelogtext>
+    <changelogversion versionName="1.0.4" changeDate="2015-01-25">
+        <changelogtext>[b]แก้ปัญหา[/b] เปิดแอปไม่ได้ในเครื่องที่จอละเอียดเกิน 1920*1080 เช่น Note 4, LG G3, Tabs, Nexus 6</changelogtext>
     </changelogversion>
-    <changelogversion versionName="1.0.2" changeDate="2014-01-24">
-        <changelogtext>[b]แก้ปัญหา[/b]เปิดอ่านกระทู้ไม่ได้ใน Android เวอชั่นก่อน 4.4</changelogtext>
+    <changelogversion versionName="1.0.3" changeDate="2015-01-24">
+        <changelogtext>[b]แก้ปัญหา[/b] มองไม่เห็นปุ่ม Comment และ ตอบกลับเห็นไม่ได้ไม่ได้</changelogtext>
     </changelogversion>
-    <changelogversion versionName="1.0.1" changeDate="2014-01-24">
-        <changelogtext>[b]แก้ปัญหา[/b]เปิดแอปไม่ได้ใน Android เวอชั่นเก่า</changelogtext>
+    <changelogversion versionName="1.0.2" changeDate="2015-01-24">
+        <changelogtext>[b]แก้ปัญหา[/b] เปิดอ่านกระทู้ไม่ได้ใน Android เวอชั่นก่อน 4.4</changelogtext>
     </changelogversion>
-    <changelogversion versionName="1.0.0" changeDate="2014-01-23">
+    <changelogversion versionName="1.0.1" changeDate="2015-01-24">
+        <changelogtext>[b]แก้ปัญหา[/b] เปิดแอปไม่ได้ใน Android เวอชั่นเก่า</changelogtext>
+    </changelogversion>
+    <changelogversion versionName="1.0.0" changeDate="2015-01-23">
         <changelogtext>[b]ยินดีต้อนรับสู่ อมยิ้ม[/b]</changelogtext>
     </changelogversion>
 </changelog>

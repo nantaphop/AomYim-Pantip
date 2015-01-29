@@ -74,8 +74,8 @@ public class CommentView extends RelativeLayout {
     int highlightColor;
     @ColorRes(R.color.author_indicator)
     int authorIndicatorColor;
-    @ColorRes(android.R.color.transparent)
-    int transparent;
+    @ColorRes(R.color.background)
+    int bgColor;
 
     @DrawableRes(R.drawable.ic_action_thumb_up_highlight)
     Drawable thumbUpHighlight;
@@ -126,7 +126,7 @@ public class CommentView extends RelativeLayout {
         if(comment.isOwner_topic()){
             root.setBackgroundColor(authorIndicatorColor);
         }else{
-            root.setBackgroundColor(transparent);
+            root.setBackgroundColor(bgColor);
         }
         date.setText(
                 DateUtils.getRelativeTimeSpanString(

@@ -172,6 +172,10 @@ public class TopicFragment extends BaseFragment implements SwipeRefreshLayout.On
         public void onSuccess(int i, Header[] headers, String s, Object o) {
             Log.d("forum", "success");
             Comments newComments = (Comments) o;
+            if(newComments == null){
+                toastAlert(getString(R.string.feedback_connection_failed));
+                return;
+            }
             if (comments == null) {
                 comments = newComments;
                 if (newComments.getComments() != null) {

@@ -66,7 +66,7 @@ public class GatewayActivity extends Activity {
             tracker.sendEvent(AnalyticsUtils.CATEGORY_USER_ACTION, AnalyticsUtils.ACTION_IN_LINK, "Topic");
             final Intent i = new Intent(this, TopicActivity_.class);
             Topic topic = new Topic();
-            topic.setId(Integer.parseInt(uri.toString().split("/")[4]));
+            topic.setId(Integer.parseInt(uri.toString().split("/")[4].split("\\?")[0]));
             topic.setTitle(uri.toString());
             i.putExtra("topic", topic);
             startActivity(i);

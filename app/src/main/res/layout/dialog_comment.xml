@@ -17,8 +17,9 @@
             android:layout_gravity="bottom"
             android:layout_weight="1"
             android:gravity="bottom"
+            android:lines="5"
             android:inputType="textMultiLine"
-            android:maxLines="3" />
+             />
 
 
 
