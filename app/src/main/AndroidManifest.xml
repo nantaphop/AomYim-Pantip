@@ -39,6 +39,7 @@
         </activity>
         <activity
                 android:name="com.nantaphop.pantipfanapp.TopicActivity_"
+            android:theme="@style/Theme.Pantip.Base.TopicActivity"
                 >
         </activity>
         <activity

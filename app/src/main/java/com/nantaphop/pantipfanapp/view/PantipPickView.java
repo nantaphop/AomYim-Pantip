@@ -15,6 +15,7 @@ import com.nantaphop.pantipfanapp.response.Tag;
 import com.nantaphop.pantipfanapp.response.Topic;
 import com.squareup.picasso.Picasso;
 
+import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;
@@ -23,7 +24,7 @@ import org.androidannotations.annotations.ViewById;
  * Created by nantaphop on 21-Jan-15.
  */
 @EViewGroup(R.layout.listitem_pantip_pick)
-public class PantipPickView extends RelativeLayout{
+public class PantipPickView extends RelativeLayout implements View.OnClickListener{
 
     @ViewById
     ImageView thumbnail;
@@ -46,6 +47,12 @@ public class PantipPickView extends RelativeLayout{
     public PantipPickView(Context context) {
         super(context);
         this.context = context;
+
+    }
+
+    @AfterViews
+    void init(){
+        root.setOnClickListener(this);
     }
 
     public void bind(Topic topic){
@@ -71,9 +78,12 @@ public class PantipPickView extends RelativeLayout{
 
     }
 
-    @Click
-    void root(){
-        BaseApplication.getEventBus().post(new OpenTopicEvent(topic));
-    }
 
+
+    @Override
+    public void onClick(View v) {
+        int[] startingLocation = new int[2];
+        v.getLocationOnScreen(startingLocation);
+        BaseApplication.getEventBus().post(new OpenTopicEvent(topic, startingLocation[1]));
+    }
 }

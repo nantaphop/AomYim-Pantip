@@ -151,6 +151,8 @@ public class TopicThumbnailView extends RelativeLayout implements View.OnClickLi
     public void onClick(View view) {
         topic.setRead(true);
         adapter.notifyDataSetChanged();
-        app.getEventBus().post(new OpenTopicEvent(topic));
+        int[] startingLocation = new int[2];
+        view.getLocationOnScreen(startingLocation);
+        app.getEventBus().post(new OpenTopicEvent(topic, startingLocation[1]));
     }
 }

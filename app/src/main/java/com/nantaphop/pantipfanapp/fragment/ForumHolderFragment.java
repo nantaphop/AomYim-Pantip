@@ -215,28 +215,28 @@ public class ForumHolderFragment extends BaseFragment {
 
     @Subscribe
     public void hideTabs(ForumScrollDownEvent e){
-        Log.d("event", "hideTabs");
-        if (!toolbarHiding) {
-            tabsHeight = toolbar.getHeight();
-            topPanel.animate().translationYBy(0 - tabsHeight).setInterpolator(new AccelerateDecelerateInterpolator()).start();
-
-//            actionBarTitle = actionBar.getTitle();
-//            actionBar.setTitle(pagerAdapter.getPageTitle(currentPage));
-//            app.getEventBus().post(new SetTitleEvent(pagerAdapter.getPageTitle(currentPage).toString()));
-            toolbarHiding = true;
-        }else if(!navbarHiding){
-            tabsHeight = tabs.getHeight();
-            topPanel.animate().translationYBy(0 - tabsHeight).setInterpolator(new AccelerateDecelerateInterpolator()).start();
-        }
+//        Log.d("event", "hideTabs");
+//        if (!toolbarHiding) {
+//            tabsHeight = toolbar.getHeight();
+//            topPanel.animate().translationYBy(0 - tabsHeight).setInterpolator(new AccelerateDecelerateInterpolator()).start();
+//
+////            actionBarTitle = actionBar.getTitle();
+////            actionBar.setTitle(pagerAdapter.getPageTitle(currentPage));
+////            app.getEventBus().post(new SetTitleEvent(pagerAdapter.getPageTitle(currentPage).toString()));
+//            toolbarHiding = true;
+//        }else if(!navbarHiding){
+//            tabsHeight = tabs.getHeight();
+//            topPanel.animate().translationYBy(0 - tabsHeight).setInterpolator(new AccelerateDecelerateInterpolator()).start();
+//        }
     }
 
 
 
     @Subscribe
     public void showTabs(ForumScrollUpEvent e){
-        if (toolbarHiding) {
-            showTabs();
-        }
+//        if (toolbarHiding) {
+//            showTabs();
+//        }
     }
 
     private void showTabs() {

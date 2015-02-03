@@ -119,10 +119,8 @@ public class MainActivity extends BaseActivity {
 
     @Subscribe
     public void openTopic(final OpenTopicEvent e) {
-        final Intent i = new Intent(MainActivity.this, TopicActivity_.class);
-        i.putExtra("topic", e.getTopic());
-        startActivity(i);
-        overrideAnimationBeforeStartActivity();
+        TopicActivity_.intent(this).topic(e.getTopic()).startingLocation(e.getStartingLocation()).start();
+        overridePendingTransition(0, 0);
         Log.d("fragment", "open topic");
         drawer_layout.closeDrawers();
 

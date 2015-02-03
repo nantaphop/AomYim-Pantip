@@ -152,6 +152,8 @@ public class TopicView extends RelativeLayout implements View.OnClickListener {
     public void onClick(View view) {
         topic.setRead(true);
         adapter.notifyDataSetChanged();
-        app.getEventBus().post(new OpenTopicEvent(topic, this));
+        int[] startingLocation = new int[2];
+        view.getLocationOnScreen(startingLocation);
+        app.getEventBus().post(new OpenTopicEvent(topic, startingLocation[1]));
     }
 }

@@ -28,12 +28,16 @@ public class BaseActivity extends ActionBarActivity {
     private String openTxt;
     private String closeTxt;
     private Toolbar toolbar;
-
+    protected boolean noBackTransition;
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        overridePendingTransition(R.anim.activity_scale_in_from_bottom_center, R.anim.activity_exit_slide_to_bottom);
+        if (!noBackTransition) {
+            overridePendingTransition(R.anim.activity_scale_in_from_bottom_center, R.anim.activity_exit_slide_to_bottom);
+        }else{
+            overridePendingTransition(0,0);
+        }
     }
 
     protected void setDrawerLayout(DrawerLayout drawerLayout) {

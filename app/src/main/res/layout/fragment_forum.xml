@@ -39,7 +39,6 @@
 
 
     </LinearLayout>
-    <include layout="@layout/ads"/>
     <com.melnykov.fab.FloatingActionButton
         android:visibility="gone"
             android:id="@+id/fab"

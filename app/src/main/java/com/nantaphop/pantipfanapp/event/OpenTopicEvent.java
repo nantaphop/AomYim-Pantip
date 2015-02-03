@@ -10,9 +10,15 @@ import com.nantaphop.pantipfanapp.response.Topic;
 public class OpenTopicEvent {
     private Topic topic;
     private View animatedView;
+    private int startingLocation;
 
     public OpenTopicEvent(Topic topic) {
         this.topic = topic;
+    }
+
+    public OpenTopicEvent(Topic topic, int startingLocation) {
+        this.topic = topic;
+        this.startingLocation = startingLocation;
     }
 
     public OpenTopicEvent(Topic topic, View animatedView) {
@@ -26,5 +32,13 @@ public class OpenTopicEvent {
 
     public View getAnimatedView() {
         return animatedView;
+    }
+
+    public int getStartingLocation() {
+        return startingLocation;
+    }
+
+    public void setStartingLocation(int startingLocation) {
+        this.startingLocation = startingLocation;
     }
 }

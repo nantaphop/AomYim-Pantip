@@ -118,8 +118,8 @@ public class TopicFragment extends BaseFragment implements SwipeRefreshLayout.On
 
     @DimensionPixelSizeRes(R.dimen.list_footer_height)
     int footerHeight;
-    @ViewById
-    AdView ads;
+//    @ViewById
+//    AdView ads;
     @ViewById
     ObservableListView list;
     @ViewById
@@ -398,7 +398,7 @@ public class TopicFragment extends BaseFragment implements SwipeRefreshLayout.On
         saveReadLog();
         tracker.sendEvent(AnalyticsUtils.CATEGORY_USER_ACTION, AnalyticsUtils.ACTION_OPEN_TOPIC, getTrackerEventLabel());
         initCommentDialog();
-        getAttachedActivity().loadAd(ads);
+//        getAttachedActivity().loadAd(ads);
         getAttachedActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 //        commentViewDefaultHeight = commentPane.getY();
         Log.d("topic", "init topic fragment " + topic.getId());

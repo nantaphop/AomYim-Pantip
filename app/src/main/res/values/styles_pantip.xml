@@ -21,6 +21,12 @@
 
     <style name="Theme.Pantip" parent="Theme.Pantip.Base">
     </style>
+
+    <style name="Theme.Pantip.Base.TopicActivity" parent="Theme.Pantip.Base">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+
     <style name="Theme.Pantip.Base" parent="Theme.AppCompat.Light">
 
         <item name="colorPrimary">@color/base_color_bright</item>
