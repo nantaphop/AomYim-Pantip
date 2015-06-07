@@ -40,8 +40,7 @@ public class UserFragment extends BaseFragment {
 
     @ViewById
     ViewPager viewPager;
-    @ViewById
-    AdView ads;
+
     @ViewById
     Toolbar toolbar;
     @ViewById
@@ -71,7 +70,6 @@ public class UserFragment extends BaseFragment {
 
     @AfterViews
     void init() {
-        getAttachedActivity().loadAd(ads);
         getAttachedActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         pagerAdapter = new ForumSlidePagerAdapter(getFragmentManager());
         final DisplayMetrics displaymetrics = new DisplayMetrics();

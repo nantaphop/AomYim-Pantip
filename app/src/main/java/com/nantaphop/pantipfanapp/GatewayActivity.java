@@ -9,7 +9,6 @@ import android.util.Log;
 import com.nantaphop.pantipfanapp.model.ForumPagerItem;
 import com.nantaphop.pantipfanapp.response.Topic;
 import com.nantaphop.pantipfanapp.service.PantipRestClient;
-import com.nantaphop.pantipfanapp.utils.AnalyticsUtils;
 import com.nantaphop.pantipfanapp.utils.Utils;
 
 import org.androidannotations.annotations.App;
@@ -60,10 +59,8 @@ public class GatewayActivity extends Activity {
         // Second Segment is {tagName, forumName, topicId}
         String view = pathSegments.get(0);
         String detail = pathSegments.get(1);
-        AnalyticsUtils tracker = new AnalyticsUtils(this);
 
         if(view.equals("topic")){
-            tracker.sendEvent(AnalyticsUtils.CATEGORY_USER_ACTION, AnalyticsUtils.ACTION_IN_LINK, "Topic");
             final Intent i = new Intent(this, TopicActivity_.class);
             Topic topic = new Topic();
             topic.setId(Integer.parseInt(uri.toString().split("/")[4].split("\\?")[0]));
@@ -74,7 +71,6 @@ public class GatewayActivity extends Activity {
             return;
         }
         else if(view.equals("forum") || view.equals("tag")){
-            tracker.sendEvent(AnalyticsUtils.CATEGORY_USER_ACTION, AnalyticsUtils.ACTION_IN_LINK, "Forum");
             Intent i = new Intent(this, ForumActivity_.class);
             ForumPagerItem forumPagerItem = new ForumPagerItem(uri.toString(), Utils.getForumPath(uri.toString()));
             i.putExtra("forumPagerItem", forumPagerItem);

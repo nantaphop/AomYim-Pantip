@@ -43,8 +43,7 @@ import java.util.List;
 public class ForumHolderFragment extends BaseFragment {
 
     public static final String TAG = "fragmentHolder";
-    @ViewById
-    AdView ads;
+
     @ViewById
     ViewPager viewPager;
     @ViewById
@@ -69,7 +68,6 @@ public class ForumHolderFragment extends BaseFragment {
 
         rateApp();
 
-        getAttachedActivity().loadAd(ads);
         getAttachedActivity().setSupportActionBar(toolbar);
         getAttachedActivity().initNavDrawer(toolbar);
         forumPagerItems = ForumPagerItem.getAll("enable");

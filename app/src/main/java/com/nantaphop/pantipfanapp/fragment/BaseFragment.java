@@ -2,15 +2,17 @@ package com.nantaphop.pantipfanapp.fragment;
 
 import android.app.Activity;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+
 import com.github.mrengineer13.snackbar.SnackBar;
 import com.nantaphop.pantipfanapp.BaseApplication;
 import com.nantaphop.pantipfanapp.service.PantipRestClient;
-import com.nantaphop.pantipfanapp.utils.AnalyticsUtils;
 import com.nantaphop.pantipfanapp.view.BaseActivity;
-import org.androidannotations.annotations.*;
-import org.jsoup.Connection;
+
+import org.androidannotations.annotations.App;
+import org.androidannotations.annotations.Bean;
+import org.androidannotations.annotations.EFragment;
+import org.androidannotations.annotations.OptionsItem;
 
 /**
  * Created by nantaphop on 08-Aug-14.
@@ -22,14 +24,12 @@ public class BaseFragment extends Fragment {
     @Bean
     protected PantipRestClient client;
 
-    protected AnalyticsUtils tracker;
 
     private BaseActivity activity;
 
     @Override
     public void onAttach(Activity activity) {
         this.activity = (BaseActivity)activity;
-        tracker = new AnalyticsUtils(activity);
         super.onAttach(activity);
     }
 

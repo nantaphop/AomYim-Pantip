@@ -1,7 +1,6 @@
 package com.nantaphop.pantipfanapp.view;
 
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
@@ -10,8 +9,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.github.mrengineer13.snackbar.SnackBar;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
 import com.nantaphop.pantipfanapp.R;
 
 /**
@@ -114,8 +111,4 @@ public class BaseActivity extends ActionBarActivity {
         super.setSupportActionBar(toolbar);
     }
 
-    public void loadAd(AdView ads){
-        AdRequest adRequest = new AdRequest.Builder().build();
-        ads.loadAd(adRequest);
-    }
 }

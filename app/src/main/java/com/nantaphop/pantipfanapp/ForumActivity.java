@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 
-import com.google.android.gms.ads.AdView;
 import com.nantaphop.pantipfanapp.event.OpenTopicEvent;
 import com.nantaphop.pantipfanapp.fragment.ForumFragment;
 import com.nantaphop.pantipfanapp.fragment.ForumFragment_;
@@ -30,9 +29,6 @@ import org.androidannotations.annotations.ViewById;
  */
 @EActivity(R.layout.activity_fragment)
 public class ForumActivity extends BaseActivity {
-
-    @ViewById
-    AdView ads;
 
     @ViewById
     Toolbar toolbar;
@@ -60,7 +56,6 @@ public class ForumActivity extends BaseActivity {
 
     @AfterViews
     void init() {
-        loadAd(ads);
         if (forumFragment == null) {
             forumFragment = ForumFragment_.builder().forumPagerItem(forumPagerItem).forumType(forumType).noTabMargin(true).build();
         }

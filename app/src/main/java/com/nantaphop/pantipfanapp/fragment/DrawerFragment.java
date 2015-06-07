@@ -3,7 +3,6 @@ package com.nantaphop.pantipfanapp.fragment;
 import android.content.Intent;
 import android.net.Uri;
 import android.view.View;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -17,7 +16,6 @@ import com.nantaphop.pantipfanapp.event.OpenLoginScreenEvent;
 import com.nantaphop.pantipfanapp.event.OpenUserEvent;
 import com.nantaphop.pantipfanapp.event.UpdateLoginStateEvent;
 import com.nantaphop.pantipfanapp.pref.UserPref_;
-import com.nantaphop.pantipfanapp.utils.AnalyticsUtils;
 import com.nantaphop.pantipfanapp.utils.CircleTransform;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
@@ -108,7 +106,6 @@ public class DrawerFragment extends BaseFragment {
 
     @Click
     void myProfile() {
-        tracker.sendEvent(AnalyticsUtils.CATEGORY_USER_ACTION, AnalyticsUtils.ACTION_OPEN_MY_PROFILE, null);
         BaseApplication.getEventBus().post(new OpenUserEvent(userPref.userId().get(), userPref.username().get(), userPref.avatar().get()));
     }
 

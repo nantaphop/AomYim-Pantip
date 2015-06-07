@@ -82,7 +82,6 @@ public class CustomLinkMovementMethod extends LinkMovementMethod {
 //                        i.putExtra(WebViewActivity.EXTRA_URL, url);
 //                        movementContext.startActivity(i);
 
-                        new AnalyticsUtils(movementContext).sendEvent(AnalyticsUtils.CATEGORY_USER_ACTION, AnalyticsUtils.ACTION_OUT_LINK, url);
                         Uri uri = Uri.parse(url);
                         movementContext.startActivity(new Intent(Intent.ACTION_VIEW, uri));
                     }

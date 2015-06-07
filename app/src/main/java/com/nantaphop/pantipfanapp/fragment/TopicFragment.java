@@ -26,7 +26,6 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.ksoichiro.android.observablescrollview.ObservableListView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
-import com.google.android.gms.ads.AdView;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.BaseJsonHttpResponseHandler;
 import com.melnykov.fab.FloatingActionButton;
@@ -45,7 +44,6 @@ import com.nantaphop.pantipfanapp.response.Topic;
 import com.nantaphop.pantipfanapp.response.TopicPost;
 import com.nantaphop.pantipfanapp.response.VoteResponse;
 import com.nantaphop.pantipfanapp.service.PantipRestClient;
-import com.nantaphop.pantipfanapp.utils.AnalyticsUtils;
 import com.nantaphop.pantipfanapp.utils.CommentComparator;
 import com.nantaphop.pantipfanapp.utils.DeviceUtils;
 import com.nantaphop.pantipfanapp.utils.RESTUtils;
@@ -396,9 +394,7 @@ public class TopicFragment extends BaseFragment implements SwipeRefreshLayout.On
     @AfterViews
     void init() {
         saveReadLog();
-        tracker.sendEvent(AnalyticsUtils.CATEGORY_USER_ACTION, AnalyticsUtils.ACTION_OPEN_TOPIC, getTrackerEventLabel());
         initCommentDialog();
-//        getAttachedActivity().loadAd(ads);
         getAttachedActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 //        commentViewDefaultHeight = commentPane.getY();
         Log.d("topic", "init topic fragment " + topic.getId());
@@ -661,13 +657,11 @@ public class TopicFragment extends BaseFragment implements SwipeRefreshLayout.On
             String commentNo = msg.substring(0, msg.indexOf(">")).split(" ")[2];
             msg = msg.split(">")[1].trim();
             DoReplyEvent e = (DoReplyEvent) commentDialogView.getTag();
-            tracker.sendEvent(AnalyticsUtils.CATEGORY_USER_ACTION, AnalyticsUtils.ACTION_REPLY_COMMENT, getTrackerEventLabel());
             client.reply(topic.getId(), e.commentRefId, e.commentNo, e.commentTimestamp, msg, doCommentCallback);
 
         } else if (msg.length() > 0) {
             swipeRefreshLayout.setRefreshing(true);
             hideCommentTools();
-            tracker.sendEvent(AnalyticsUtils.CATEGORY_USER_ACTION, AnalyticsUtils.ACTION_COMMENT, getTrackerEventLabel());
             client.comment(topic.getId(), msg, doCommentCallback);
         }
 
@@ -697,19 +691,15 @@ public class TopicFragment extends BaseFragment implements SwipeRefreshLayout.On
                         CommentComparator commentComparator;
                         switch (i) {
                             case 0:
-                                tracker.sendEvent(AnalyticsUtils.CATEGORY_USER_ACTION, AnalyticsUtils.ACTION_SORT_COMMENT, "Vote");
                                 commentComparator = new CommentComparator(CommentComparator.SortType.Vote);
                                 break;
                             case 1:
-                                tracker.sendEvent(AnalyticsUtils.CATEGORY_USER_ACTION, AnalyticsUtils.ACTION_SORT_COMMENT, "Emo");
                                 commentComparator = new CommentComparator(CommentComparator.SortType.Emo);
                                 break;
                             case 2:
-                                tracker.sendEvent(AnalyticsUtils.CATEGORY_USER_ACTION, AnalyticsUtils.ACTION_SORT_COMMENT, "Order");
                                 commentComparator = new CommentComparator(CommentComparator.SortType.Order);
                                 break;
                             default:
-                                tracker.sendEvent(AnalyticsUtils.CATEGORY_USER_ACTION, AnalyticsUtils.ACTION_SORT_COMMENT, "Order");
                                 commentComparator = new CommentComparator(CommentComparator.SortType.Order);
                                 break;
                         }
@@ -724,7 +714,6 @@ public class TopicFragment extends BaseFragment implements SwipeRefreshLayout.On
 
     @OptionsItem
     void action_open_browser() {
-        tracker.sendEvent(AnalyticsUtils.CATEGORY_USER_ACTION, AnalyticsUtils.ACTION_VIEW_BROWSER, getTrackerEventLabel());
         Intent i = new Intent(Intent.ACTION_VIEW);
         i.setData(Uri.parse("http://pantip.com/topic/" + topic.getId()));
         startActivity(i);
@@ -733,14 +722,12 @@ public class TopicFragment extends BaseFragment implements SwipeRefreshLayout.On
 
     @OptionsItem
     void action_fav() {
-        tracker.sendEvent(AnalyticsUtils.CATEGORY_USER_ACTION, AnalyticsUtils.ACTION_FAVORITE, getTrackerEventLabel());
         client.favTopic(topic.getId(), favCallback);
     }
 
     @OptionsItem
     void action_unfav() {
 
-        tracker.sendEvent(AnalyticsUtils.CATEGORY_USER_ACTION, AnalyticsUtils.ACTION_UNFAVORITE, getTrackerEventLabel());
         client.unFavTopic(topic.getId(), unfavCallback);
     }
 
@@ -760,7 +747,6 @@ public class TopicFragment extends BaseFragment implements SwipeRefreshLayout.On
 
     @OptionsItem
     public void action_share() {
-        tracker.sendEvent(AnalyticsUtils.CATEGORY_USER_ACTION, AnalyticsUtils.ACTION_SHARE, getTrackerEventLabel());
         try {
 
             Intent intent = new Intent(Intent.ACTION_SEND);
@@ -805,14 +791,12 @@ public class TopicFragment extends BaseFragment implements SwipeRefreshLayout.On
         tmpComment = e.comment;
 
         if (e.comment != null) {
-            tracker.sendEvent(AnalyticsUtils.CATEGORY_USER_ACTION, AnalyticsUtils.ACTION_VOTE_COMMENT, getTrackerEventLabel());
             if (e.comment.isReply()) {
                 client.voteReply(topic.getId(), e.comment.getParent().getId(), e.comment.getComment_no(), e.comment.getReply_id(), e.comment.getReply_no(), doVoteCallback);
             } else {
                 client.voteComment(topic.getId(), e.comment.getId(), e.comment.getComment_no(), doVoteCallback);
             }
         } else {
-            tracker.sendEvent(AnalyticsUtils.CATEGORY_USER_ACTION, AnalyticsUtils.ACTION_VOTE_TOPIC, getTrackerEventLabel());
             client.voteTopic(topic.getId(), doVoteCallback);
         }
     }
@@ -866,11 +850,9 @@ public class TopicFragment extends BaseFragment implements SwipeRefreshLayout.On
                                         emo,
                                         doEmoCallback);
                             } else {
-                                tracker.sendEvent(AnalyticsUtils.CATEGORY_USER_ACTION, AnalyticsUtils.ACTION_EMO_COMMENT, getTrackerEventLabel());
                                 client.emoComment(topic.getId(), emoEvent.comment.getId(), emo, doEmoCallback);
                             }
                         } else {
-                            tracker.sendEvent(AnalyticsUtils.CATEGORY_USER_ACTION, AnalyticsUtils.ACTION_EMO_TOPIC, getTrackerEventLabel());
                             client.emoTopic(topic.getId(), emo, doEmoCallback);
                         }
                         emoEvent = null;

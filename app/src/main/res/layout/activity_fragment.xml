@@ -32,7 +32,6 @@
         app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
 
-        <include layout="@layout/ads"/>
 
 </FrameLayout>
 

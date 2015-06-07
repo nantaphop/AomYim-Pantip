@@ -4,12 +4,16 @@ import android.app.ProgressDialog;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.nantaphop.pantipfanapp.R;
 import com.nantaphop.pantipfanapp.event.UpdateLoginStateEvent;
 import com.nantaphop.pantipfanapp.pref.UserPref_;
-import com.nantaphop.pantipfanapp.utils.AnalyticsUtils;
 import com.nantaphop.pantipfanapp.utils.CircleTransform;
 import com.nantaphop.pantipfanapp.utils.RESTUtils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -18,7 +22,11 @@ import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 import com.squareup.otto.Subscribe;
 import com.squareup.picasso.Picasso;
 
-import org.androidannotations.annotations.*;
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Click;
+import org.androidannotations.annotations.EFragment;
+import org.androidannotations.annotations.OptionsMenu;
+import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.sharedpreferences.Pref;
 import org.apache.http.Header;
 
@@ -94,7 +102,6 @@ public class LoginFragment extends BaseFragment {
 
     @Click
     void login(){
-        tracker.sendEvent(AnalyticsUtils.CATEGORY_USER_ACTION, AnalyticsUtils.ACTION_LOGIN, null);
         final ProgressDialog progressDialog = ProgressDialog.show(getActivity(), app.getString(R.string.feedback_loading_login), app.getString(R.string.please_wait), false, false);
         client.login(username.getText().toString().trim(),
                 password.getText().toString().trim(),
@@ -126,7 +133,6 @@ public class LoginFragment extends BaseFragment {
 
     @Click
     void logout(){
-        tracker.sendEvent(AnalyticsUtils.CATEGORY_USER_ACTION, AnalyticsUtils.ACTION_LOGOUT, null);
         client.logout();
         updateScreen();
         app.getEventBus().post(new UpdateLoginStateEvent());

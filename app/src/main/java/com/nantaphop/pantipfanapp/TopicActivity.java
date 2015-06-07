@@ -45,8 +45,7 @@ public class TopicActivity extends BaseActivity {
     FrameLayout contentFrame;
     @ViewById
     FrameLayout root;
-    @ViewById
-    AdView ads;
+
     @App
     BaseApplication app;
 
@@ -109,7 +108,6 @@ public class TopicActivity extends BaseActivity {
                 return true;
             }
         });
-        loadAd(ads);
     }
 
     @Override

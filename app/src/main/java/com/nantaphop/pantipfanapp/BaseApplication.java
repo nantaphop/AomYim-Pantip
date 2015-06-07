@@ -87,17 +87,7 @@ public class BaseApplication extends Application {
 
     }
 
-    public static void loadAds(Context context, ViewGroup adHolder) {
 
-//        AdView adView = new AdView(context);
-//        adView.setAdSize(AdSize.SMART_BANNER);
-//        adView.setAdUnitId(context.getResources().getString(R.string.ads_id));
-//        adHolder.addView(adView);
-//        AdRequest adRequest = new AdRequest.Builder().build();
-//
-//        // Start loading the ad in the background.
-//        adView.loadAd(adRequest);
-    }
 
     private void initBitmapCache() {
         if (imageCache == null) {
