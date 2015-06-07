@@ -227,7 +227,7 @@ public class URLImageParser implements Html.ImageGetter {
                     InputStream in;
                     if (urlString.contains("ptcdn")) {
                         Log.d(TAG, "Load Resize : "+"http://pantip.com/timthumb?src="+urlString+"&q=80&w="+reqWidth+"&h="+reqHeight);
-                        in = fetch("http://pantip.com/timthumb?src="+urlString+"&q=80&w="+reqWidth+"&h="+reqHeight);
+                        in = fetch(urlString.replace("-o.jpg","-s.jpg"));
                     } else {
                         Log.d(TAG, "Load : "+"http://pantip.com/timthumb?src="+urlString+"&q=80&w="+reqWidth+"&h="+reqHeight);
 
